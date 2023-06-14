@@ -1,0 +1,34 @@
+.addExpensesDrawer-main-container {
+  .addExpensesDrawer-button {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+
+  .addExpensesDrawer-icon {
+    color: black;
+    font-size: 3rem;
+  }
+}
+
+.addExpensesDrawer-drawer {
+  .addExpensesDrawer-add_button_group {
+    display: flex;
+    justify-content: center;
+  }
+
+  .addExpensesDrawer-add_button_group button {
+    border-radius: 1rem;
+  }
+
+  .addExpensesDrawer-add_button_group .active-button {
+    background: black;
+    color: white;
+  }
+
+  > .MuiPaper-root {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    padding: 1rem;
+  }
+}
