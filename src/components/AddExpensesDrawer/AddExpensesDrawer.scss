@@ -12,6 +12,26 @@
 }
 
 .addExpensesDrawer-drawer {
+  > .MuiPaper-root {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+}
+
+.addExpensesDrawer-drawer_container {
+  padding: 1rem;
+
+  .addExpensesDrawer-drawer_top_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0.5rem 0 1.5rem;
+
+    .date-picker > .MuiInputBase-root {
+      width: 8rem;
+    }
+  }
+
   .addExpensesDrawer-add_button_group {
     display: flex;
     justify-content: center;
@@ -24,11 +44,5 @@
   .addExpensesDrawer-add_button_group .active-button {
     background: black;
     color: white;
-  }
-
-  > .MuiPaper-root {
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    padding: 1rem;
   }
 }
