@@ -1,0 +1,23 @@
+.addExpenses {
+  margin: 1rem 0;
+
+  .amount-helper-text {
+    margin-left: 0;
+    line-height: 1.45;
+  }
+
+  .category-button {
+    background: whitesmoke;
+    color: black;
+    margin: 0.2rem;
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    box-shadow: 2px 2px 4px -2px;
+  }
+
+  .selected-category-button,
+  .selected-category-button:hover {
+    background: black;
+    color: white;
+  }
+}

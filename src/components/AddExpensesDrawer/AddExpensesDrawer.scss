@@ -22,9 +22,6 @@
   padding: 1rem;
 
   .addExpensesDrawer-drawer_top_container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     margin: 0.5rem 0 1.5rem;
 
     .date-picker > .MuiInputBase-root {
@@ -33,16 +30,13 @@
   }
 
   .addExpensesDrawer-add_button_group {
-    display: flex;
-    justify-content: center;
-  }
+    button {
+      border-radius: 1rem;
+    }
 
-  .addExpensesDrawer-add_button_group button {
-    border-radius: 1rem;
-  }
-
-  .addExpensesDrawer-add_button_group .active-button {
-    background: black;
-    color: white;
+    .active-button {
+      background: black;
+      color: white;
+    }
   }
 }
