@@ -4,7 +4,6 @@ import {
   FormControl,
   FormHelperText,
   InputAdornment,
-  InputLabel,
 } from "@mui/material";
 import React from "react";
 import "./AddExpenses.scss";
@@ -13,6 +12,8 @@ import { Add } from "@mui/icons-material";
 
 interface AddExpensesProps {
   setShowAddNewCategoryModel: React.Dispatch<React.SetStateAction<boolean>>;
+  expenseCategoriesList: string[];
+  setExpenseCategoriesList: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const AddExpenses = (props: AddExpensesProps) => {
@@ -21,15 +22,8 @@ const AddExpenses = (props: AddExpensesProps) => {
     number | null
   >();
 
-  const expenseCategories = [
-    "Grocery",
-    "Shopping",
-    "Electricity Bill",
-    "Extra",
-  ];
-
   const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAmount(parseInt(event.target.value));
+    setAmount(Number(event.target.value));
   };
 
   const addNewCategory = (): void => {
@@ -37,21 +31,29 @@ const AddExpenses = (props: AddExpensesProps) => {
     props.setShowAddNewCategoryModel(true);
   };
 
+  const removeSelectedCategory = (categoryIndexToBeRemoved: number): void => {
+    const filteredList = props.expenseCategoriesList.filter(
+      (category, index) => {
+        return index !== categoryIndexToBeRemoved;
+      }
+    );
+    props.setExpenseCategoriesList(filteredList);
+  };
+
   return (
     <div className="addExpenses">
       <h1>How much did you spend?</h1>
 
       <FormControl fullWidth focused variant="filled">
-        <InputLabel>Amount</InputLabel>
         <FilledInput
-          value={amount}
+          value={amount || ""}
           startAdornment={
-            <InputAdornment position="start">
+            <InputAdornment className="rupee-icon" position="start">
               <CurrencyRupeeRoundedIcon />
             </InputAdornment>
           }
           onChange={handleAmountChange}
-          type="number"
+          type={"number"}
         />
         <FormHelperText className="amount-helper-text">
           Enter the amount you have spent to help us keep track of your expenses
@@ -59,7 +61,7 @@ const AddExpenses = (props: AddExpensesProps) => {
       </FormControl>
 
       <h1>What did you spend on?</h1>
-      {expenseCategories.map((category, index) => {
+      {props.expenseCategoriesList.map((category, index) => {
         return (
           <Button
             key={index}
@@ -69,6 +71,7 @@ const AddExpenses = (props: AddExpensesProps) => {
             onClick={() => {
               setSelectedCategoryIndex(index);
             }}
+            onDoubleClick={() => removeSelectedCategory(index)}
           >
             {category}
           </Button>
@@ -77,6 +80,7 @@ const AddExpenses = (props: AddExpensesProps) => {
       <Button startIcon={<Add />} onClick={addNewCategory}>
         New Category
       </Button>
+      <FormHelperText>Double click to delete category</FormHelperText>
     </div>
   );
 };

@@ -22,6 +22,13 @@ const AddExpensesDrawer: React.FC = () => {
   const [showAddNewCategoryModel, setShowAddNewCategoryModel] =
     React.useState(false);
 
+  const [expenseCategoriesList, setExpenseCategoriesList] = React.useState([
+    "Grocery",
+    "Shopping",
+    "Electricity Bill",
+    "Extra",
+  ]);
+
   // Constants:
   // Todo: Fix the date comparision issue.
   const datePickerLabel =
@@ -42,7 +49,11 @@ const AddExpensesDrawer: React.FC = () => {
   // JSX ELEMENTS:
   const ExpenseOrIncomeComponent = () => {
     return activeButton === "addExpenses" ? (
-      <AddExpenses setShowAddNewCategoryModel={setShowAddNewCategoryModel} />
+      <AddExpenses
+        setShowAddNewCategoryModel={setShowAddNewCategoryModel}
+        expenseCategoriesList={expenseCategoriesList}
+        setExpenseCategoriesList={setExpenseCategoriesList}
+      />
     ) : (
       <AddIncome />
     );
@@ -111,6 +122,8 @@ const AddExpensesDrawer: React.FC = () => {
           {showAddNewCategoryModel ? (
             <AddCategory
               setShowAddNewCategoryModel={setShowAddNewCategoryModel}
+              setExpenseCategoriesList={setExpenseCategoriesList}
+              expenseCategoriesList={expenseCategoriesList}
             />
           ) : (
             <AddExpensesORIncomeTopContainer />
