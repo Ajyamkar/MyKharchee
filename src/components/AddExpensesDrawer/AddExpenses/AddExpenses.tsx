@@ -8,15 +8,24 @@ import {
 import React from "react";
 import "./AddExpenses.scss";
 import CurrencyRupeeRoundedIcon from "@mui/icons-material/CurrencyRupeeRounded";
+import NotesIcon from "@mui/icons-material/Notes";
 import { Add } from "@mui/icons-material";
+import { SnackbarType } from "../Types";
 
 interface AddExpensesProps {
   setShowAddNewCategoryModel: React.Dispatch<React.SetStateAction<boolean>>;
   expenseCategoriesList: string[];
   setExpenseCategoriesList: React.Dispatch<React.SetStateAction<string[]>>;
+  snackbarState: SnackbarType;
+  setSnackbarState: React.Dispatch<React.SetStateAction<SnackbarType>>;
 }
 
 const AddExpenses = (props: AddExpensesProps) => {
+  /**
+   * State to keep track of item name.
+   */
+  const [itemName, setItemName] = React.useState("");
+
   /**
    * State to keep track of amount spent on an item.
    */
@@ -30,7 +39,7 @@ const AddExpenses = (props: AddExpensesProps) => {
   >();
 
   /**
-   * function to update amount spent on an item.
+   * Function to update amount spent on an item.
    * @param event - input change event
    */
   const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,7 +47,15 @@ const AddExpenses = (props: AddExpensesProps) => {
   };
 
   /**
-   * function to show create-new-category model,
+   * Function to update item description.
+   * @param event - input change event
+   */
+  const handleItemNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setItemName(event.target.value);
+  };
+
+  /**
+   * Function to show create-new-category model,
    * on clicking add new category button.
    */
   const showNewCategoryModel = (): void => {
@@ -47,7 +64,7 @@ const AddExpenses = (props: AddExpensesProps) => {
   };
 
   /**
-   * function to delete a category,
+   * Function to delete a category,
    * on double clicking category button.
    * @param categoryIndexToBeRemoved - index of the category to be deleted
    */
@@ -58,24 +75,43 @@ const AddExpenses = (props: AddExpensesProps) => {
       }
     );
     props.setExpenseCategoriesList(filteredList);
+    props.setSnackbarState({
+      isOpened: true,
+      status: "success",
+      message: "Successfully deleted the category",
+    });
   };
 
   return (
     <div className="addExpenses">
-      <h1>How much did you spend?</h1>
+      <h1 className="mb-0">How much did you spend?</h1>
 
-      <FormControl fullWidth focused variant="filled">
+      <FormControl fullWidth variant="filled">
+        <FilledInput
+          placeholder="Enter the description.."
+          value={itemName}
+          startAdornment={
+            <InputAdornment className="mt-0" position="start">
+              <NotesIcon />
+            </InputAdornment>
+          }
+          onChange={handleItemNameChange}
+          className="expense-description-input font-size_large"
+        />
+      </FormControl>
+      <FormControl fullWidth variant="filled">
         <FilledInput
           value={amount || ""}
           startAdornment={
-            <InputAdornment className="rupee-icon" position="start">
+            <InputAdornment className="mt-0" position="start">
               <CurrencyRupeeRoundedIcon />
             </InputAdornment>
           }
           onChange={handleAmountChange}
           type={"number"}
+          className="amount-spent-input bold font-size_large"
         />
-        <FormHelperText className="amount-helper-text">
+        <FormHelperText className="amount-helper-text ml-0">
           Enter the amount you have spent to help us keep track of your expenses
         </FormHelperText>
       </FormControl>

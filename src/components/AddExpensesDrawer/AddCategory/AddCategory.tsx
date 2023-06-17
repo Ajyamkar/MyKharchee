@@ -1,12 +1,15 @@
 import { ArrowBackRounded } from "@mui/icons-material";
 import { Button, Radio, TextField } from "@mui/material";
 import React from "react";
+import { SnackbarType } from "../Types";
 import "./AddCategory.scss";
 
 interface AddCategoryProps {
   setShowAddNewCategoryModel: React.Dispatch<React.SetStateAction<boolean>>;
   expenseCategoriesList: string[];
   setExpenseCategoriesList: React.Dispatch<React.SetStateAction<string[]>>;
+  snackbarState: SnackbarType;
+  setSnackbarState: React.Dispatch<React.SetStateAction<SnackbarType>>;
 }
 
 /**
@@ -65,6 +68,11 @@ const AddCategory = (props: AddCategoryProps) => {
       ...props.expenseCategoriesList,
       categoryName,
     ]);
+    props.setSnackbarState({
+      isOpened: true,
+      status: "success",
+      message: "Sucessfully created new category",
+    });
     props.setShowAddNewCategoryModel(false);
   };
 

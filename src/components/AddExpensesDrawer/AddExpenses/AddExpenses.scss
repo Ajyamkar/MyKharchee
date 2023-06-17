@@ -1,18 +1,16 @@
 .addExpenses {
   margin: 1rem 0;
 
-  input[type="number"] {
-    padding: 1rem 0;
-    font-size: large;
-    font-weight: bold;
-  }
+  .expense-description-input,
+  .amount-spent-input {
+    margin-top: 0.5rem;
 
-  .rupee-icon {
-    margin-top: 0 !important;
+    input {
+      padding: 1rem 0;
+    }
   }
 
   .amount-helper-text {
-    margin-left: 0;
     line-height: 1.45;
   }
 

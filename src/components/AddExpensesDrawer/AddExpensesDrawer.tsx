@@ -1,5 +1,12 @@
 import "./AddExpensesDrawer.scss";
-import { Button, ButtonGroup, Drawer, IconButton } from "@mui/material";
+import {
+  Alert,
+  Button,
+  ButtonGroup,
+  Drawer,
+  IconButton,
+  Snackbar,
+} from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import React from "react";
@@ -11,6 +18,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import AddExpenses from "./AddExpenses/AddExpenses";
 import AddIncome from "./AddIncome/AddIncome";
 import AddCategory from "./AddCategory/AddCategory";
+import { SnackbarType } from "./Types";
 
 const AddExpensesDrawer: React.FC = () => {
   /**
@@ -35,6 +43,15 @@ const AddExpensesDrawer: React.FC = () => {
    */
   const [showAddNewCategoryModel, setShowAddNewCategoryModel] =
     React.useState(false);
+
+  /**
+   * State to open or close snackbar after saving new category.
+   */
+  const [snackbarState, setSnackbarState] = React.useState<SnackbarType>({
+    isOpened: false,
+    status: "success",
+    message: "",
+  });
 
   /**
    * State to maintain list of expense categories.
@@ -69,6 +86,13 @@ const AddExpensesDrawer: React.FC = () => {
   };
 
   /**
+   * Function to close snackbar.
+   */
+  const closeSnackbar = () => {
+    setSnackbarState({ ...snackbarState, isOpened: false });
+  };
+
+  /**
    * function to close add expenses/income drawer.
    */
   const closeDrawer = (): void => {
@@ -95,6 +119,8 @@ const AddExpensesDrawer: React.FC = () => {
         setShowAddNewCategoryModel={setShowAddNewCategoryModel}
         expenseCategoriesList={expenseCategoriesList}
         setExpenseCategoriesList={setExpenseCategoriesList}
+        snackbarState={snackbarState}
+        setSnackbarState={setSnackbarState}
       />
     ) : (
       <AddIncome />
@@ -173,11 +199,28 @@ const AddExpensesDrawer: React.FC = () => {
               setShowAddNewCategoryModel={setShowAddNewCategoryModel}
               setExpenseCategoriesList={setExpenseCategoriesList}
               expenseCategoriesList={expenseCategoriesList}
+              snackbarState={snackbarState}
+              setSnackbarState={setSnackbarState}
             />
           ) : (
             <ShowMainDrawerContent />
           )}
         </div>
+
+        <Snackbar
+          open={snackbarState.isOpened}
+          autoHideDuration={3000}
+          onClose={closeSnackbar}
+        >
+          <Alert
+            severity={snackbarState.status}
+            onClose={closeSnackbar}
+            sx={{ width: "100%" }}
+            variant="filled"
+          >
+            {snackbarState.message}
+          </Alert>
+        </Snackbar>
       </Drawer>
     </div>
   );
