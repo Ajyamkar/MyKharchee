@@ -17,20 +17,40 @@ interface AddExpensesProps {
 }
 
 const AddExpenses = (props: AddExpensesProps) => {
+  /**
+   * State to keep track of amount spent on an item.
+   */
   const [amount, setAmount] = React.useState<number | null>();
+
+  /**
+   * State to keep track of selected category index.
+   */
   const [selectedCategoryIndex, setSelectedCategoryIndex] = React.useState<
     number | null
   >();
 
+  /**
+   * function to update amount spent on an item.
+   * @param event - input change event
+   */
   const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(Number(event.target.value));
   };
 
-  const addNewCategory = (): void => {
+  /**
+   * function to show create-new-category model,
+   * on clicking add new category button.
+   */
+  const showNewCategoryModel = (): void => {
     setSelectedCategoryIndex(null);
     props.setShowAddNewCategoryModel(true);
   };
 
+  /**
+   * function to delete a category,
+   * on double clicking category button.
+   * @param categoryIndexToBeRemoved - index of the category to be deleted
+   */
   const removeSelectedCategory = (categoryIndexToBeRemoved: number): void => {
     const filteredList = props.expenseCategoriesList.filter(
       (category, index) => {
@@ -77,7 +97,7 @@ const AddExpenses = (props: AddExpensesProps) => {
           </Button>
         );
       })}
-      <Button startIcon={<Add />} onClick={addNewCategory}>
+      <Button startIcon={<Add />} onClick={showNewCategoryModel}>
         New Category
       </Button>
       <FormHelperText>Double click to delete category</FormHelperText>

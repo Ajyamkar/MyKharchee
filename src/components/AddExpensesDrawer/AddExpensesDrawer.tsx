@@ -3,7 +3,6 @@ import { Button, ButtonGroup, Drawer, IconButton } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import React from "react";
-
 import dayjs, { Dayjs } from "dayjs";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -14,14 +13,32 @@ import AddIncome from "./AddIncome/AddIncome";
 import AddCategory from "./AddCategory/AddCategory";
 
 const AddExpensesDrawer: React.FC = () => {
+  /**
+   * State to open or close add-expenses drawer.
+   */
   const [openDrawer, setOpenDrawer] = React.useState<boolean>(false);
+
+  /**
+   * State to show add-expenses/income flow.
+   */
   const [activeButton, setActiveButton] = React.useState<
     "addExpenses" | "addIncome"
   >("addExpenses");
+
+  /**
+   * State to add expense/income for the selected date.
+   */
   const [date, setDate] = React.useState<Dayjs | null>(dayjs());
+
+  /**
+   * State to show create-new-category flow.
+   */
   const [showAddNewCategoryModel, setShowAddNewCategoryModel] =
     React.useState(false);
 
+  /**
+   * State to maintain list of expense categories.
+   */
   const [expenseCategoriesList, setExpenseCategoriesList] = React.useState([
     "Grocery",
     "Shopping",
@@ -29,24 +46,49 @@ const AddExpensesDrawer: React.FC = () => {
     "Extra",
   ]);
 
-  // Constants:
-  // Todo: Fix the date comparision issue.
+  /**
+   * Label text for date picker.
+   */
   const datePickerLabel =
-    date?.date() === new Date().getDate() ? "Today" : "Choose date";
+    new Date(dayjs(date).format()).toDateString() === new Date().toDateString()
+      ? "Today"
+      : "Selected date";
 
-  // functions
+  /**
+   * function to handle date change,
+   * new date will be selected if selected date is previous date compared with today's date
+   * or it will be set to today's date.
+   * @param newValue - new selected date
+   */
+  const handleDateChange = (newValue: Dayjs) => {
+    if (new Date(dayjs(newValue).format()) <= new Date()) {
+      setDate(newValue);
+    } else {
+      setDate(dayjs());
+    }
+  };
+
+  /**
+   * function to close add expenses/income drawer.
+   */
   const closeDrawer = (): void => {
     resetStatesToDefaultValues();
     setOpenDrawer(false);
   };
 
+  /**
+   * function to set all the states to default value.
+   */
   const resetStatesToDefaultValues = (): void => {
     setActiveButton("addExpenses");
     setDate(dayjs());
     setShowAddNewCategoryModel(false);
   };
 
-  // JSX ELEMENTS:
+  /**
+   * Component to show AddExpenses or AddIncome depending on which one is selected.
+   * @returns {JSX.Element}
+   */
   const ExpenseOrIncomeComponent = () => {
     return activeButton === "addExpenses" ? (
       <AddExpenses
@@ -58,7 +100,12 @@ const AddExpensesDrawer: React.FC = () => {
       <AddIncome />
     );
   };
-  const AddExpensesORIncomeTopContainer = () => {
+
+  /**
+   * Component to show AddExpenses/AddIncome content when showAddNewCategoryModel is false.
+   * @returns {JSX.Element}
+   */
+  const ShowMainDrawerContent = () => {
     return (
       <>
         <div className="addExpensesDrawer-drawer_top_container display-flex justify-content_space-between align-items_center">
@@ -67,7 +114,9 @@ const AddExpensesDrawer: React.FC = () => {
               <DatePicker
                 label={datePickerLabel}
                 value={date}
-                onChange={(newValue) => setDate(newValue)}
+                onChange={(newValue) => {
+                  newValue && handleDateChange(newValue);
+                }}
                 format="DD-MM-YYYY"
                 slotProps={{ textField: { size: "small" } }}
                 className="date-picker"
@@ -126,7 +175,7 @@ const AddExpensesDrawer: React.FC = () => {
               expenseCategoriesList={expenseCategoriesList}
             />
           ) : (
-            <AddExpensesORIncomeTopContainer />
+            <ShowMainDrawerContent />
           )}
         </div>
       </Drawer>

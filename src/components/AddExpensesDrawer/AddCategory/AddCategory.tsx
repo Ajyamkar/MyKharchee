@@ -9,6 +9,9 @@ interface AddCategoryProps {
   setExpenseCategoriesList: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
+/**
+ * List of expenses category types.
+ */
 const expensesTypes = [
   { name: "Essentails", eg: "Groceries, etc" },
   { name: "Leisure", eg: "Eating out, movie, etc" },
@@ -17,22 +20,46 @@ const expensesTypes = [
 ];
 
 const AddCategory = (props: AddCategoryProps) => {
+  /**
+   * State to keep track of category name.
+   */
   const [categoryName, setCategoryName] = React.useState("");
-  const [selectedCategory, setSelectedCategory] = React.useState("");
 
+  /**
+   * State to keep track of expense category type.
+   */
+  const [selectedExpenseType, setSelectedExpenseType] = React.useState("");
+
+  /**
+   * Add category button will be disabled
+   * if one of field(name, type) is empty.
+   */
   const shouldDisableSavebutton =
-    categoryName === "" || selectedCategory === "" ? true : false;
+    categoryName === "" || selectedExpenseType === "" ? true : false;
 
+  /**
+   * function to set category name.
+   * @param event - input change event
+   */
   const handleCategoryNameChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setCategoryName(event.target.value);
   };
 
+  /**
+   * function to handle change
+   * for selecting type of expense category.
+   * @param event - input[type="radio"] change event.
+   */
   const selectCategory = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedCategory(event.target.value);
+    setSelectedExpenseType(event.target.value);
   };
 
+  /**
+   * function to update the expense categories list
+   * with added category name and type.
+   */
   const saveCategory = () => {
     props.setExpenseCategoriesList([
       ...props.expenseCategoriesList,
@@ -71,7 +98,7 @@ const AddCategory = (props: AddCategoryProps) => {
           return (
             <div className="display-flex align-items_center" key={index}>
               <Radio
-                checked={selectedCategory === type.name}
+                checked={selectedExpenseType === type.name}
                 value={type.name}
                 onChange={selectCategory}
                 sx={{ paddingLeft: 0 }}
