@@ -1,5 +1,5 @@
 import React from "react";
-import "./App.css";
+import "./App.scss";
 import AddExpensesDrawer from "./components/AddExpensesDrawer/AddExpensesDrawer";
 import Navbar from "./components/TopAppBar/Navbar";
 
