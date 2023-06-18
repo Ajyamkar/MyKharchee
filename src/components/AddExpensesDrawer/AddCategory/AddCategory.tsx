@@ -78,13 +78,13 @@ const AddCategory = (props: AddCategoryProps) => {
 
   return (
     <div className="add-category">
-      <div className="display-flex justify-content_space-between align-items_center">
+      <div className="display-flex justify-content-space-between align-items-center">
         <ArrowBackRounded
           fontSize="large"
           className="color-info"
           onClick={() => props.setShowAddNewCategoryModel(false)}
         />
-        <h1 className="font-size_larger">Create new category</h1>
+        <h1 className="font-size-larger">Create new category</h1>
       </div>
 
       <div className="category-name-container">
@@ -104,7 +104,7 @@ const AddCategory = (props: AddCategoryProps) => {
         <span className="bold">Expense type</span>
         {expensesTypes.map((type, index) => {
           return (
-            <div className="display-flex align-items_center" key={index}>
+            <div className="display-flex align-items-center" key={index}>
               <Radio
                 checked={selectedExpenseType === type.name}
                 value={type.name}
@@ -114,7 +114,7 @@ const AddCategory = (props: AddCategoryProps) => {
               />
               <p>
                 <span className="bold">{type.name}</span>{" "}
-                <span className="color-info font-size_small">({type.eg})</span>
+                <span className="color-info font-size-small">({type.eg})</span>
               </p>
             </div>
           );

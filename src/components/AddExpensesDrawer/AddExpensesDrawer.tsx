@@ -134,7 +134,7 @@ const AddExpensesDrawer: React.FC = () => {
   const ShowMainDrawerContent = () => {
     return (
       <>
-        <div className="addExpensesDrawer-drawer_top_container display-flex justify-content_space-between align-items_center">
+        <div className="addExpensesDrawer-drawer_top_container display-flex justify-content-space-between align-items-center">
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={["DatePicker"]}>
               <DatePicker
@@ -156,7 +156,7 @@ const AddExpensesDrawer: React.FC = () => {
           />
         </div>
 
-        <ButtonGroup className="addExpensesDrawer-add_button_group display-flex justify-content_center">
+        <ButtonGroup className="addExpensesDrawer-add_button_group display-flex justify-content-center">
           <Button
             className={activeButton === "addExpenses" ? "active-button" : ""}
             onClick={() => setActiveButton("addExpenses")}

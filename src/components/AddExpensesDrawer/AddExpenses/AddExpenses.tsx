@@ -96,7 +96,7 @@ const AddExpenses = (props: AddExpensesProps) => {
             </InputAdornment>
           }
           onChange={handleItemNameChange}
-          className="expense-description-input font-size_large"
+          className="expense-description-input font-size-large"
         />
       </FormControl>
       <FormControl fullWidth variant="filled">
@@ -109,7 +109,7 @@ const AddExpenses = (props: AddExpensesProps) => {
           }
           onChange={handleAmountChange}
           type={"number"}
-          className="amount-spent-input bold font-size_large"
+          className="amount-spent-input bold font-size-large"
         />
         <FormHelperText className="amount-helper-text ml-0">
           Enter the amount you have spent to help us keep track of your expenses
