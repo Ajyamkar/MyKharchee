@@ -98,6 +98,7 @@ const AddExpensesDrawer: React.FC = () => {
   const closeDrawer = (): void => {
     resetStatesToDefaultValues();
     setOpenDrawer(false);
+    localStorage.clear();
   };
 
   /**
@@ -165,7 +166,10 @@ const AddExpensesDrawer: React.FC = () => {
           </Button>
           <Button
             className={activeButton === "addIncome" ? "active-button" : ""}
-            onClick={() => setActiveButton("addIncome")}
+            onClick={() => {
+              setActiveButton("addIncome");
+              localStorage.clear();
+            }}
           >
             Add Income
           </Button>

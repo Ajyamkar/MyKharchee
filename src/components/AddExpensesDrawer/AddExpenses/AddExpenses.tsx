@@ -39,6 +39,18 @@ const AddExpenses = (props: AddExpensesProps) => {
   >();
 
   /**
+   * Todo: // Clean up localstorage support once concrete solution for issue
+   * mentioned in setlocalStorage description.
+   */
+  React.useEffect(() => {
+    const { expenseItemName, expensesAmount } = localStorage;
+    if (expenseItemName && expenseItemName) {
+      setItemName(expenseItemName ?? "");
+      setAmount(Number(expensesAmount) ?? null);
+    }
+  }, []);
+
+  /**
    * Function to update amount spent on an item.
    * @param event - input change event
    */
@@ -60,6 +72,7 @@ const AddExpenses = (props: AddExpensesProps) => {
    */
   const showNewCategoryModel = (): void => {
     setSelectedCategoryIndex(null);
+    setlocalStorage();
     props.setShowAddNewCategoryModel(true);
   };
 
@@ -74,12 +87,31 @@ const AddExpenses = (props: AddExpensesProps) => {
         return index !== categoryIndexToBeRemoved;
       }
     );
+    setlocalStorage();
     props.setExpenseCategoriesList(filteredList);
     props.setSnackbarState({
       isOpened: true,
       status: "success",
       message: "Successfully deleted the category",
     });
+  };
+
+  /**
+   * Todo: // Clean up localstorage support once concrete solution for below issue.
+   *
+   * Currently on updating props, this component is getting distroyed
+   * due to which the states are reseting to its default value i.e empty.
+   * On UI after filling itemName and amount fields and user clicks on adding new category
+   * and after user clicks back or successfully creating new category the previously entered
+   * data is lost and user need to re-enter the values again.
+   *
+   * To meticate this issue for time-being whenever the props set callback is called
+   * storing the the states values in localstorage &
+   * localstorage is cleared when expenses drawer is closed
+   */
+  const setlocalStorage = () => {
+    localStorage.setItem("expenseItemName", itemName);
+    localStorage.setItem("expensesAmount", `${amount}`);
   };
 
   return (
