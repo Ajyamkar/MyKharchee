@@ -120,7 +120,6 @@ const AddExpensesDrawer: React.FC = () => {
         setShowAddNewCategoryModel={setShowAddNewCategoryModel}
         expenseCategoriesList={expenseCategoriesList}
         setExpenseCategoriesList={setExpenseCategoriesList}
-        snackbarState={snackbarState}
         setSnackbarState={setSnackbarState}
       />
     ) : (
@@ -213,7 +212,7 @@ const AddExpensesDrawer: React.FC = () => {
 
         <Snackbar
           open={snackbarState.isOpened}
-          autoHideDuration={3000}
+          autoHideDuration={2000}
           onClose={closeSnackbar}
         >
           <Alert

@@ -1,5 +1,5 @@
 .addExpenses {
-  margin: 1rem 0;
+  margin-top: 1rem;
 
   .expense-description-input,
   .amount-spent-input {
@@ -27,5 +27,9 @@
   .selected-category-button:hover {
     background: black;
     color: white;
+  }
+
+  .confirm-btn {
+    margin-top: 1rem;
   }
 }

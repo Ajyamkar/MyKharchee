@@ -16,7 +16,6 @@ interface AddExpensesProps {
   setShowAddNewCategoryModel: React.Dispatch<React.SetStateAction<boolean>>;
   expenseCategoriesList: string[];
   setExpenseCategoriesList: React.Dispatch<React.SetStateAction<string[]>>;
-  snackbarState: SnackbarType;
   setSnackbarState: React.Dispatch<React.SetStateAction<SnackbarType>>;
 }
 
@@ -39,14 +38,20 @@ const AddExpenses = (props: AddExpensesProps) => {
   >();
 
   /**
+   * State to keep track to show next input flow.
+   */
+  const [nextButtonCounter, setNextButtonCounter] = React.useState(0);
+
+  /**
    * Todo: // Clean up localstorage support once concrete solution for issue
    * mentioned in setlocalStorage description.
    */
   React.useEffect(() => {
-    const { expenseItemName, expensesAmount } = localStorage;
-    if (expenseItemName && expenseItemName) {
+    const { expenseItemName, expensesAmount, nextButtonCounter } = localStorage;
+    if (expenseItemName && expenseItemName && nextButtonCounter) {
       setItemName(expenseItemName ?? "");
       setAmount(Number(expensesAmount) ?? null);
+      setNextButtonCounter(Number(nextButtonCounter));
     }
   }, []);
 
@@ -112,12 +117,19 @@ const AddExpenses = (props: AddExpensesProps) => {
   const setlocalStorage = () => {
     localStorage.setItem("expenseItemName", itemName);
     localStorage.setItem("expensesAmount", `${amount}`);
+    localStorage.setItem("nextButtonCounter", `${nextButtonCounter}`);
+  };
+
+  /**
+   * Function to update next button counter to show next input flow.
+   */
+  const updateButtonCounter = () => {
+    setNextButtonCounter(nextButtonCounter + 1);
   };
 
   return (
     <div className="addExpenses">
-      <h1 className="mb-0">How much did you spend?</h1>
-
+      <h1 className="mb-0">On which item name did you spend?</h1>
       <FormControl fullWidth variant="filled">
         <FilledInput
           placeholder="Enter the description.."
@@ -131,44 +143,62 @@ const AddExpenses = (props: AddExpensesProps) => {
           className="expense-description-input font-size-large"
         />
       </FormControl>
-      <FormControl fullWidth variant="filled">
-        <FilledInput
-          value={amount || ""}
-          startAdornment={
-            <InputAdornment className="mt-0" position="start">
-              <CurrencyRupeeRoundedIcon />
-            </InputAdornment>
-          }
-          onChange={handleAmountChange}
-          type={"number"}
-          className="amount-spent-input bold font-size-large"
-        />
-        <FormHelperText className="amount-helper-text ml-0">
-          Enter the amount you have spent to help us keep track of your expenses
-        </FormHelperText>
-      </FormControl>
 
-      <h1>What did you spend on?</h1>
-      {props.expenseCategoriesList.map((category, index) => {
-        return (
-          <Button
-            key={index}
-            className={`category-button ${
-              index === selectedCategoryIndex ? "selected-category-button" : ""
-            }`}
-            onClick={() => {
-              setSelectedCategoryIndex(index);
-            }}
-            onDoubleClick={() => removeSelectedCategory(index)}
-          >
-            {category}
-          </Button>
-        );
-      })}
-      <Button startIcon={<Add />} onClick={showNewCategoryModel}>
-        New Category
+      <div className={nextButtonCounter < 1 ? "display-none" : "display-block"}>
+        <h1 className="mb-0">How much did you spend?</h1>
+        <FormControl fullWidth variant="filled">
+          <FilledInput
+            value={amount || ""}
+            startAdornment={
+              <InputAdornment className="mt-0" position="start">
+                <CurrencyRupeeRoundedIcon />
+              </InputAdornment>
+            }
+            onChange={handleAmountChange}
+            type={"number"}
+            className="amount-spent-input bold font-size-large"
+          />
+          <FormHelperText className="amount-helper-text ml-0">
+            Enter the amount you have spent to help us keep track of your
+            expenses
+          </FormHelperText>
+        </FormControl>
+      </div>
+      <div className={nextButtonCounter < 2 ? "display-none" : "display-block"}>
+        <h1>What did you spend on?</h1>
+        {props.expenseCategoriesList.map((category, index) => {
+          return (
+            <Button
+              key={index}
+              className={`category-button ${
+                index === selectedCategoryIndex
+                  ? "selected-category-button"
+                  : ""
+              }`}
+              onClick={() => {
+                setSelectedCategoryIndex(index);
+              }}
+              onDoubleClick={() => removeSelectedCategory(index)}
+            >
+              {category}
+            </Button>
+          );
+        })}
+        <Button startIcon={<Add />} onClick={showNewCategoryModel}>
+          New Category
+        </Button>
+        <FormHelperText>Double click to delete category</FormHelperText>
+      </div>
+
+      <Button
+        fullWidth
+        variant="contained"
+        color="success"
+        onClick={updateButtonCounter}
+        className="confirm-btn"
+      >
+        Next
       </Button>
-      <FormHelperText>Double click to delete category</FormHelperText>
     </div>
   );
 };
