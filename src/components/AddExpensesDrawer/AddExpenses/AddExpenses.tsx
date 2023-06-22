@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   FilledInput,
   FormControl,
@@ -41,6 +42,11 @@ const AddExpenses = (props: AddExpensesProps) => {
    * State to keep track to show next input flow.
    */
   const [nextButtonCounter, setNextButtonCounter] = React.useState(0);
+
+  /**
+   * State to show error message if any.
+   */
+  const [errorMessage, setErrorMessage] = React.useState("");
 
   /**
    * Todo: // Clean up localstorage support once concrete solution for issue
@@ -122,13 +128,29 @@ const AddExpenses = (props: AddExpensesProps) => {
 
   /**
    * Function to update next button counter to show next input flow.
+   * Will show error if any of the fields are empty or update the button counter.
    */
   const updateButtonCounter = () => {
-    setNextButtonCounter(nextButtonCounter + 1);
+    let msg = "";
+
+    if (!itemName) {
+      msg = "Please enter item name";
+    } else if (!amount && nextButtonCounter >= 1) {
+      msg = `Please enter the amount you spent on ${itemName}`;
+    } else if (selectedCategoryIndex === undefined && nextButtonCounter >= 2) {
+      msg = "Please select the category";
+    }
+
+    if (msg) {
+      setErrorMessage(msg);
+    } else {
+      setErrorMessage("");
+      setNextButtonCounter(nextButtonCounter + 1);
+    }
   };
 
   return (
-    <div className="addExpenses">
+    <div className="addExpenses mt-1">
       <h1 className="mb-0">On which item name did you spend?</h1>
       <FormControl fullWidth variant="filled">
         <FilledInput
@@ -165,37 +187,50 @@ const AddExpenses = (props: AddExpensesProps) => {
         </FormControl>
       </div>
       <div className={nextButtonCounter < 2 ? "display-none" : "display-block"}>
-        <h1>What did you spend on?</h1>
-        {props.expenseCategoriesList.map((category, index) => {
-          return (
-            <Button
-              key={index}
-              className={`category-button ${
-                index === selectedCategoryIndex
-                  ? "selected-category-button"
-                  : ""
-              }`}
-              onClick={() => {
-                setSelectedCategoryIndex(index);
-              }}
-              onDoubleClick={() => removeSelectedCategory(index)}
-            >
-              {category}
-            </Button>
-          );
-        })}
-        <Button startIcon={<Add />} onClick={showNewCategoryModel}>
-          New Category
-        </Button>
-        <FormHelperText>Double click to delete category</FormHelperText>
+        <h1 className="mb-0">What did you spend on?</h1>
+        <div className="categories-button-group">
+          {props.expenseCategoriesList.map((category, index) => {
+            return (
+              <Button
+                key={index}
+                className={`category-button ${
+                  index === selectedCategoryIndex
+                    ? "selected-category-button"
+                    : ""
+                }`}
+                onClick={() => {
+                  setSelectedCategoryIndex(index);
+                }}
+                onDoubleClick={() => removeSelectedCategory(index)}
+              >
+                {category}
+              </Button>
+            );
+          })}
+          <Button startIcon={<Add />} onClick={showNewCategoryModel}>
+            New Category
+          </Button>
+        </div>
+        <FormHelperText className="ml-1">
+          Double click to delete category
+        </FormHelperText>
       </div>
+
+      <Alert
+        className={`pt-0 pb-0 mt-1 align-items-center ${
+          errorMessage ? "display-flex" : "display-none"
+        }`}
+        severity="error"
+      >
+        {errorMessage}
+      </Alert>
 
       <Button
         fullWidth
         variant="contained"
         color="success"
         onClick={updateButtonCounter}
-        className="confirm-btn"
+        className="mt-1"
       >
         Next
       </Button>

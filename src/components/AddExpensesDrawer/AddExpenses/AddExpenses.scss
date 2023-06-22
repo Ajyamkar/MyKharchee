@@ -1,6 +1,4 @@
 .addExpenses {
-  margin-top: 1rem;
-
   .expense-description-input,
   .amount-spent-input {
     margin-top: 0.5rem;
@@ -12,6 +10,10 @@
 
   .amount-helper-text {
     line-height: 1.45;
+  }
+
+  .categories-button-group {
+    margin-top: 0.5rem;
   }
 
   .category-button {
@@ -27,9 +29,5 @@
   .selected-category-button:hover {
     background: black;
     color: white;
-  }
-
-  .confirm-btn {
-    margin-top: 1rem;
   }
 }
