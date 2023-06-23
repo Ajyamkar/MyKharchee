@@ -11,12 +11,14 @@ import "./AddExpenses.scss";
 import CurrencyRupeeRoundedIcon from "@mui/icons-material/CurrencyRupeeRounded";
 import NotesIcon from "@mui/icons-material/Notes";
 import { Add } from "@mui/icons-material";
-import { SnackbarType } from "../Types";
+import { ExpensesCategoriesListType, SnackbarType } from "../Types";
 
 interface AddExpensesProps {
   setShowAddNewCategoryModel: React.Dispatch<React.SetStateAction<boolean>>;
-  expenseCategoriesList: string[];
-  setExpenseCategoriesList: React.Dispatch<React.SetStateAction<string[]>>;
+  expenseCategoriesList: Array<ExpensesCategoriesListType>;
+  setExpenseCategoriesList: React.Dispatch<
+    React.SetStateAction<Array<ExpensesCategoriesListType>>
+  >;
   setSnackbarState: React.Dispatch<React.SetStateAction<SnackbarType>>;
 }
 
@@ -203,7 +205,7 @@ const AddExpenses = (props: AddExpensesProps) => {
                 }}
                 onDoubleClick={() => removeSelectedCategory(index)}
               >
-                {category}
+                {category.name}
               </Button>
             );
           })}
@@ -230,9 +232,9 @@ const AddExpenses = (props: AddExpensesProps) => {
         variant="contained"
         color="success"
         onClick={updateButtonCounter}
-        className="mt-1"
+        className="mt-1 bold font-size-large"
       >
-        Next
+        {nextButtonCounter >= 2 ? "Confirm" : "Next"}
       </Button>
     </div>
   );

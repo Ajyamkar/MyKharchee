@@ -18,7 +18,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import AddExpenses from "./AddExpenses/AddExpenses";
 import AddIncome from "./AddIncome/AddIncome";
 import AddCategory from "./AddCategory/AddCategory";
-import { SnackbarType } from "./Types";
+import { ExpensesCategoriesListType, SnackbarType } from "./Types";
 
 const AddExpensesDrawer: React.FC = () => {
   /**
@@ -56,11 +56,13 @@ const AddExpensesDrawer: React.FC = () => {
   /**
    * State to maintain list of expense categories.
    */
-  const [expenseCategoriesList, setExpenseCategoriesList] = React.useState([
-    "Grocery",
-    "Shopping",
-    "Electricity Bill",
-    "Extra",
+  const [expenseCategoriesList, setExpenseCategoriesList] = React.useState<
+    Array<ExpensesCategoriesListType>
+  >([
+    { name: "Grocery", type: "Essentails" },
+    { name: "Electricity bill", type: "Essentails" },
+    { name: "trek", type: "Leisure" },
+    { name: "EMI", type: "Loans" },
   ]);
 
   /**

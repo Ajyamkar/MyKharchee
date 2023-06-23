@@ -1,13 +1,19 @@
 import { ArrowBackRounded } from "@mui/icons-material";
 import { Button, Radio, TextField } from "@mui/material";
 import React from "react";
-import { SnackbarType } from "../Types";
+import {
+  ExpensesCategoriesListType,
+  ExpensesCategoryType,
+  SnackbarType,
+} from "../Types";
 import "./AddCategory.scss";
 
 interface AddCategoryProps {
   setShowAddNewCategoryModel: React.Dispatch<React.SetStateAction<boolean>>;
-  expenseCategoriesList: string[];
-  setExpenseCategoriesList: React.Dispatch<React.SetStateAction<string[]>>;
+  expenseCategoriesList: Array<ExpensesCategoriesListType>;
+  setExpenseCategoriesList: React.Dispatch<
+    React.SetStateAction<Array<ExpensesCategoriesListType>>
+  >;
   snackbarState: SnackbarType;
   setSnackbarState: React.Dispatch<React.SetStateAction<SnackbarType>>;
 }
@@ -31,14 +37,15 @@ const AddCategory = (props: AddCategoryProps) => {
   /**
    * State to keep track of expense category type.
    */
-  const [selectedExpenseType, setSelectedExpenseType] = React.useState("");
+  const [selectedExpenseType, setSelectedExpenseType] =
+    React.useState<ExpensesCategoryType | null>();
 
   /**
    * Add category button will be disabled
    * if one of field(name, type) is empty.
    */
   const shouldDisableSavebutton =
-    categoryName === "" || selectedExpenseType === "" ? true : false;
+    categoryName === "" || !selectedExpenseType ? true : false;
 
   /**
    * function to set category name.
@@ -56,7 +63,7 @@ const AddCategory = (props: AddCategoryProps) => {
    * @param event - input[type="radio"] change event.
    */
   const selectCategory = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedExpenseType(event.target.value);
+    setSelectedExpenseType(event.target.value as ExpensesCategoryType);
   };
 
   /**
@@ -64,10 +71,11 @@ const AddCategory = (props: AddCategoryProps) => {
    * with added category name and type.
    */
   const saveCategory = () => {
-    props.setExpenseCategoriesList([
-      ...props.expenseCategoriesList,
-      categoryName,
-    ]);
+    selectedExpenseType &&
+      props.setExpenseCategoriesList([
+        ...props.expenseCategoriesList,
+        { name: categoryName, type: selectedExpenseType },
+      ]);
     props.setSnackbarState({
       isOpened: true,
       status: "success",
