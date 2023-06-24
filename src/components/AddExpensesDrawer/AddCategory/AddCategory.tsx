@@ -28,6 +28,15 @@ const expensesTypes = [
   { name: "Investments", eg: "Mutual funds, Shares, etc" },
 ];
 
+/**
+ * Component to create new category.
+ *
+ * @param props.expenseCategoriesList - list of categories of expenses.
+ * @param props.snackbarState - feedback to be shown on creating new category.
+ * @param props.setShowAddNewCategoryModel- callback function to show/hide this component.
+ * @param props.setExpenseCategoriesList - callback function to update list of expenses category.
+ * @param props.setSnackbarState - callback function to trigger feedback.
+ */
 const AddCategory = (props: AddCategoryProps) => {
   /**
    * State to keep track of category name.

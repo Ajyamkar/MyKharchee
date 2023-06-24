@@ -12,6 +12,7 @@ import CurrencyRupeeRoundedIcon from "@mui/icons-material/CurrencyRupeeRounded";
 import NotesIcon from "@mui/icons-material/Notes";
 import { Add } from "@mui/icons-material";
 import { ExpensesCategoriesListType, SnackbarType } from "../Types";
+import CategoriesButtonList from "../CategoriesButtonList/CategoriesButtonList";
 
 interface AddExpensesProps {
   setShowAddNewCategoryModel: React.Dispatch<React.SetStateAction<boolean>>;
@@ -22,6 +23,14 @@ interface AddExpensesProps {
   setSnackbarState: React.Dispatch<React.SetStateAction<SnackbarType>>;
 }
 
+/**
+ * Component to render Add Expenses section.
+ *
+ * @param props.expenseCategoriesList - list of categories of expenses.
+ * @param props.setShowAddNewCategoryModel- callback function to show/hide this component.
+ * @param props.setExpenseCategoriesList - callback function to update list of expenses category.
+ * @param props.setSnackbarState - callback function to trigger feedback.
+ */
 const AddExpenses = (props: AddExpensesProps) => {
   /**
    * State to keep track of item name.
@@ -36,9 +45,8 @@ const AddExpenses = (props: AddExpensesProps) => {
   /**
    * State to keep track of selected category index.
    */
-  const [selectedCategoryIndex, setSelectedCategoryIndex] = React.useState<
-    number | null
-  >();
+  const [selectedCategoryIndex, setSelectedCategoryIndex] =
+    React.useState<number>();
 
   /**
    * State to keep track to show next input flow.
@@ -84,7 +92,7 @@ const AddExpenses = (props: AddExpensesProps) => {
    * on clicking add new category button.
    */
   const showNewCategoryModel = (): void => {
-    setSelectedCategoryIndex(null);
+    setSelectedCategoryIndex(undefined);
     setlocalStorage();
     props.setShowAddNewCategoryModel(true);
   };
@@ -153,7 +161,7 @@ const AddExpenses = (props: AddExpensesProps) => {
 
   return (
     <div className="addExpenses mt-1">
-      <h1 className="mb-0">On which item name did you spend?</h1>
+      <h1 className="mb-0">On which item did you spend?</h1>
       <FormControl fullWidth variant="filled">
         <FilledInput
           placeholder="Enter the description.."
@@ -191,25 +199,19 @@ const AddExpenses = (props: AddExpensesProps) => {
       <div className={nextButtonCounter < 2 ? "display-none" : "display-block"}>
         <h1 className="mb-0">What did you spend on?</h1>
         <div className="categories-button-group">
-          {props.expenseCategoriesList.map((category, index) => {
-            return (
-              <Button
-                key={index}
-                className={`category-button ${
-                  index === selectedCategoryIndex
-                    ? "selected-category-button"
-                    : ""
-                }`}
-                onClick={() => {
-                  setSelectedCategoryIndex(index);
-                }}
-                onDoubleClick={() => removeSelectedCategory(index)}
-              >
-                {category.name}
-              </Button>
-            );
-          })}
-          <Button startIcon={<Add />} onClick={showNewCategoryModel}>
+          <CategoriesButtonList
+            categoriesList={props.expenseCategoriesList}
+            selectedCategoryIndex={selectedCategoryIndex}
+            categoryListType="addExpenses"
+            setSelectedCategoryIndex={setSelectedCategoryIndex}
+            removeSelectedCategory={removeSelectedCategory}
+          />
+          <Button
+            variant="outlined"
+            startIcon={<Add />}
+            onClick={showNewCategoryModel}
+            className="category-button outlined-button"
+          >
             New Category
           </Button>
         </div>

@@ -17,12 +17,19 @@
   }
 
   .category-button {
-    background: whitesmoke;
-    color: black;
     margin: 0.2rem;
     padding: 0.5rem 1rem;
     border-radius: 1rem;
     box-shadow: 2px 2px 4px -2px;
+  }
+
+  .filled-button {
+    background: whitesmoke;
+    color: black;
+  }
+
+  .outlined-button {
+    border: 1px solid;
   }
 
   .selected-category-button,

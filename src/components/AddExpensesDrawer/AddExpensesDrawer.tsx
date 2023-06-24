@@ -20,6 +20,9 @@ import AddIncome from "./AddIncome/AddIncome";
 import AddCategory from "./AddCategory/AddCategory";
 import { ExpensesCategoriesListType, SnackbarType } from "./Types";
 
+/**
+ * Component to render AddExpense/AddIncome model.
+ */
 const AddExpensesDrawer: React.FC = () => {
   /**
    * State to open or close add-expenses drawer.
@@ -52,6 +55,11 @@ const AddExpensesDrawer: React.FC = () => {
     status: "success",
     message: "",
   });
+
+  /**
+   * List of available income categories.
+   */
+  const incomeCategoriesList = ["Salary", "Side Hustle", "Gift", "Other"];
 
   /**
    * State to maintain list of expense categories.
@@ -125,7 +133,7 @@ const AddExpensesDrawer: React.FC = () => {
         setSnackbarState={setSnackbarState}
       />
     ) : (
-      <AddIncome />
+      <AddIncome incomeCategoriesList={incomeCategoriesList} />
     );
   };
 
