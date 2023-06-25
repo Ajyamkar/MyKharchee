@@ -7,16 +7,21 @@ import {
 } from "@mui/material";
 import React from "react";
 import CategoriesButtonList from "../CategoriesButtonList/CategoriesButtonList";
+import { SnackbarType } from "../Types";
 import "./AddIncome.scss";
 
 interface AddIncomeProps {
   incomeCategoriesList: string[];
+  setSnackbarState: React.Dispatch<React.SetStateAction<SnackbarType>>;
+  closeDrawer: () => void;
 }
 
 /**
  * Component to render Add Income section.
  *
  * @param props.incomeCategoriesList - list of categories of income.
+ * @param props.setSnackbarState - callback function to trigger feedback.
+ * @param props.closeDrawer - callback function to close drawer on successfully adding income.
  */
 const AddIncome = (props: AddIncomeProps) => {
   /**
@@ -36,6 +41,18 @@ const AddIncome = (props: AddIncomeProps) => {
    */
   const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(Number(event.target.value));
+  };
+
+  /**
+   * Function to save the income details.
+   */
+  const saveIncomeDetails = () => {
+    props.setSnackbarState({
+      isOpened: true,
+      status: "success",
+      message: "Successfully added the income",
+    });
+    props.closeDrawer();
   };
 
   return (
@@ -69,6 +86,7 @@ const AddIncome = (props: AddIncomeProps) => {
         variant="contained"
         disabled={!amount || selectedCategoryIndex === -1 ? true : false}
         fullWidth
+        onClick={saveIncomeDetails}
       >
         Save
       </Button>

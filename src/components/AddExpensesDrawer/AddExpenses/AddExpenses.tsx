@@ -21,7 +21,14 @@ interface AddExpensesProps {
     React.SetStateAction<Array<ExpensesCategoriesListType>>
   >;
   setSnackbarState: React.Dispatch<React.SetStateAction<SnackbarType>>;
+  closeDrawer: () => void;
 }
+
+/**
+ * Defines the order of repsective input fields in Add Expenses flow.
+ */
+const AMOUNT_POSITION_INDEX = 1;
+const CATEGORY_BUTTONS_POSITION_INDEX = 2;
 
 /**
  * Component to render Add Expenses section.
@@ -30,6 +37,7 @@ interface AddExpensesProps {
  * @param props.setShowAddNewCategoryModel- callback function to show/hide this component.
  * @param props.setExpenseCategoriesList - callback function to update list of expenses category.
  * @param props.setSnackbarState - callback function to trigger feedback.
+ * @param props.closeDrawer - callback function to close drawer on successfully adding expense.
  */
 const AddExpenses = (props: AddExpensesProps) => {
   /**
@@ -138,25 +146,45 @@ const AddExpenses = (props: AddExpensesProps) => {
 
   /**
    * Function to update next button counter to show next input flow.
-   * Will show error if any of the fields are empty or update the button counter.
+   * Will show error if any of the fields are empty or update the button counter, OR
+   * Will save expenses details and close the drawer.
    */
   const updateButtonCounter = () => {
-    let msg = "";
+    let errorText = validateInputFields();
 
-    if (!itemName) {
-      msg = "Please enter item name";
-    } else if (!amount && nextButtonCounter >= 1) {
-      msg = `Please enter the amount you spent on ${itemName}`;
-    } else if (selectedCategoryIndex === undefined && nextButtonCounter >= 2) {
-      msg = "Please select the category";
-    }
-
-    if (msg) {
-      setErrorMessage(msg);
+    if (errorText) {
+      setErrorMessage(errorText);
     } else {
       setErrorMessage("");
       setNextButtonCounter(nextButtonCounter + 1);
+      if (nextButtonCounter >= CATEGORY_BUTTONS_POSITION_INDEX) {
+        props.setSnackbarState({
+          isOpened: true,
+          status: "success",
+          message: "Successfully added the expenses",
+        });
+        props.closeDrawer();
+      }
     }
+  };
+
+  /**
+   * Function to validate inputs on every next button click.
+   * @returns errors text if any.
+   */
+  const validateInputFields = (): string => {
+    let err = "";
+    if (!itemName) {
+      err = "Please enter item name";
+    } else if (!amount && nextButtonCounter >= AMOUNT_POSITION_INDEX) {
+      err = `Please enter the amount you spent on ${itemName}`;
+    } else if (
+      selectedCategoryIndex === undefined &&
+      nextButtonCounter >= CATEGORY_BUTTONS_POSITION_INDEX
+    ) {
+      err = "Please select the category";
+    }
+    return err;
   };
 
   return (
@@ -176,7 +204,13 @@ const AddExpenses = (props: AddExpensesProps) => {
         />
       </FormControl>
 
-      <div className={nextButtonCounter < 1 ? "display-none" : "display-block"}>
+      <div
+        className={
+          nextButtonCounter < AMOUNT_POSITION_INDEX
+            ? "display-none"
+            : "display-block"
+        }
+      >
         <h1 className="mb-0">How much did you spend?</h1>
         <FormControl fullWidth variant="filled">
           <FilledInput
@@ -196,8 +230,14 @@ const AddExpenses = (props: AddExpensesProps) => {
           </FormHelperText>
         </FormControl>
       </div>
-      <div className={nextButtonCounter < 2 ? "display-none" : "display-block"}>
-        <h1 className="mb-0">What did you spend on?</h1>
+      <div
+        className={
+          nextButtonCounter < CATEGORY_BUTTONS_POSITION_INDEX
+            ? "display-none"
+            : "display-block"
+        }
+      >
+        <h1 className="mb-0">Select the expenes category</h1>
         <div className="categories-button-group">
           <CategoriesButtonList
             categoriesList={props.expenseCategoriesList}
@@ -236,7 +276,9 @@ const AddExpenses = (props: AddExpensesProps) => {
         onClick={updateButtonCounter}
         className="mt-1 bold font-size-large"
       >
-        {nextButtonCounter >= 2 ? "Confirm" : "Next"}
+        {nextButtonCounter >= CATEGORY_BUTTONS_POSITION_INDEX
+          ? "Confirm"
+          : "Next"}
       </Button>
     </div>
   );

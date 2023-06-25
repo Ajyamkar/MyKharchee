@@ -131,9 +131,14 @@ const AddExpensesDrawer: React.FC = () => {
         expenseCategoriesList={expenseCategoriesList}
         setExpenseCategoriesList={setExpenseCategoriesList}
         setSnackbarState={setSnackbarState}
+        closeDrawer={closeDrawer}
       />
     ) : (
-      <AddIncome incomeCategoriesList={incomeCategoriesList} />
+      <AddIncome
+        incomeCategoriesList={incomeCategoriesList}
+        closeDrawer={closeDrawer}
+        setSnackbarState={setSnackbarState}
+      />
     );
   };
 
@@ -219,22 +224,22 @@ const AddExpensesDrawer: React.FC = () => {
             <ShowMainDrawerContent />
           )}
         </div>
-
-        <Snackbar
-          open={snackbarState.isOpened}
-          autoHideDuration={2000}
-          onClose={closeSnackbar}
-        >
-          <Alert
-            severity={snackbarState.status}
-            onClose={closeSnackbar}
-            sx={{ width: "100%" }}
-            variant="filled"
-          >
-            {snackbarState.message}
-          </Alert>
-        </Snackbar>
       </Drawer>
+
+      <Snackbar
+        open={snackbarState.isOpened}
+        autoHideDuration={2000}
+        onClose={closeSnackbar}
+      >
+        <Alert
+          severity={snackbarState.status}
+          onClose={closeSnackbar}
+          sx={{ width: "100%" }}
+          variant="filled"
+        >
+          {snackbarState.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
