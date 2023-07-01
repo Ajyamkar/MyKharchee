@@ -1,0 +1,43 @@
+.addExpensesDrawer-main-container {
+  .addExpensesDrawer-button {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+
+  .addExpensesDrawer-icon {
+    color: black;
+    font-size: 3rem;
+  }
+}
+
+.addExpensesDrawer-drawer {
+  > .MuiPaper-root {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    max-height: 90%;
+  }
+}
+
+.addExpensesDrawer-drawer_container {
+  padding: 1rem;
+
+  .addExpensesDrawer-drawer_top_container {
+    margin-bottom: 1rem;
+
+    .date-picker > .MuiInputBase-root {
+      width: 8rem;
+    }
+  }
+
+  .addExpensesDrawer-add_button_group {
+    button {
+      border-radius: 1rem;
+    }
+
+    .active-button {
+      background: black;
+      color: white;
+    }
+  }
+}

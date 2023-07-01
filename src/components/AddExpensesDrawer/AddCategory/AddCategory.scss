@@ -1,0 +1,14 @@
+.add-category {
+  input[type="text"] {
+    padding: 1rem;
+  }
+
+  .category-name-container,
+  .category-type-container {
+    margin-bottom: 1rem;
+  }
+
+  p {
+    margin: 0.2rem 0;
+  }
+}

@@ -1,5 +1,5 @@
 import React from "react";
-import "./Navbar.css";
+import "./Navbar.scss";
 import {
   AppBar,
   Avatar,
@@ -18,11 +18,26 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { InboxRounded } from "@mui/icons-material";
 
 const Navbar: React.FC = () => {
+  /**
+   * State to open or close menu.
+   */
   const [openMenu, setOpenMenu] = React.useState<boolean>(false);
+
+  /**
+   * State to keep track of selected menu option.
+   */
   const [selectedMenuOptionIndex, setSelectedMenuOptionIndex] =
     React.useState<number>(0);
+
+  /**
+   * List of menu options.
+   */
   const menuOptions = ["Dashboard", "Expenses", "Analytics", "Profile"];
 
+  /**
+   * funtion to open or close on clicking the menu button.
+   * @param value - to open or close the menu bar.
+   */
   const handleMenuClick =
     (value: boolean) => (event: React.MouseEvent | React.KeyboardEvent) => {
       if (
@@ -35,6 +50,9 @@ const Navbar: React.FC = () => {
       setOpenMenu(value);
     };
 
+  /**
+   * Component to render menu options in menu bar.
+   */
   const Lists = (
     <List>
       {menuOptions.map((option, index) => {
