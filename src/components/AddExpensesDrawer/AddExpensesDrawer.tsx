@@ -108,7 +108,6 @@ const AddExpensesDrawer: React.FC = () => {
   const closeDrawer = (): void => {
     resetStatesToDefaultValues();
     setOpenDrawer(false);
-    localStorage.clear();
   };
 
   /**
@@ -118,80 +117,6 @@ const AddExpensesDrawer: React.FC = () => {
     setActiveButton("addExpenses");
     setDate(dayjs());
     setShowAddNewCategoryModel(false);
-  };
-
-  /**
-   * Component to show AddExpenses or AddIncome depending on which one is selected.
-   * @returns {JSX.Element}
-   */
-  const ExpenseOrIncomeComponent = () => {
-    return activeButton === "addExpenses" ? (
-      <AddExpenses
-        setShowAddNewCategoryModel={setShowAddNewCategoryModel}
-        expenseCategoriesList={expenseCategoriesList}
-        setExpenseCategoriesList={setExpenseCategoriesList}
-        setSnackbarState={setSnackbarState}
-        closeDrawer={closeDrawer}
-      />
-    ) : (
-      <AddIncome
-        incomeCategoriesList={incomeCategoriesList}
-        closeDrawer={closeDrawer}
-        setSnackbarState={setSnackbarState}
-      />
-    );
-  };
-
-  /**
-   * Component to show AddExpenses/AddIncome content when showAddNewCategoryModel is false.
-   * @returns {JSX.Element}
-   */
-  const ShowMainDrawerContent = () => {
-    return (
-      <>
-        <div className="addExpensesDrawer-drawer_top_container display-flex justify-content-space-between align-items-center">
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={["DatePicker"]}>
-              <DatePicker
-                label={datePickerLabel}
-                value={date}
-                onChange={(newValue) => {
-                  newValue && handleDateChange(newValue);
-                }}
-                format="DD-MM-YYYY"
-                slotProps={{ textField: { size: "small" } }}
-                className="date-picker"
-              />
-            </DemoContainer>
-          </LocalizationProvider>
-          <HighlightOffOutlinedIcon
-            onClick={closeDrawer}
-            fontSize="large"
-            sx={{ cursor: "pointer" }}
-          />
-        </div>
-
-        <ButtonGroup className="addExpensesDrawer-add_button_group display-flex justify-content-center">
-          <Button
-            className={activeButton === "addExpenses" ? "active-button" : ""}
-            onClick={() => setActiveButton("addExpenses")}
-          >
-            Add Expenses
-          </Button>
-          <Button
-            className={activeButton === "addIncome" ? "active-button" : ""}
-            onClick={() => {
-              setActiveButton("addIncome");
-              localStorage.clear();
-            }}
-          >
-            Add Income
-          </Button>
-        </ButtonGroup>
-
-        <ExpenseOrIncomeComponent />
-      </>
-    );
   };
 
   return (
@@ -212,7 +137,11 @@ const AddExpensesDrawer: React.FC = () => {
         onClose={closeDrawer}
       >
         <div className="addExpensesDrawer-drawer_container">
-          {showAddNewCategoryModel ? (
+          <div
+            className={
+              showAddNewCategoryModel ? "display-block" : "display-none"
+            }
+          >
             <AddCategory
               setShowAddNewCategoryModel={setShowAddNewCategoryModel}
               setExpenseCategoriesList={setExpenseCategoriesList}
@@ -220,9 +149,70 @@ const AddExpensesDrawer: React.FC = () => {
               snackbarState={snackbarState}
               setSnackbarState={setSnackbarState}
             />
-          ) : (
-            <ShowMainDrawerContent />
-          )}
+          </div>
+
+          <div
+            className={
+              showAddNewCategoryModel ? "display-none" : "display-block"
+            }
+          >
+            <div className="addExpensesDrawer-drawer_top_container display-flex justify-content-space-between align-items-center">
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={["DatePicker"]}>
+                  <DatePicker
+                    label={datePickerLabel}
+                    value={date}
+                    onChange={(newValue) => {
+                      newValue && handleDateChange(newValue);
+                    }}
+                    format="DD-MM-YYYY"
+                    slotProps={{ textField: { size: "small" } }}
+                    className="date-picker"
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
+              <HighlightOffOutlinedIcon
+                onClick={closeDrawer}
+                fontSize="large"
+                sx={{ cursor: "pointer" }}
+              />
+            </div>
+
+            <ButtonGroup className="addExpensesDrawer-add_button_group display-flex justify-content-center">
+              <Button
+                className={
+                  activeButton === "addExpenses" ? "active-button" : ""
+                }
+                onClick={() => setActiveButton("addExpenses")}
+              >
+                Add Expenses
+              </Button>
+              <Button
+                className={activeButton === "addIncome" ? "active-button" : ""}
+                onClick={() => {
+                  setActiveButton("addIncome");
+                }}
+              >
+                Add Income
+              </Button>
+            </ButtonGroup>
+
+            {activeButton === "addExpenses" ? (
+              <AddExpenses
+                setShowAddNewCategoryModel={setShowAddNewCategoryModel}
+                expenseCategoriesList={expenseCategoriesList}
+                setExpenseCategoriesList={setExpenseCategoriesList}
+                setSnackbarState={setSnackbarState}
+                closeDrawer={closeDrawer}
+              />
+            ) : (
+              <AddIncome
+                incomeCategoriesList={incomeCategoriesList}
+                closeDrawer={closeDrawer}
+                setSnackbarState={setSnackbarState}
+              />
+            )}
+          </div>
         </div>
       </Drawer>
 
