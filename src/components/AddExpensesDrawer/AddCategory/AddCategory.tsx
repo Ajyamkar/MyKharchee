@@ -91,6 +91,16 @@ const AddCategory = (props: AddCategoryProps) => {
       message: "Sucessfully created new category",
     });
     props.setShowAddNewCategoryModel(false);
+    resetToDefault();
+  };
+
+  /**
+   * Function to reset the states to default values
+   * either on cancel or on saving the category.
+   */
+  const resetToDefault = () => {
+    setCategoryName("");
+    setSelectedExpenseType(null);
   };
 
   return (
@@ -99,7 +109,10 @@ const AddCategory = (props: AddCategoryProps) => {
         <ArrowBackRounded
           fontSize="large"
           className="color-info"
-          onClick={() => props.setShowAddNewCategoryModel(false)}
+          onClick={() => {
+            props.setShowAddNewCategoryModel(false);
+            resetToDefault();
+          }}
         />
         <h1 className="font-size-larger">Create new category</h1>
       </div>
