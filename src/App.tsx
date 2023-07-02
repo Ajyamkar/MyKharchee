@@ -13,7 +13,7 @@ import Navbar from "./components/TopAppBar/Navbar";
 
 function App() {
   return (
-    <div className="app-container">
+    <div className="app">
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />

@@ -1,24 +1,24 @@
-h1 {
-  font-size: 16px;
-}
-
 .navbar-main-container {
   padding: 24px;
-}
 
-.logo-div {
-  display: flex;
-  align-items: center;
-}
+  h1 {
+    font-size: larger;
+  }
 
-.navbar-main-container .logo-img {
-  width: 26px;
-  height: 26px;
-  margin-right: 4px;
-}
+  .logo-div {
+    display: flex;
+    align-items: center;
+  }
 
-.navbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  .logo-img {
+    width: 26px;
+    height: 26px;
+    margin-right: 4px;
+  }
+
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 }
