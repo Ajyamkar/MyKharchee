@@ -1,0 +1,25 @@
+.signup {
+  margin: 0 1.5rem;
+  height: 80vh;
+
+  .MuiOutlinedInput-root {
+    border-radius: 0.5rem;
+  }
+
+  .auth-btn {
+    background: whitesmoke;
+    padding: 0.5rem 2rem;
+
+    .google {
+      color: #df3e30;
+    }
+
+    .facebook {
+      color: #1877f2;
+    }
+
+    .twitter {
+      color: #1c9cea;
+    }
+  }
+}
