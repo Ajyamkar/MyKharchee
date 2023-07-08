@@ -19,6 +19,13 @@ import {
   Visibility,
   VisibilityOff,
 } from "@mui/icons-material";
+import { isUserLoggedIn, registerUser } from "../../api/auth";
+import Cookies from "universal-cookie";
+import { ToastType } from "../../Types";
+
+interface SignupPropsType {
+  setToastState: React.Dispatch<React.SetStateAction<ToastType>>;
+}
 
 interface SignupValidationErrorType {
   firstName: string | undefined;
@@ -32,10 +39,12 @@ interface SignupValidationErrorType {
  */
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const cookiee = new Cookies();
+
 /**
  * Component to render Signup page.
  */
-const Signup = () => {
+const Signup = (props: SignupPropsType) => {
   /**
    * State to keep track of user's first name.
    */
@@ -68,6 +77,20 @@ const Signup = () => {
     });
 
   /**
+   * Checks if the user is loggedIn or not.
+   * if loggedin redirects to dashboard route.
+   */
+  React.useEffect(() => {
+    isUserLoggedIn()
+      .then(() => {
+        window.location.href = "/dashboard";
+      })
+      .catch((err) => {
+        return;
+      });
+  }, []);
+
+  /**
    * State to show/hide password.
    */
   const [showPassword, setShowPassword] = React.useState(false);
@@ -93,6 +116,53 @@ const Signup = () => {
       err = "Enter a valid email address";
     }
     setValidationError({ ...validationError, email: err });
+  };
+
+  /**
+   * Function to create new user.
+   * Onsuccess - will redirect to Dashboard
+   */
+  const createUser = () => {
+    registerUser({
+      firstName,
+      lastName,
+      email,
+      password,
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          cookiee.set("token", response.data.token, {
+            maxAge: 60 * 2,
+          });
+          props.setToastState({
+            isOpened: true,
+            status: "success",
+            message: response.data.message,
+          });
+          setTimeout(() => {
+            window.location.href = "/dashboard";
+          }, 1000);
+        }
+      })
+      .catch((err) => {
+        // if user already exists redirect to login after 2 seconds
+        if (err.response?.status === 422) {
+          props.setToastState({
+            isOpened: true,
+            status: "error",
+            message: `${err.response.data} Redirecting to login, Try to login.`,
+          });
+          setTimeout(() => {
+            window.location.href = "/login";
+          }, 2000);
+        } else {
+          props.setToastState({
+            isOpened: true,
+            status: "error",
+            message: "Internal server error",
+          });
+        }
+      });
   };
 
   return (
@@ -207,6 +277,7 @@ const Signup = () => {
             className="mt-1 bold font-size-large"
             type="submit"
             variant="contained"
+            onClick={createUser}
             fullWidth
           >
             Create account
