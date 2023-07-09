@@ -19,6 +19,13 @@ import {
   Visibility,
   VisibilityOff,
 } from "@mui/icons-material";
+import { isUserLoggedIn, registerUser } from "../../api/auth";
+import { ToastType } from "../../Types";
+import { setCookie } from "../../utils/Cookie";
+
+interface SignupPropsType {
+  setToastState: React.Dispatch<React.SetStateAction<ToastType>>;
+}
 
 interface SignupValidationErrorType {
   firstName: string | undefined;
@@ -34,8 +41,9 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /**
  * Component to render Signup page.
+ * @param props.setToastState - function to show toast on success/failure of signup.
  */
-const Signup = () => {
+const Signup = (props: SignupPropsType) => {
   /**
    * State to keep track of user's first name.
    */
@@ -68,6 +76,20 @@ const Signup = () => {
     });
 
   /**
+   * Checks if the user is loggedIn or no, if loggedin redirects to dashboard route.
+   * So that user can't access signup page if user is already loggedIn.
+   */
+  React.useEffect(() => {
+    isUserLoggedIn()
+      .then(() => {
+        window.location.href = "/dashboard";
+      })
+      .catch((err) => {
+        return;
+      });
+  }, []);
+
+  /**
    * State to show/hide password.
    */
   const [showPassword, setShowPassword] = React.useState(false);
@@ -93,6 +115,53 @@ const Signup = () => {
       err = "Enter a valid email address";
     }
     setValidationError({ ...validationError, email: err });
+  };
+
+  /**
+   * Function to create new user.
+   * OnSuccess - will store the signUp token in cookie and redirect to Dashboard.
+   * OnFailure - will redirect to login if user already exists
+   */
+  const createUser = () => {
+    registerUser({
+      firstName,
+      lastName,
+      email,
+      password,
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          setCookie("token", response.data.token);
+          props.setToastState({
+            isOpened: true,
+            status: "success",
+            message: response.data.message,
+          });
+          setTimeout(() => {
+            window.location.href = "/dashboard";
+          }, 1000);
+        }
+      })
+      .catch((err) => {
+        const { response } = err;
+        // if user already exists redirect to login after 2 seconds
+        if (response?.status === 422) {
+          props.setToastState({
+            isOpened: true,
+            status: "error",
+            message: `${response?.data} Redirecting to login, Try to login.`,
+          });
+          setTimeout(() => {
+            window.location.href = "/login";
+          }, 2000);
+        } else {
+          props.setToastState({
+            isOpened: true,
+            status: "error",
+            message: response?.data ?? "Internal server error",
+          });
+        }
+      });
   };
 
   return (
@@ -207,6 +276,7 @@ const Signup = () => {
             className="mt-1 bold font-size-large"
             type="submit"
             variant="contained"
+            onClick={createUser}
             fullWidth
           >
             Create account
