@@ -20,8 +20,8 @@ import {
   VisibilityOff,
 } from "@mui/icons-material";
 import { isUserLoggedIn, registerUser } from "../../api/auth";
-import Cookies from "universal-cookie";
 import { ToastType } from "../../Types";
+import { setCookie } from "../../utils/Cookie";
 
 interface SignupPropsType {
   setToastState: React.Dispatch<React.SetStateAction<ToastType>>;
@@ -39,10 +39,9 @@ interface SignupValidationErrorType {
  */
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const cookiee = new Cookies();
-
 /**
  * Component to render Signup page.
+ * @param props.setToastState - function to show toast on success/failure of signup.
  */
 const Signup = (props: SignupPropsType) => {
   /**
@@ -77,8 +76,8 @@ const Signup = (props: SignupPropsType) => {
     });
 
   /**
-   * Checks if the user is loggedIn or not.
-   * if loggedin redirects to dashboard route.
+   * Checks if the user is loggedIn or no, if loggedin redirects to dashboard route.
+   * So that user can't access signup page if user is already loggedIn.
    */
   React.useEffect(() => {
     isUserLoggedIn()
@@ -120,7 +119,8 @@ const Signup = (props: SignupPropsType) => {
 
   /**
    * Function to create new user.
-   * Onsuccess - will redirect to Dashboard
+   * OnSuccess - will store the signUp token in cookie and redirect to Dashboard.
+   * OnFailure - will redirect to login if user already exists
    */
   const createUser = () => {
     registerUser({
@@ -131,9 +131,7 @@ const Signup = (props: SignupPropsType) => {
     })
       .then((response) => {
         if (response.status === 200) {
-          cookiee.set("token", response.data.token, {
-            maxAge: 60 * 2,
-          });
+          setCookie("token", response.data.token);
           props.setToastState({
             isOpened: true,
             status: "success",
@@ -145,12 +143,13 @@ const Signup = (props: SignupPropsType) => {
         }
       })
       .catch((err) => {
+        const { response } = err;
         // if user already exists redirect to login after 2 seconds
-        if (err.response?.status === 422) {
+        if (response?.status === 422) {
           props.setToastState({
             isOpened: true,
             status: "error",
-            message: `${err.response.data} Redirecting to login, Try to login.`,
+            message: `${response?.data} Redirecting to login, Try to login.`,
           });
           setTimeout(() => {
             window.location.href = "/login";
@@ -159,7 +158,7 @@ const Signup = (props: SignupPropsType) => {
           props.setToastState({
             isOpened: true,
             status: "error",
-            message: "Internal server error",
+            message: response?.data ?? "Internal server error",
           });
         }
       });

@@ -6,6 +6,7 @@ import AddExpensesDrawer from "./components/AddExpensesDrawer/AddExpensesDrawer"
 import Analytics from "./components/Analytics/Analytics";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Expenses from "./components/Expenses/Expenses";
+import LandingPage from "./components/LandingPage/LandingPage";
 import Login from "./components/Login/Login";
 import PageNotFound from "./components/PageNotFound/PageNotFound";
 import Profile from "./components/Profile/Profile";
@@ -39,11 +40,15 @@ function App() {
           <Route path="analytics" element={<Analytics />} />
           <Route path="profile" element={<Profile />} />
         </Route>
-        <Route path="/login" element={<Login />} />
+        <Route
+          path="/login"
+          element={<Login setToastState={setToastState} />}
+        />
         <Route
           path="/signup"
           element={<Signup setToastState={setToastState} />}
         />
+        <Route path="/" element={<LandingPage />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
 

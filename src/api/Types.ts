@@ -5,4 +5,9 @@ interface signupDataType {
   password: string;
 }
 
-export type { signupDataType };
+interface loginDataType {
+  email: string;
+  password: string;
+}
+
+export type { signupDataType, loginDataType };

@@ -1,6 +1,6 @@
-import Cookies from "universal-cookie";
 import instance from "../instance";
-import { signupDataType } from "./Types";
+import { getCookie } from "../utils/Cookie";
+import { loginDataType, signupDataType } from "./Types";
 
 /**
  * Api call to register the user.
@@ -16,10 +16,24 @@ const registerUser = async (data: signupDataType) => {
 };
 
 /**
+ * Api call to login the user
+ * @param data - data required to login the user
+ * @returns
+ */
+const loginUser = async (data: loginDataType) => {
+  const response = await instance({
+    url: "api/login",
+    method: "POST",
+    data,
+  });
+  return response;
+};
+
+/**
  * Api call to check if the user is logged in or not.
  */
 const isUserLoggedIn = async () => {
-  const token = new Cookies().get("token");
+  const token = getCookie("token");
   const response = await instance({
     url: "api/isUserLoggedIn",
     method: "GET",
@@ -30,4 +44,4 @@ const isUserLoggedIn = async () => {
   return response;
 };
 
-export { registerUser, isUserLoggedIn };
+export { registerUser, loginUser, isUserLoggedIn };

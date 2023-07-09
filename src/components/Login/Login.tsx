@@ -21,6 +21,13 @@ import {
   OutlinedInput,
   TextField,
 } from "@mui/material";
+import { ToastType } from "../../Types";
+import { isUserLoggedIn, loginUser } from "../../api/auth";
+import { setCookie } from "../../utils/Cookie";
+
+interface LoginPropsType {
+  setToastState: React.Dispatch<React.SetStateAction<ToastType>>;
+}
 
 interface LoginValidationErrorType {
   email: string | undefined;
@@ -32,7 +39,7 @@ interface LoginValidationErrorType {
  */
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const Login = () => {
+const Login = (props: LoginPropsType) => {
   /**
    * State to keep track of user's email address.
    */
@@ -63,6 +70,20 @@ const Login = () => {
     });
 
   /**
+   * Checks if the user is loggedIn or no, if loggedin redirects to dashboard route.
+   * So that user can't access login page if user is already loggedIn.
+   */
+  React.useEffect(() => {
+    isUserLoggedIn()
+      .then(() => {
+        window.location.href = "/dashboard";
+      })
+      .catch((err) => {
+        return;
+      });
+  }, []);
+
+  /**
    * Create account button will be enabled if all the fields valid values are added.
    */
   const isLoginButtonDisabled = (): boolean => {
@@ -81,6 +102,46 @@ const Login = () => {
       err = "Enter a valid email address";
     }
     setValidationError({ ...validationError, email: err });
+  };
+
+  /**
+   * Function to login the user.
+   * OnSuccess - will store the signIn token in cookie and redirect to Dashboard.
+   * OnFailure - will redirect to signup if user doesn't have account.
+   */
+  const signInUser = () => {
+    loginUser({ email, password })
+      .then((response) => {
+        setCookie("token", response.data.token);
+        props.setToastState({
+          isOpened: true,
+          status: "success",
+          message: response.data.message,
+        });
+        setTimeout(() => {
+          window.location.href = "/dashboard";
+        }, 1000);
+      })
+      .catch((err) => {
+        const { response } = err;
+        // If user does not exists redirect to the signup page after 2 seconds.
+        if (response?.status === 404) {
+          props.setToastState({
+            isOpened: true,
+            status: "error",
+            message: `${response?.data}. Redirecting to signup, Try to signup`,
+          });
+          setTimeout(() => {
+            window.location.href = "/signup";
+          }, 2000);
+        } else {
+          props.setToastState({
+            isOpened: true,
+            status: "error",
+            message: response?.data ?? "Internal server error",
+          });
+        }
+      });
   };
 
   return (
@@ -187,6 +248,7 @@ const Login = () => {
           </div>
           <Button
             disabled={isLoginButtonDisabled()}
+            onClick={signInUser}
             className="mt-1 bold font-size-large"
             type="submit"
             variant="contained"
