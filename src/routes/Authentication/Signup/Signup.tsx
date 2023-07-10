@@ -19,9 +19,9 @@ import {
   Visibility,
   VisibilityOff,
 } from "@mui/icons-material";
-import { isUserLoggedIn, registerUser } from "../../api/auth";
-import { ToastType } from "../../Types";
-import { setCookie } from "../../utils/Cookie";
+import { isUserLoggedIn, registerUser } from "../../../api/auth";
+import { ToastType } from "../../../Types";
+import { setCookie } from "../../../utils/Cookie";
 
 interface SignupPropsType {
   setToastState: React.Dispatch<React.SetStateAction<ToastType>>;

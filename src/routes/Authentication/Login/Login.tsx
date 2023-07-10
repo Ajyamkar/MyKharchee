@@ -21,9 +21,9 @@ import {
   OutlinedInput,
   TextField,
 } from "@mui/material";
-import { ToastType } from "../../Types";
-import { isUserLoggedIn, loginUser } from "../../api/auth";
-import { setCookie } from "../../utils/Cookie";
+import { ToastType } from "../../../Types";
+import { isUserLoggedIn, loginUser } from "../../../api/auth";
+import { setCookie } from "../../../utils/Cookie";
 
 interface LoginPropsType {
   setToastState: React.Dispatch<React.SetStateAction<ToastType>>;
