@@ -24,6 +24,7 @@ import {
 import { ToastType } from "../../../Types";
 import { isUserLoggedIn, loginUser } from "../../../api/auth";
 import { setCookie } from "../../../utils/Cookie";
+import { EMAIL_REGEX } from "../Constants";
 
 interface LoginPropsType {
   setToastState: React.Dispatch<React.SetStateAction<ToastType>>;
@@ -33,11 +34,6 @@ interface LoginValidationErrorType {
   email: string | undefined;
   password: string | undefined;
 }
-
-/**
- * Regex to validate email address.
- */
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const Login = (props: LoginPropsType) => {
   /**
@@ -86,9 +82,8 @@ const Login = (props: LoginPropsType) => {
   /**
    * Create account button will be enabled if all the fields valid values are added.
    */
-  const isLoginButtonDisabled = (): boolean => {
-    return email && !validationError.email && password ? false : true;
-  };
+  const isLoginButtonDisabled =
+    email && !validationError.email && password ? false : true;
 
   /**
    * Function to throw error if email is missing or invalid email address.
@@ -242,12 +237,12 @@ const Login = (props: LoginPropsType) => {
               }
             />
 
-            <Link to={"/forget-password"} className="text-decoration-none">
+            <Link to={"/forgot-password"} className="text-decoration-none">
               Forgot Password?
             </Link>
           </div>
           <Button
-            disabled={isLoginButtonDisabled()}
+            disabled={isLoginButtonDisabled}
             onClick={signInUser}
             className="mt-1 bold font-size-large"
             type="submit"
