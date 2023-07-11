@@ -10,4 +10,9 @@ interface loginDataType {
   password: string;
 }
 
-export type { signupDataType, loginDataType };
+interface updatePasswordDataType {
+  email: string;
+  updatedPassword: string;
+}
+
+export type { signupDataType, loginDataType, updatePasswordDataType };

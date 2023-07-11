@@ -1,12 +1,12 @@
 import instance from "../instance";
 import { getCookie } from "../utils/Cookie";
-import { loginDataType, signupDataType } from "./Types";
+import { loginDataType, signupDataType, updatePasswordDataType } from "./Types";
 
 /**
  * Api call to register the user.
  * @param data - data required to register the user.
  */
-const registerUser = async (data: signupDataType) => {
+const registerUserApi = async (data: signupDataType) => {
   const response = await instance({
     url: "api/signup/",
     method: "POST",
@@ -20,7 +20,7 @@ const registerUser = async (data: signupDataType) => {
  * @param data - data required to login the user
  * @returns
  */
-const loginUser = async (data: loginDataType) => {
+const loginUserApi = async (data: loginDataType) => {
   const response = await instance({
     url: "api/login",
     method: "POST",
@@ -30,9 +30,22 @@ const loginUser = async (data: loginDataType) => {
 };
 
 /**
+ * Api call to update the user's password.
+ * @param data - data required to update the user's password.
+ */
+const updateUserPasswordApi = async (data: updatePasswordDataType) => {
+  const response = await instance({
+    url: "api/updatePassword",
+    method: "PUT",
+    data,
+  });
+  return response;
+};
+
+/**
  * Api call to check if the user is logged in or not.
  */
-const isUserLoggedIn = async () => {
+const isUserLoggedInApi = async () => {
   const token = getCookie("token");
   const response = await instance({
     url: "api/isUserLoggedIn",
@@ -44,4 +57,9 @@ const isUserLoggedIn = async () => {
   return response;
 };
 
-export { registerUser, loginUser, isUserLoggedIn };
+export {
+  registerUserApi,
+  loginUserApi,
+  updateUserPasswordApi,
+  isUserLoggedInApi,
+};

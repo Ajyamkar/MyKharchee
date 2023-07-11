@@ -22,7 +22,7 @@ import {
   TextField,
 } from "@mui/material";
 import { ToastType } from "../../../Types";
-import { isUserLoggedIn, loginUser } from "../../../api/auth";
+import { isUserLoggedInApi, loginUserApi } from "../../../api/auth";
 import { setCookie } from "../../../utils/Cookie";
 import { EMAIL_REGEX } from "../Constants";
 
@@ -35,6 +35,10 @@ interface LoginValidationErrorType {
   password: string | undefined;
 }
 
+/**
+ * Component to render Login page.
+ * @param props.setToastState - function to show toast on success/failure of login.
+ */
 const Login = (props: LoginPropsType) => {
   /**
    * State to keep track of user's email address.
@@ -70,7 +74,7 @@ const Login = (props: LoginPropsType) => {
    * So that user can't access login page if user is already loggedIn.
    */
   React.useEffect(() => {
-    isUserLoggedIn()
+    isUserLoggedInApi()
       .then(() => {
         window.location.href = "/dashboard";
       })
@@ -105,7 +109,7 @@ const Login = (props: LoginPropsType) => {
    * OnFailure - will redirect to signup if user doesn't have account.
    */
   const signInUser = () => {
-    loginUser({ email, password })
+    loginUserApi({ email, password })
       .then((response) => {
         setCookie("token", response.data.token);
         props.setToastState({

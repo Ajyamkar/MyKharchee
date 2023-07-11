@@ -13,6 +13,7 @@ import Profile from "./routes/Profile/Profile";
 import Signup from "./routes/Authentication/Signup/Signup";
 import Navbar from "./components/TopAppBar/Navbar";
 import { ToastType } from "./Types";
+import ForgotPassword from "./routes/Authentication/ForgotPassword/ForgotPassword";
 
 function App() {
   /**
@@ -47,6 +48,10 @@ function App() {
         <Route
           path="/signup"
           element={<Signup setToastState={setToastState} />}
+        />
+        <Route
+          path="/forgot-password"
+          element={<ForgotPassword setToastState={setToastState} />}
         />
         <Route path="/" element={<LandingPage />} />
         <Route path="*" element={<PageNotFound />} />

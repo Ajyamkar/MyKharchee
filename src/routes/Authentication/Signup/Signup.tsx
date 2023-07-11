@@ -19,7 +19,7 @@ import {
   Visibility,
   VisibilityOff,
 } from "@mui/icons-material";
-import { isUserLoggedIn, registerUser } from "../../../api/auth";
+import { isUserLoggedInApi, registerUserApi } from "../../../api/auth";
 import { ToastType } from "../../../Types";
 import { setCookie } from "../../../utils/Cookie";
 import { EMAIL_REGEX } from "../Constants";
@@ -76,7 +76,7 @@ const Signup = (props: SignupPropsType) => {
    * So that user can't access signup page if user is already loggedIn.
    */
   React.useEffect(() => {
-    isUserLoggedIn()
+    isUserLoggedInApi()
       .then(() => {
         window.location.href = "/dashboard";
       })
@@ -118,7 +118,7 @@ const Signup = (props: SignupPropsType) => {
    * OnFailure - will redirect to login if user already exists
    */
   const createUser = () => {
-    registerUser({
+    registerUserApi({
       firstName,
       lastName,
       email,
