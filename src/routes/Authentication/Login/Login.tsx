@@ -22,8 +22,9 @@ import {
   TextField,
 } from "@mui/material";
 import { ToastType } from "../../../Types";
-import { isUserLoggedIn, loginUser } from "../../../api/auth";
+import { isUserLoggedInApi, loginUserApi } from "../../../api/auth";
 import { setCookie } from "../../../utils/Cookie";
+import { EMAIL_REGEX } from "../Constants";
 
 interface LoginPropsType {
   setToastState: React.Dispatch<React.SetStateAction<ToastType>>;
@@ -35,10 +36,9 @@ interface LoginValidationErrorType {
 }
 
 /**
- * Regex to validate email address.
+ * Component to render Login page.
+ * @param props.setToastState - function to show toast on success/failure of login.
  */
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 const Login = (props: LoginPropsType) => {
   /**
    * State to keep track of user's email address.
@@ -74,7 +74,7 @@ const Login = (props: LoginPropsType) => {
    * So that user can't access login page if user is already loggedIn.
    */
   React.useEffect(() => {
-    isUserLoggedIn()
+    isUserLoggedInApi()
       .then(() => {
         window.location.href = "/dashboard";
       })
@@ -86,9 +86,8 @@ const Login = (props: LoginPropsType) => {
   /**
    * Create account button will be enabled if all the fields valid values are added.
    */
-  const isLoginButtonDisabled = (): boolean => {
-    return email && !validationError.email && password ? false : true;
-  };
+  const isLoginButtonDisabled =
+    email && !validationError.email && password ? false : true;
 
   /**
    * Function to throw error if email is missing or invalid email address.
@@ -110,7 +109,7 @@ const Login = (props: LoginPropsType) => {
    * OnFailure - will redirect to signup if user doesn't have account.
    */
   const signInUser = () => {
-    loginUser({ email, password })
+    loginUserApi({ email, password })
       .then((response) => {
         setCookie("token", response.data.token);
         props.setToastState({
@@ -242,12 +241,12 @@ const Login = (props: LoginPropsType) => {
               }
             />
 
-            <Link to={"/forget-password"} className="text-decoration-none">
+            <Link to={"/forgot-password"} className="text-decoration-none">
               Forgot Password?
             </Link>
           </div>
           <Button
-            disabled={isLoginButtonDisabled()}
+            disabled={isLoginButtonDisabled}
             onClick={signInUser}
             className="mt-1 bold font-size-large"
             type="submit"

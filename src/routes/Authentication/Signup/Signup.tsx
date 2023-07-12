@@ -19,9 +19,10 @@ import {
   Visibility,
   VisibilityOff,
 } from "@mui/icons-material";
-import { isUserLoggedIn, registerUser } from "../../../api/auth";
+import { isUserLoggedInApi, registerUserApi } from "../../../api/auth";
 import { ToastType } from "../../../Types";
 import { setCookie } from "../../../utils/Cookie";
+import { EMAIL_REGEX } from "../Constants";
 
 interface SignupPropsType {
   setToastState: React.Dispatch<React.SetStateAction<ToastType>>;
@@ -33,11 +34,6 @@ interface SignupValidationErrorType {
   email: string | undefined;
   password: string | undefined;
 }
-
-/**
- * Regex to validate email address.
- */
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /**
  * Component to render Signup page.
@@ -80,7 +76,7 @@ const Signup = (props: SignupPropsType) => {
    * So that user can't access signup page if user is already loggedIn.
    */
   React.useEffect(() => {
-    isUserLoggedIn()
+    isUserLoggedInApi()
       .then(() => {
         window.location.href = "/dashboard";
       })
@@ -97,11 +93,10 @@ const Signup = (props: SignupPropsType) => {
   /**
    * Create account button will be enabled if all the fields valid values are added.
    */
-  const isCreateButtonDisabled = (): boolean => {
-    return firstName && lastName && email && !validationError.email && password
+  const isCreateButtonDisabled =
+    firstName && lastName && email && !validationError.email && password
       ? false
       : true;
-  };
 
   /**
    * Function to throw error if email is missing or invalid email address.
@@ -123,7 +118,7 @@ const Signup = (props: SignupPropsType) => {
    * OnFailure - will redirect to login if user already exists
    */
   const createUser = () => {
-    registerUser({
+    registerUserApi({
       firstName,
       lastName,
       email,
@@ -272,7 +267,7 @@ const Signup = (props: SignupPropsType) => {
             <FormHelperText>{validationError.password}</FormHelperText>
           </FormControl>
           <Button
-            disabled={isCreateButtonDisabled()}
+            disabled={isCreateButtonDisabled}
             className="mt-1 bold font-size-large"
             type="submit"
             variant="contained"
