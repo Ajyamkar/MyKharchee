@@ -1,8 +1,7 @@
 import { Alert, Snackbar } from "@mui/material";
 import React from "react";
-import { Outlet, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import "./App.scss";
-import AddExpensesDrawer from "./components/AddExpensesDrawer/AddExpensesDrawer";
 import Analytics from "./routes/Analytics/Analytics";
 import Dashboard from "./routes/Dashboard/Dashboard";
 import Expenses from "./routes/Expenses/Expenses";
@@ -11,9 +10,9 @@ import Login from "./routes/Authentication/Login/Login";
 import PageNotFound from "./routes/PageNotFound/PageNotFound";
 import Profile from "./routes/Profile/Profile";
 import Signup from "./routes/Authentication/Signup/Signup";
-import Navbar from "./components/TopAppBar/Navbar";
 import { ToastType } from "./Types";
 import ForgotPassword from "./routes/Authentication/ForgotPassword/ForgotPassword";
+import Layout from "./components/Layout";
 
 function App() {
   /**
@@ -72,16 +71,6 @@ function App() {
         </Alert>
       </Snackbar>
     </div>
-  );
-}
-
-function Layout() {
-  return (
-    <>
-      <Navbar />
-      <Outlet />
-      <AddExpensesDrawer />
-    </>
   );
 }
 

@@ -2,9 +2,9 @@ import Cookies from "universal-cookie";
 const cookie = new Cookies();
 
 /**
- * Max age of a cookie i.e cookie will available for 2 mins.
+ * Max age of a cookie i.e cookie will available for 24hrs.
  */
-const COOKIE_MAX_AGE = 60 * 2;
+const COOKIE_MAX_AGE = 60 * 60 * 24;
 
 /**
  * Function to store data in cookie.
