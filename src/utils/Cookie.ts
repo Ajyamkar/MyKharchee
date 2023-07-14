@@ -7,13 +7,24 @@ const cookie = new Cookies();
 const COOKIE_MAX_AGE = 60 * 60 * 24;
 
 /**
+ * Max age of a cookie when user clicks remember me while loggingIn.
+ * i.e cookie will available for 5 days.
+ */
+const COOKIE_EXTENDED_MAX_AGE = 60 * 60 * 24 * 5;
+
+/**
  * Function to store data in cookie.
  * @param propertyName - name of the field to be stored in the cookie.
  * @param propertyValue - value of the corresponding field to be stored in the cookie.
+ * @param extended - (optional) will be true when user click remember me while loggingIn.
  */
-const setCookie = (propertyName: string, propertyValue: any) => {
+const setCookie = (
+  propertyName: string,
+  propertyValue: any,
+  extended = false
+) => {
   cookie.set(propertyName, propertyValue, {
-    maxAge: COOKIE_MAX_AGE,
+    maxAge: extended ? COOKIE_EXTENDED_MAX_AGE : COOKIE_MAX_AGE,
   });
 };
 

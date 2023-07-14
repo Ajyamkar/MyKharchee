@@ -8,7 +8,7 @@ import { loginDataType, signupDataType, updatePasswordDataType } from "./Types";
  */
 const registerUserApi = async (data: signupDataType) => {
   const response = await instance({
-    url: "api/signup/",
+    url: "/api/auth/signup/",
     method: "POST",
     data,
   });
@@ -22,7 +22,7 @@ const registerUserApi = async (data: signupDataType) => {
  */
 const loginUserApi = async (data: loginDataType) => {
   const response = await instance({
-    url: "api/login",
+    url: "/api/auth/login",
     method: "POST",
     data,
   });
@@ -35,7 +35,7 @@ const loginUserApi = async (data: loginDataType) => {
  */
 const updateUserPasswordApi = async (data: updatePasswordDataType) => {
   const response = await instance({
-    url: "api/updatePassword",
+    url: "/api/auth/updatePassword",
     method: "PUT",
     data,
   });
@@ -48,7 +48,7 @@ const updateUserPasswordApi = async (data: updatePasswordDataType) => {
 const isUserLoggedInApi = async () => {
   const token = getCookie("token");
   const response = await instance({
-    url: "api/isUserLoggedIn",
+    url: "/api/auth/isUserLoggedIn",
     method: "GET",
     headers: {
       authorization: `Bearer ${token}`,

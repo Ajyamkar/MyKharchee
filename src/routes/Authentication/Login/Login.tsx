@@ -111,7 +111,7 @@ const Login = (props: LoginPropsType) => {
   const signInUser = () => {
     loginUserApi({ email, password })
       .then((response) => {
-        setCookie("token", response.data.token);
+        setCookie("token", response.data.token, isRememberMeChecked);
         props.setToastState({
           isOpened: true,
           status: "success",
