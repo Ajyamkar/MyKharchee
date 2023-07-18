@@ -19,10 +19,17 @@ import {
   Visibility,
   VisibilityOff,
 } from "@mui/icons-material";
-import { isUserLoggedInApi, registerUserApi } from "../../../api/auth";
+import {
+  getGoogleAuthUrlApi,
+  isUserLoggedInApi,
+  registerUserApi,
+} from "../../../api/auth";
 import { ToastType } from "../../../Types";
-import { setCookie } from "../../../utils/Cookie";
 import { EMAIL_REGEX } from "../Constants";
+import {
+  failureWhileSigningUp,
+  onSigningUpSuccessfully,
+} from "../../../utils/Auth";
 
 interface SignupPropsType {
   setToastState: React.Dispatch<React.SetStateAction<ToastType>>;
@@ -125,37 +132,28 @@ const Signup = (props: SignupPropsType) => {
       password,
     })
       .then((response) => {
-        if (response.status === 200) {
-          setCookie("token", response.data.token);
-          props.setToastState({
-            isOpened: true,
-            status: "success",
-            message: response.data.message,
-          });
-          setTimeout(() => {
-            window.location.href = "/dashboard";
-          }, 1000);
-        }
+        onSigningUpSuccessfully(response, props.setToastState);
       })
       .catch((err) => {
-        const { response } = err;
-        // if user already exists redirect to login after 2 seconds
-        if (response?.status === 422) {
-          props.setToastState({
-            isOpened: true,
-            status: "error",
-            message: `${response?.data} Redirecting to login, Try to login.`,
-          });
-          setTimeout(() => {
-            window.location.href = "/login";
-          }, 2000);
-        } else {
-          props.setToastState({
-            isOpened: true,
-            status: "error",
-            message: response?.data ?? "Internal server error",
-          });
-        }
+        failureWhileSigningUp(err, props.setToastState);
+      });
+  };
+
+  /**
+   * Functione to get google signup url from backend.
+   * OnSuccess - will redirect to google signUp url.
+   */
+  const googleAuthUrl = () => {
+    getGoogleAuthUrlApi()
+      .then((response) => {
+        window.location.href = response.data;
+      })
+      .catch((error) => {
+        props.setToastState({
+          isOpened: true,
+          status: "error",
+          message: "Something went wrong",
+        });
       });
   };
 
@@ -281,7 +279,7 @@ const Signup = (props: SignupPropsType) => {
         <Divider className="mt-1">Sign up with</Divider>
 
         <div className="display-flex justify-content-space-between mt-1">
-          <Button className="auth-btn">
+          <Button className="auth-btn" onClick={googleAuthUrl}>
             <Google className="google" fontSize="large" />
           </Button>
           <Button className="auth-btn">

@@ -13,6 +13,7 @@ import Signup from "./routes/Authentication/Signup/Signup";
 import { ToastType } from "./Types";
 import ForgotPassword from "./routes/Authentication/ForgotPassword/ForgotPassword";
 import Layout from "./components/Layout";
+import GoogleOAuthRedirect from "./routes/Authentication/GoogleOAuthRedirect";
 
 function App() {
   /**
@@ -51,6 +52,10 @@ function App() {
         <Route
           path="/forgot-password"
           element={<ForgotPassword setToastState={setToastState} />}
+        />
+        <Route
+          path="/googleRedirect"
+          element={<GoogleOAuthRedirect setToastState={setToastState} />}
         />
         <Route path="/" element={<LandingPage />} />
         <Route path="*" element={<PageNotFound />} />

@@ -57,9 +57,35 @@ const isUserLoggedInApi = async () => {
   return response;
 };
 
+/**
+ * Api call to get google signup url.
+ */
+const getGoogleAuthUrlApi = async () => {
+  const response = await instance({
+    url: "/api/auth/getGoogleAuthUrl",
+    method: "GET",
+  });
+  return response;
+};
+
+/**
+ * Api call to sign up the user with google
+ * @param data - data i.e code returned by google in redirect url.
+ */
+const googleSignUpApi = async (data: { code: string }) => {
+  const response = await instance({
+    url: "/api/auth/googleSignUp",
+    method: "POST",
+    data,
+  });
+  return response;
+};
+
 export {
   registerUserApi,
   loginUserApi,
   updateUserPasswordApi,
   isUserLoggedInApi,
+  getGoogleAuthUrlApi,
+  googleSignUpApi,
 };
