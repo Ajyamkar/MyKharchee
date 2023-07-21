@@ -25,6 +25,7 @@ import { ToastType } from "../../../Types";
 import { isUserLoggedInApi, loginUserApi } from "../../../api/auth";
 import { setCookie } from "../../../utils/Cookie";
 import { EMAIL_REGEX } from "../Constants";
+import { googleAuthUrl } from "../../../utils/Auth";
 
 interface LoginPropsType {
   setToastState: React.Dispatch<React.SetStateAction<ToastType>>;
@@ -143,6 +144,14 @@ const Login = (props: LoginPropsType) => {
       });
   };
 
+  /**
+   * Functione to get google login url from backend.
+   * OnSuccess - will redirect to google signIn url.
+   */
+  const getGoogleAuthUrl = () => {
+    googleAuthUrl(props.setToastState, true);
+  };
+
   return (
     <div className="login display-flex align-items-center">
       <div>
@@ -153,7 +162,7 @@ const Login = (props: LoginPropsType) => {
         </p>
 
         <div className="display-flex justify-content-space-between pt-1 pb-1">
-          <Button className="auth-btn">
+          <Button className="auth-btn" onClick={getGoogleAuthUrl}>
             <Google className="google" fontSize="large" />
           </Button>
           <Button className="auth-btn">

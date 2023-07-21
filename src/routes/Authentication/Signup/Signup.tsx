@@ -19,15 +19,12 @@ import {
   Visibility,
   VisibilityOff,
 } from "@mui/icons-material";
-import {
-  getGoogleAuthUrlApi,
-  isUserLoggedInApi,
-  registerUserApi,
-} from "../../../api/auth";
+import { isUserLoggedInApi, registerUserApi } from "../../../api/auth";
 import { ToastType } from "../../../Types";
 import { EMAIL_REGEX } from "../Constants";
 import {
   failureWhileSigningUp,
+  googleAuthUrl,
   onSigningUpSuccessfully,
 } from "../../../utils/Auth";
 
@@ -143,18 +140,8 @@ const Signup = (props: SignupPropsType) => {
    * Functione to get google signup url from backend.
    * OnSuccess - will redirect to google signUp url.
    */
-  const googleAuthUrl = () => {
-    getGoogleAuthUrlApi()
-      .then((response) => {
-        window.location.href = response.data;
-      })
-      .catch((error) => {
-        props.setToastState({
-          isOpened: true,
-          status: "error",
-          message: "Something went wrong",
-        });
-      });
+  const getGoogleAuthUrl = () => {
+    googleAuthUrl(props.setToastState);
   };
 
   return (
@@ -279,7 +266,7 @@ const Signup = (props: SignupPropsType) => {
         <Divider className="mt-1">Sign up with</Divider>
 
         <div className="display-flex justify-content-space-between mt-1">
-          <Button className="auth-btn" onClick={googleAuthUrl}>
+          <Button className="auth-btn" onClick={getGoogleAuthUrl}>
             <Google className="google" fontSize="large" />
           </Button>
           <Button className="auth-btn">

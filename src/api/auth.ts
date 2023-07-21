@@ -1,6 +1,11 @@
 import instance from "../instance";
 import { getCookie } from "../utils/Cookie";
-import { loginDataType, signupDataType, updatePasswordDataType } from "./Types";
+import {
+  authenticateWithGoogleDataType,
+  loginDataType,
+  signupDataType,
+  updatePasswordDataType,
+} from "./Types";
 
 /**
  * Api call to register the user.
@@ -69,12 +74,15 @@ const getGoogleAuthUrlApi = async () => {
 };
 
 /**
- * Api call to sign up the user with google
- * @param data - data i.e code returned by google in redirect url.
+ * Api call to signUp or signIn the user with google
+ * @param data - data i.e code returned by google in redirect url &
+ *               forLogin boolean to indicate whether to authenticate for google login.
  */
-const googleSignUpApi = async (data: { code: string }) => {
+const authenticateWithGoogleApi = async (
+  data: authenticateWithGoogleDataType
+) => {
   const response = await instance({
-    url: "/api/auth/googleSignUp",
+    url: "/api/auth//authenticateWithGoogle",
     method: "POST",
     data,
   });
@@ -87,5 +95,5 @@ export {
   updateUserPasswordApi,
   isUserLoggedInApi,
   getGoogleAuthUrlApi,
-  googleSignUpApi,
+  authenticateWithGoogleApi,
 };

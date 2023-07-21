@@ -15,4 +15,14 @@ interface updatePasswordDataType {
   updatedPassword: string;
 }
 
-export type { signupDataType, loginDataType, updatePasswordDataType };
+interface authenticateWithGoogleDataType {
+  code: string;
+  forLogin: boolean;
+}
+
+export type {
+  signupDataType,
+  loginDataType,
+  updatePasswordDataType,
+  authenticateWithGoogleDataType,
+};

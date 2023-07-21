@@ -1,10 +1,11 @@
 import React from "react";
-import { googleSignUpApi } from "../../api/auth";
+import { authenticateWithGoogleApi } from "../../api/auth";
 import { ToastType } from "../../Types";
 import {
   failureWhileSigningUp,
   onSigningUpSuccessfully,
 } from "../../utils/Auth";
+import { destroyCookie, getCookie } from "../../utils/Cookie";
 
 interface GoogleOAuthRedirectPropsType {
   setToastState: React.Dispatch<React.SetStateAction<ToastType>>;
@@ -19,19 +20,30 @@ interface GoogleOAuthRedirectPropsType {
  *
  */
 const GoogleOAuthRedirect = (props: GoogleOAuthRedirectPropsType) => {
+  /**
+   * This is used to access the code from query param of redirect url and send code to
+   * backend api to authenticate with google. Along with code we send forLogin boolean to
+   * authenticate for login flow or signup flow. As we have single api endpoint for google
+   * login and signup.
+   */
   React.useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const code = searchParams.get("code");
+    const forLogin = getCookie("forLogin") ? true : false;
 
     if (code) {
-      googleSignUpApi({ code })
+      authenticateWithGoogleApi({ code, forLogin })
         .then((response) => {
+          destroyCookie("forLogin");
           onSigningUpSuccessfully(response, props.setToastState);
         })
         .catch((err) => {
+          destroyCookie("forLogin");
           failureWhileSigningUp(err, props.setToastState);
+
           setTimeout(() => {
-            window.location.href = "/login";
+            window.location.href =
+              err.response.status === 404 && forLogin ? "/signup" : "/login";
           }, 2000);
         });
     } else {
@@ -40,11 +52,12 @@ const GoogleOAuthRedirect = (props: GoogleOAuthRedirectPropsType) => {
         status: "error",
         message: "Something went wrong redirecting to signup",
       });
+
       setTimeout(() => {
         window.location.href = "/signup";
       }, 2000);
     }
-  });
+  }, []);
   return <div></div>;
 };
 
