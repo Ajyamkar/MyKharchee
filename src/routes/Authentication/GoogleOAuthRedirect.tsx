@@ -2,8 +2,8 @@ import React from "react";
 import { authenticateWithGoogleApi } from "../../api/auth";
 import { ToastType } from "../../Types";
 import {
-  failureWhileSigningUp,
-  onSigningUpSuccessfully,
+  onfailureWhileAuthenticating,
+  onSuccessWhileAuthenticating,
 } from "../../utils/Auth";
 import { destroyCookie, getCookie } from "../../utils/Cookie";
 
@@ -35,16 +35,11 @@ const GoogleOAuthRedirect = (props: GoogleOAuthRedirectPropsType) => {
       authenticateWithGoogleApi({ code, forLogin })
         .then((response) => {
           destroyCookie("forLogin");
-          onSigningUpSuccessfully(response, props.setToastState);
+          onSuccessWhileAuthenticating(response, props.setToastState);
         })
         .catch((err) => {
           destroyCookie("forLogin");
-          failureWhileSigningUp(err, props.setToastState);
-
-          setTimeout(() => {
-            window.location.href =
-              err.response.status === 404 && forLogin ? "/signup" : "/login";
-          }, 2000);
+          onfailureWhileAuthenticating(err, props.setToastState, forLogin);
         });
     } else {
       props.setToastState({

@@ -23,9 +23,12 @@ import {
 } from "@mui/material";
 import { ToastType } from "../../../Types";
 import { isUserLoggedInApi, loginUserApi } from "../../../api/auth";
-import { setCookie } from "../../../utils/Cookie";
 import { EMAIL_REGEX } from "../Constants";
-import { googleAuthUrl } from "../../../utils/Auth";
+import {
+  onfailureWhileAuthenticating,
+  googleAuthUrl,
+  onSuccessWhileAuthenticating,
+} from "../../../utils/Auth";
 
 interface LoginPropsType {
   setToastState: React.Dispatch<React.SetStateAction<ToastType>>;
@@ -112,35 +115,14 @@ const Login = (props: LoginPropsType) => {
   const signInUser = () => {
     loginUserApi({ email, password })
       .then((response) => {
-        setCookie("token", response.data.token, isRememberMeChecked);
-        props.setToastState({
-          isOpened: true,
-          status: "success",
-          message: response.data.message,
-        });
-        setTimeout(() => {
-          window.location.href = "/dashboard";
-        }, 1000);
+        onSuccessWhileAuthenticating(
+          response,
+          props.setToastState,
+          isRememberMeChecked
+        );
       })
       .catch((err) => {
-        const { response } = err;
-        // If user does not exists redirect to the signup page after 2 seconds.
-        if (response?.status === 404) {
-          props.setToastState({
-            isOpened: true,
-            status: "error",
-            message: `${response?.data}. Redirecting to signup, Try to signup`,
-          });
-          setTimeout(() => {
-            window.location.href = "/signup";
-          }, 2000);
-        } else {
-          props.setToastState({
-            isOpened: true,
-            status: "error",
-            message: response?.data ?? "Internal server error",
-          });
-        }
+        onfailureWhileAuthenticating(err, props.setToastState, true);
       });
   };
 

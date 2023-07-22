@@ -23,9 +23,9 @@ import { isUserLoggedInApi, registerUserApi } from "../../../api/auth";
 import { ToastType } from "../../../Types";
 import { EMAIL_REGEX } from "../Constants";
 import {
-  failureWhileSigningUp,
+  onfailureWhileAuthenticating,
   googleAuthUrl,
-  onSigningUpSuccessfully,
+  onSuccessWhileAuthenticating,
 } from "../../../utils/Auth";
 
 interface SignupPropsType {
@@ -129,10 +129,10 @@ const Signup = (props: SignupPropsType) => {
       password,
     })
       .then((response) => {
-        onSigningUpSuccessfully(response, props.setToastState);
+        onSuccessWhileAuthenticating(response, props.setToastState);
       })
       .catch((err) => {
-        failureWhileSigningUp(err, props.setToastState);
+        onfailureWhileAuthenticating(err, props.setToastState);
       });
   };
 

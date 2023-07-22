@@ -4,17 +4,21 @@ import { ToastType } from "../Types";
 import { setCookie } from "./Cookie";
 
 /**
- * Function will be called onSucces of signup.
- * It will store the signUp token in cookie and redirect to Dashboard.
- * @param response - success response returned by the signup api.
- * @param setToastState - callback function to show toast on success of signup
+ * Function will be called onSucces while signingUp/loggingIn with google or email & password.
+ * It will store the signUp/login token in cookie and redirect to Dashboard.
+ * @param response - success response returned by the signup/login api.
+ * @param setToastState - callback function to show toast on success of signup/login.
+ * @param shouldSetTokenForLongerDuration - boolean to set cookie for longer duration.
+ *                                          And will be true when the user clicks on rememberMe
+ *                                          while loggingIn with email & password
  */
-const onSigningUpSuccessfully = (
+const onSuccessWhileAuthenticating = (
   response: AxiosResponse<any, any>,
-  setToastState: React.Dispatch<React.SetStateAction<ToastType>>
+  setToastState: React.Dispatch<React.SetStateAction<ToastType>>,
+  shouldSetTokenForLongerDuration = false
 ) => {
   if (response.status === 200) {
-    setCookie("token", response.data.token);
+    setCookie("token", response.data.token, shouldSetTokenForLongerDuration);
     setToastState({
       isOpened: true,
       status: "success",
@@ -27,14 +31,16 @@ const onSigningUpSuccessfully = (
 };
 
 /**
- * Function will be called onFailure of signup.
+ * Function will be called onFailure while signingUp/loggingIn with google or email & password.
  * It will redirect to login if user already exists
- * @param err - error response retured by the signup api
- * @param setToastState - callback function to show toast on failure of signup
+ * @param err - error response retured by the signup/login api
+ * @param setToastState - callback function to show toast on failure of signup/login
+ * @param forLogin - boolean to indicate whether to authenticate for google login.
  */
-const failureWhileSigningUp = (
+const onfailureWhileAuthenticating = (
   err: any,
-  setToastState: React.Dispatch<React.SetStateAction<ToastType>>
+  setToastState: React.Dispatch<React.SetStateAction<ToastType>>,
+  forLogin = false
 ) => {
   const { response } = err;
   // if user already exists redirect to login after 2 seconds
@@ -42,10 +48,20 @@ const failureWhileSigningUp = (
     setToastState({
       isOpened: true,
       status: "error",
-      message: `${response?.data} Redirecting to login, Try to login.`,
+      message: response?.data,
     });
     setTimeout(() => {
       window.location.href = "/login";
+    }, 2000);
+  } // If user does not exists redirect to the signup page after 2 seconds.
+  else if (response?.status === 404 && forLogin) {
+    setToastState({
+      isOpened: true,
+      status: "error",
+      message: response?.data,
+    });
+    setTimeout(() => {
+      window.location.href = "/signup";
     }, 2000);
   } else {
     setToastState({
@@ -90,4 +106,8 @@ const googleAuthUrl = (
     });
 };
 
-export { onSigningUpSuccessfully, failureWhileSigningUp, googleAuthUrl };
+export {
+  onSuccessWhileAuthenticating,
+  onfailureWhileAuthenticating,
+  googleAuthUrl,
+};
