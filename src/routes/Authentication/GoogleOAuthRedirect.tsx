@@ -14,12 +14,14 @@ interface GoogleOAuthRedirectPropsType {
 /**
  * Transition component.
  * It will be called by google while performing the oauth to exchange the code.
- * OnSuccess - will store the signUp token in cookie and redirect to Dashboard.
- * OnFailure - will redirect to login if there is failure while signing up
+ * OnSuccess - will store the signUp/loginIn token in cookie and redirect to Dashboard.
+ * OnFailure - will redirect to login/signUp if there is failure while signingUp/loggingIn
  * @param props.setToastState - function to show toast on success/failure while signing up
  *
  */
-const GoogleOAuthRedirect = (props: GoogleOAuthRedirectPropsType) => {
+const GoogleOAuthRedirect = ({
+  setToastState,
+}: GoogleOAuthRedirectPropsType) => {
   /**
    * This is used to access the code from query param of redirect url and send code to
    * backend api to authenticate with google. Along with code we send forLogin boolean to
@@ -27,6 +29,8 @@ const GoogleOAuthRedirect = (props: GoogleOAuthRedirectPropsType) => {
    * login and signup.
    */
   React.useEffect(() => {
+    console.log("render");
+
     const searchParams = new URLSearchParams(window.location.search);
     const code = searchParams.get("code");
     const forLogin = getCookie("forLogin") ? true : false;
@@ -35,14 +39,14 @@ const GoogleOAuthRedirect = (props: GoogleOAuthRedirectPropsType) => {
       authenticateWithGoogleApi({ code, forLogin })
         .then((response) => {
           destroyCookie("forLogin");
-          onSuccessWhileAuthenticating(response, props.setToastState);
+          onSuccessWhileAuthenticating(response, setToastState);
         })
         .catch((err) => {
           destroyCookie("forLogin");
-          onfailureWhileAuthenticating(err, props.setToastState, forLogin);
+          onfailureWhileAuthenticating(err, setToastState, forLogin);
         });
     } else {
-      props.setToastState({
+      setToastState({
         isOpened: true,
         status: "error",
         message: "Something went wrong redirecting to signup",
@@ -52,7 +56,7 @@ const GoogleOAuthRedirect = (props: GoogleOAuthRedirectPropsType) => {
         window.location.href = "/signup";
       }, 2000);
     }
-  }, []);
+  }, [setToastState]);
   return <div></div>;
 };
 
