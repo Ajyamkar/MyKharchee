@@ -12,13 +12,7 @@ import {
   OutlinedInput,
   TextField,
 } from "@mui/material";
-import {
-  Facebook,
-  Google,
-  Twitter,
-  Visibility,
-  VisibilityOff,
-} from "@mui/icons-material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { isUserLoggedInApi, registerUserApi } from "../../../api/auth";
 import { ToastType } from "../../../Types";
 import { EMAIL_REGEX } from "../Constants";
@@ -27,6 +21,7 @@ import {
   googleAuthUrl,
   onSuccessWhileAuthenticating,
 } from "../../../utils/Auth";
+import googleIcon from "../../../assets/google-icon.png";
 
 interface SignupPropsType {
   setToastState: React.Dispatch<React.SetStateAction<ToastType>>;
@@ -151,6 +146,20 @@ const Signup = (props: SignupPropsType) => {
         <p className="color-info">
           Already have an account? <Link to="/login">Sign in</Link>
         </p>
+        <div className="display-flex justify-content-space-between mt-1 pt-1">
+          <Button
+            className="auth-btn bold font-size-large"
+            onClick={getGoogleAuthUrl}
+            fullWidth
+          >
+            <div className="display-flex justify-content-center">
+              <img src={googleIcon} alt="google-icon" />
+              <span className="color-info">Google</span>
+            </div>
+          </Button>
+        </div>
+
+        <Divider className="mt-1 pb-1 bold">OR</Divider>
 
         <form
           className="signup-form"
@@ -262,20 +271,6 @@ const Signup = (props: SignupPropsType) => {
             Create account
           </Button>
         </form>
-
-        <Divider className="mt-1">Sign up with</Divider>
-
-        <div className="display-flex justify-content-space-between mt-1">
-          <Button className="auth-btn" onClick={getGoogleAuthUrl}>
-            <Google className="google" fontSize="large" />
-          </Button>
-          <Button className="auth-btn">
-            <Facebook className="facebook" fontSize="large" />
-          </Button>
-          <Button className="auth-btn">
-            <Twitter className="twitter" fontSize="large" />
-          </Button>
-        </div>
       </div>
     </div>
   );

@@ -1,13 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./Login.scss";
-import {
-  Facebook,
-  Google,
-  Twitter,
-  Visibility,
-  VisibilityOff,
-} from "@mui/icons-material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   Button,
   Checkbox,
@@ -29,6 +23,7 @@ import {
   googleAuthUrl,
   onSuccessWhileAuthenticating,
 } from "../../../utils/Auth";
+import googleIcon from "../../../assets/google-icon.png";
 
 interface LoginPropsType {
   setToastState: React.Dispatch<React.SetStateAction<ToastType>>;
@@ -144,14 +139,15 @@ const Login = (props: LoginPropsType) => {
         </p>
 
         <div className="display-flex justify-content-space-between pt-1 pb-1">
-          <Button className="auth-btn" onClick={getGoogleAuthUrl}>
-            <Google className="google" fontSize="large" />
-          </Button>
-          <Button className="auth-btn">
-            <Facebook className="facebook" fontSize="large" />
-          </Button>
-          <Button className="auth-btn">
-            <Twitter className="twitter" fontSize="large" />
+          <Button
+            className="auth-btn bold font-size-large"
+            onClick={getGoogleAuthUrl}
+            fullWidth
+          >
+            <div className="display-flex justify-content-center">
+              <img src={googleIcon} alt="google-icon" />
+              <span className="color-info">Google</span>
+            </div>
           </Button>
         </div>
 
