@@ -20,9 +20,15 @@ interface authenticateWithGoogleDataType {
   forLogin: boolean;
 }
 
+interface addExpenseCategoryDataType {
+  categoryName: string;
+  categoryType: string;
+}
+
 export type {
   signupDataType,
   loginDataType,
   updatePasswordDataType,
   authenticateWithGoogleDataType,
+  addExpenseCategoryDataType,
 };
