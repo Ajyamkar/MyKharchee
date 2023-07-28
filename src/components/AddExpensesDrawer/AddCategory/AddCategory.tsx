@@ -1,6 +1,7 @@
 import { ArrowBackRounded } from "@mui/icons-material";
 import { Button, Radio, TextField } from "@mui/material";
 import React from "react";
+import { addExpenseCategoryApi } from "../../../api/auth";
 import {
   ExpensesCategoriesListType,
   ExpensesCategoryType,
@@ -78,20 +79,38 @@ const AddCategory = (props: AddCategoryProps) => {
   /**
    * function to update the expense categories list
    * with added category name and type.
+   * And will call an api to save the newly created category.
    */
   const saveCategory = () => {
-    selectedExpenseType &&
+    if (selectedExpenseType) {
       props.setExpenseCategoriesList([
         ...props.expenseCategoriesList,
         { name: categoryName, type: selectedExpenseType },
       ]);
-    props.setSnackbarState({
-      isOpened: true,
-      status: "success",
-      message: "Sucessfully created new category",
-    });
-    props.setShowAddNewCategoryModel(false);
-    resetToDefault();
+
+      addExpenseCategoryApi({
+        categoryName,
+        categoryType: selectedExpenseType,
+      })
+        .then((response) => {
+          props.setSnackbarState({
+            isOpened: true,
+            status: "success",
+            message: "Sucessfully created new category",
+          });
+        })
+        .catch((err) => {
+          props.setSnackbarState({
+            isOpened: true,
+            status: "error",
+            message: "something went wrong try again",
+          });
+        })
+        .finally(() => {
+          props.setShowAddNewCategoryModel(false);
+          resetToDefault();
+        });
+    }
   };
 
   /**
