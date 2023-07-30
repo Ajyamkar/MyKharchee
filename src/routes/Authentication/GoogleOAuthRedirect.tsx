@@ -29,8 +29,6 @@ const GoogleOAuthRedirect = ({
    * login and signup.
    */
   React.useEffect(() => {
-    console.log("render");
-
     const searchParams = new URLSearchParams(window.location.search);
     const code = searchParams.get("code");
     const forLogin = getCookie("forLogin") ? true : false;

@@ -11,8 +11,9 @@ export interface SnackbarType {
  * Type for list of expense categories that will be created by user.
  */
 export interface ExpensesCategoriesListType {
-  name: string;
-  type: ExpensesCategoryType;
+  id: string;
+  categoryName: string;
+  categoryType: ExpensesCategoryType;
 }
 
 /**

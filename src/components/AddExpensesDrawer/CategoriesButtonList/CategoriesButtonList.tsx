@@ -1,5 +1,4 @@
 import { Button } from "@mui/material";
-import React from "react";
 import { ExpensesCategoriesListType } from "../Types";
 import "./CategoriesButtonList.scss";
 
@@ -14,7 +13,7 @@ interface CategoriesButtonListProps {
 /**
  * Component to render list of categories button for AddExpenses and AddIncome sections.
  *
- * @param props.categoriesList - list of categories for income or expenses
+ * @param props.categoriesList - list of categories for income or expenses, for income type is string & for expense type is array
  * @param props.selectedCategoryIndex - index of selected category
  * @param props.categoryListType - categories list to be rendered for addIncome/addExpenses
  * @param props.setSelectedCategoryIndex - function to select the category
@@ -39,7 +38,7 @@ const CategoriesButtonList = (props: CategoriesButtonListProps) => {
       {props.categoriesList.map((category, index) => {
         return (
           <Button
-            key={index}
+            key={typeof category === "string" ? index : category.id}
             className={`category-button ${
               index === props.selectedCategoryIndex
                 ? "selected-category-button"
@@ -52,7 +51,7 @@ const CategoriesButtonList = (props: CategoriesButtonListProps) => {
               handleDoubleClick(index);
             }}
           >
-            {typeof category === "string" ? category : category.name}
+            {typeof category === "string" ? category : category.categoryName}
           </Button>
         );
       })}

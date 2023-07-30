@@ -1,7 +1,7 @@
 import { ArrowBackRounded } from "@mui/icons-material";
 import { Button, Radio, TextField } from "@mui/material";
 import React from "react";
-import { addExpenseCategoryApi } from "../../../api/auth";
+import { addExpenseCategoryApi } from "../../../api/expenses";
 import {
   ExpensesCategoriesListType,
   ExpensesCategoryType,
@@ -83,20 +83,24 @@ const AddCategory = (props: AddCategoryProps) => {
    */
   const saveCategory = () => {
     if (selectedExpenseType) {
-      props.setExpenseCategoriesList([
-        ...props.expenseCategoriesList,
-        { name: categoryName, type: selectedExpenseType },
-      ]);
-
       addExpenseCategoryApi({
         categoryName,
         categoryType: selectedExpenseType,
       })
         .then((response) => {
+          props.setExpenseCategoriesList([
+            ...props.expenseCategoriesList,
+            {
+              id: response.data.expenseCategoryId,
+              categoryName,
+              categoryType: selectedExpenseType,
+            },
+          ]);
+
           props.setSnackbarState({
             isOpened: true,
             status: "success",
-            message: "Sucessfully created new category",
+            message: response.data.message,
           });
         })
         .catch((err) => {

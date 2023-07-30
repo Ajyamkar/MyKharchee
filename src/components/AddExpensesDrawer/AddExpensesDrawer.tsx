@@ -19,6 +19,7 @@ import AddExpenses from "./AddExpenses/AddExpenses";
 import AddIncome from "./AddIncome/AddIncome";
 import AddCategory from "./AddCategory/AddCategory";
 import { ExpensesCategoriesListType, SnackbarType } from "./Types";
+import { getExpenseCategoriesApi } from "../../api/expenses";
 
 /**
  * Component to render AddExpense/AddIncome model.
@@ -66,12 +67,7 @@ const AddExpensesDrawer: React.FC = () => {
    */
   const [expenseCategoriesList, setExpenseCategoriesList] = React.useState<
     Array<ExpensesCategoriesListType>
-  >([
-    { name: "Grocery", type: "Essentails" },
-    { name: "Electricity bill", type: "Essentails" },
-    { name: "trek", type: "Leisure" },
-    { name: "EMI", type: "Loans" },
-  ]);
+  >([]);
 
   /**
    * Label text for date picker.
@@ -118,6 +114,14 @@ const AddExpensesDrawer: React.FC = () => {
     setDate(dayjs());
     setShowAddNewCategoryModel(false);
   };
+
+  React.useEffect(() => {
+    getExpenseCategoriesApi().then((response) => {
+      setExpenseCategoriesList(
+        response.data as Array<ExpensesCategoriesListType>
+      );
+    });
+  }, []);
 
   return (
     <div className="addExpensesDrawer-main-container">
