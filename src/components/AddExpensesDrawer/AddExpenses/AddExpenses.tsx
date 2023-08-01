@@ -13,6 +13,7 @@ import NotesIcon from "@mui/icons-material/Notes";
 import { Add } from "@mui/icons-material";
 import { ExpensesCategoriesListType, SnackbarType } from "../Types";
 import CategoriesButtonList from "../CategoriesButtonList/CategoriesButtonList";
+import { deleteExpenseCategoryApi } from "../../../api/expenses";
 
 interface AddExpensesProps {
   setShowAddNewCategoryModel: React.Dispatch<React.SetStateAction<boolean>>;
@@ -94,20 +95,23 @@ const AddExpenses = (props: AddExpensesProps) => {
   /**
    * Function to delete a category,
    * on double clicking category button.
-   * @param categoryIndexToBeRemoved - index of the category to be deleted
+   * @param categoryIdToBeRemoved - id of the category to be deleted
    */
-  const removeSelectedCategory = (categoryIndexToBeRemoved: number): void => {
-    const filteredList = props.expenseCategoriesList.filter(
-      (category, index) => {
-        return index !== categoryIndexToBeRemoved;
+  const removeSelectedCategory = (categoryIdToBeRemoved: string): void => {
+    deleteExpenseCategoryApi({ expenseCategoryId: categoryIdToBeRemoved }).then(
+      (response) => {
+        props.setExpenseCategoriesList(
+          response.data
+            .updatedCategoriesList as Array<ExpensesCategoriesListType>
+        );
+        setSelectedCategoryIndex(undefined);
+        props.setSnackbarState({
+          isOpened: true,
+          status: "success",
+          message: response.data.message,
+        });
       }
     );
-    props.setExpenseCategoriesList(filteredList);
-    props.setSnackbarState({
-      isOpened: true,
-      status: "success",
-      message: "Successfully deleted the category",
-    });
   };
 
   /**

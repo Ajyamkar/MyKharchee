@@ -7,13 +7,13 @@ interface CategoriesButtonListProps {
   selectedCategoryIndex: number | undefined;
   categoryListType: "addIncome" | "addExpenses";
   setSelectedCategoryIndex: (index: number) => void;
-  removeSelectedCategory?: (index: number) => void;
+  removeSelectedCategory?: (id: string) => void;
 }
 
 /**
  * Component to render list of categories button for AddExpenses and AddIncome sections.
  *
- * @param props.categoriesList - list of categories for income or expenses, for income type is string & for expense type is array
+ * @param props.categoriesList - list of categories for income or expenses, for income type is string & for expense type is object
  * @param props.selectedCategoryIndex - index of selected category
  * @param props.categoryListType - categories list to be rendered for addIncome/addExpenses
  * @param props.setSelectedCategoryIndex - function to select the category
@@ -26,19 +26,31 @@ const CategoriesButtonList = (props: CategoriesButtonListProps) => {
    *
    * @param index - selected category index to be removed.
    */
-  const handleDoubleClick = (index: number): void => {
+  const handleDoubleClick = (
+    categoryToDelete: ExpensesCategoriesListType | string
+  ): void => {
     if (props.categoryListType === "addIncome") {
       return;
     }
-    props.removeSelectedCategory?.(index);
+    isExpenseCategory(categoryToDelete) &&
+      props.removeSelectedCategory?.(categoryToDelete.id);
   };
+
+  /**
+   * Function to predict the type of current category i.e is it a expense category
+   * @param category - current category
+   */
+  const isExpenseCategory = (
+    category: ExpensesCategoriesListType | string
+  ): category is ExpensesCategoriesListType =>
+    (category as ExpensesCategoriesListType).id !== undefined;
 
   return (
     <div className="categories-button-list">
       {props.categoriesList.map((category, index) => {
         return (
           <Button
-            key={typeof category === "string" ? index : category.id}
+            key={isExpenseCategory(category) ? category.id : index}
             className={`category-button ${
               index === props.selectedCategoryIndex
                 ? "selected-category-button"
@@ -48,10 +60,10 @@ const CategoriesButtonList = (props: CategoriesButtonListProps) => {
               props.setSelectedCategoryIndex(index);
             }}
             onDoubleClick={() => {
-              handleDoubleClick(index);
+              handleDoubleClick(category);
             }}
           >
-            {typeof category === "string" ? category : category.categoryName}
+            {isExpenseCategory(category) ? category.categoryName : category}
           </Button>
         );
       })}

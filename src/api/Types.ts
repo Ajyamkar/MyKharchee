@@ -25,10 +25,15 @@ interface addExpenseCategoryDataType {
   categoryType: string;
 }
 
+interface deleteExpenseCategoryDataType {
+  expenseCategoryId: string;
+}
+
 export type {
   signupDataType,
   loginDataType,
   updatePasswordDataType,
   authenticateWithGoogleDataType,
   addExpenseCategoryDataType,
+  deleteExpenseCategoryDataType,
 };

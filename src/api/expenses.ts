@@ -1,6 +1,9 @@
 import instance from "../instance";
 import { getCookie } from "../utils/Cookie";
-import { addExpenseCategoryDataType } from "./Types";
+import {
+  addExpenseCategoryDataType,
+  deleteExpenseCategoryDataType,
+} from "./Types";
 
 /**
  * Api call to save the newly created expense category.
@@ -34,4 +37,26 @@ const getExpenseCategoriesApi = async () => {
   return response;
 };
 
-export { addExpenseCategoryApi, getExpenseCategoriesApi };
+/**
+ * Api call to delete an expense category of a user.
+ */
+const deleteExpenseCategoryApi = async (
+  data: deleteExpenseCategoryDataType
+) => {
+  const token = getCookie("token");
+  const response = await instance({
+    url: "/api/deleteExpenseCategory",
+    method: "DELETE",
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+    data,
+  });
+  return response;
+};
+
+export {
+  addExpenseCategoryApi,
+  getExpenseCategoriesApi,
+  deleteExpenseCategoryApi,
+};
