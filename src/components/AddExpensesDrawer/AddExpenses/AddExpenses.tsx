@@ -52,10 +52,9 @@ const AddExpenses = (props: AddExpensesProps) => {
   const [amount, setAmount] = React.useState<number | null>();
 
   /**
-   * State to keep track of selected category index.
+   * State to keep track of selected category id.
    */
-  const [selectedCategoryIndex, setSelectedCategoryIndex] =
-    React.useState<number>();
+  const [selectedCategoryId, setSelectedCategoryId] = React.useState("");
 
   /**
    * State to keep track to show next input flow.
@@ -88,7 +87,7 @@ const AddExpenses = (props: AddExpensesProps) => {
    * on clicking add new category button.
    */
   const showNewCategoryModel = (): void => {
-    setSelectedCategoryIndex(undefined);
+    setSelectedCategoryId("");
     props.setShowAddNewCategoryModel(true);
   };
 
@@ -104,7 +103,7 @@ const AddExpenses = (props: AddExpensesProps) => {
           response.data
             .updatedCategoriesList as Array<ExpensesCategoriesListType>
         );
-        setSelectedCategoryIndex(undefined);
+        setSelectedCategoryId("");
         props.setSnackbarState({
           isOpened: true,
           status: "success",
@@ -149,7 +148,7 @@ const AddExpenses = (props: AddExpensesProps) => {
     } else if (!amount && nextButtonCounter >= AMOUNT_POSITION_INDEX) {
       err = `Please enter the amount you spent on ${itemName}`;
     } else if (
-      selectedCategoryIndex === undefined &&
+      selectedCategoryId === "" &&
       nextButtonCounter >= CATEGORY_BUTTONS_POSITION_INDEX
     ) {
       err = "Please select the category";
@@ -211,9 +210,9 @@ const AddExpenses = (props: AddExpensesProps) => {
         <div className="categories-button-group">
           <CategoriesButtonList
             categoriesList={props.expenseCategoriesList}
-            selectedCategoryIndex={selectedCategoryIndex}
+            selectedCategoryId={selectedCategoryId}
             categoryListType="addExpenses"
-            setSelectedCategoryIndex={setSelectedCategoryIndex}
+            setSelectedCategoryId={setSelectedCategoryId}
             removeSelectedCategory={removeSelectedCategory}
           />
           <Button

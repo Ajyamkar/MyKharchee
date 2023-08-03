@@ -18,8 +18,15 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import AddExpenses from "./AddExpenses/AddExpenses";
 import AddIncome from "./AddIncome/AddIncome";
 import AddCategory from "./AddCategory/AddCategory";
-import { ExpensesCategoriesListType, SnackbarType } from "./Types";
-import { getExpenseCategoriesApi } from "../../api/expenses";
+import {
+  ExpensesCategoriesListType,
+  IncomeCategoriesListType,
+  SnackbarType,
+} from "./Types";
+import {
+  getExpenseCategoriesApi,
+  getIncomeCategoriesApi,
+} from "../../api/expenses";
 
 /**
  * Component to render AddExpense/AddIncome model.
@@ -60,7 +67,9 @@ const AddExpensesDrawer: React.FC = () => {
   /**
    * List of available income categories.
    */
-  const incomeCategoriesList = ["Salary", "Side Hustle", "Gift", "Other"];
+  const incomeCategoriesList = React.useRef<Array<IncomeCategoriesListType>>(
+    []
+  );
 
   /**
    * State to maintain list of expense categories.
@@ -120,6 +129,10 @@ const AddExpensesDrawer: React.FC = () => {
       setExpenseCategoriesList(
         response.data as Array<ExpensesCategoriesListType>
       );
+    });
+    getIncomeCategoriesApi().then((response) => {
+      incomeCategoriesList.current = response.data
+        .list as Array<IncomeCategoriesListType>;
     });
   }, []);
 
@@ -211,7 +224,7 @@ const AddExpensesDrawer: React.FC = () => {
               />
             ) : (
               <AddIncome
-                incomeCategoriesList={incomeCategoriesList}
+                incomeCategoriesList={incomeCategoriesList.current}
                 closeDrawer={closeDrawer}
                 setSnackbarState={setSnackbarState}
               />

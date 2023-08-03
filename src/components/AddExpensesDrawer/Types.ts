@@ -24,3 +24,8 @@ export type ExpensesCategoryType =
   | "Leisure"
   | "Loans"
   | "Investments";
+
+export interface IncomeCategoriesListType {
+  id: string;
+  categoryName: string;
+}

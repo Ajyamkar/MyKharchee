@@ -7,11 +7,11 @@ import {
 } from "@mui/material";
 import React from "react";
 import CategoriesButtonList from "../CategoriesButtonList/CategoriesButtonList";
-import { SnackbarType } from "../Types";
+import { IncomeCategoriesListType, SnackbarType } from "../Types";
 import "./AddIncome.scss";
 
 interface AddIncomeProps {
-  incomeCategoriesList: string[];
+  incomeCategoriesList: Array<IncomeCategoriesListType>;
   setSnackbarState: React.Dispatch<React.SetStateAction<SnackbarType>>;
   closeDrawer: () => void;
 }
@@ -30,10 +30,9 @@ const AddIncome = (props: AddIncomeProps) => {
   const [amount, setAmount] = React.useState<number>();
 
   /**
-   * State to keep track of selected index of income category list.
+   * State to keep track of selected income category id.
    */
-  const [selectedCategoryIndex, setSelectedCategoryIndex] =
-    React.useState<number>(-1);
+  const [selectedCategoryId, setSelectedCategoryId] = React.useState("");
 
   /**
    * Function to update amount spent on an item.
@@ -76,15 +75,15 @@ const AddIncome = (props: AddIncomeProps) => {
       <h1 className="mb-0">Select the category</h1>
       <CategoriesButtonList
         categoriesList={props.incomeCategoriesList}
-        selectedCategoryIndex={selectedCategoryIndex}
-        setSelectedCategoryIndex={setSelectedCategoryIndex}
+        selectedCategoryId={selectedCategoryId}
+        setSelectedCategoryId={setSelectedCategoryId}
         categoryListType="addIncome"
       />
 
       <Button
         className="save-button font-size-large bold"
         variant="contained"
-        disabled={!amount || selectedCategoryIndex === -1 ? true : false}
+        disabled={!amount || selectedCategoryId === ""}
         fullWidth
         onClick={saveIncomeDetails}
       >
