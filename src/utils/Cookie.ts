@@ -41,4 +41,11 @@ const destroyCookie = (key: string) => {
   cookie.remove(key);
 };
 
-export { setCookie, getCookie, destroyCookie };
+/**
+ * Function to return user authorization token from cookie
+ */
+const getUserAuthorizationToken = () => {
+  return `Bearer ${getCookie("token")}`;
+};
+
+export { setCookie, getCookie, destroyCookie, getUserAuthorizationToken };

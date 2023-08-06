@@ -1,9 +1,26 @@
 import instance from "../instance";
-import { getCookie } from "../utils/Cookie";
+import { getCookie, getUserAuthorizationToken } from "../utils/Cookie";
 import {
   addExpenseCategoryDataType,
+  addExpenseDataType,
   deleteExpenseCategoryDataType,
 } from "./Types";
+
+/**
+ * Api call to save an user expense.
+ * @param data - data required to save an expense
+ */
+const addUserExpenseApi = async (data: addExpenseDataType) => {
+  const response = await instance({
+    url: "/api/expense/addExpense",
+    method: "POST",
+    headers: {
+      authorization: getUserAuthorizationToken(),
+    },
+    data,
+  });
+  return response;
+};
 
 /**
  * Api call to save the newly created expense category.
@@ -12,7 +29,7 @@ import {
 const addExpenseCategoryApi = async (data: addExpenseCategoryDataType) => {
   const token = getCookie("token");
   const response = await instance({
-    url: "/api/addExpenseCategory",
+    url: "/api/expense/addExpenseCategory",
     method: "POST",
     headers: {
       authorization: `Bearer ${token}`,
@@ -28,7 +45,7 @@ const addExpenseCategoryApi = async (data: addExpenseCategoryDataType) => {
 const getExpenseCategoriesApi = async () => {
   const token = getCookie("token");
   const response = await instance({
-    url: "/api/getUserExpenseCategories",
+    url: "/api/expense/getUserExpenseCategories",
     method: "GET",
     headers: {
       authorization: `Bearer ${token}`,
@@ -44,7 +61,7 @@ const getExpenseCategoriesApi = async () => {
 const getIncomeCategoriesApi = async () => {
   const token = getCookie("token");
   const response = await instance({
-    url: "/api/getDefaultIncomeCategories",
+    url: "/api/income/getDefaultIncomeCategories",
     method: "GET",
     headers: {
       authorization: `Bearer ${token}`,
@@ -61,7 +78,7 @@ const deleteExpenseCategoryApi = async (
 ) => {
   const token = getCookie("token");
   const response = await instance({
-    url: "/api/deleteExpenseCategory",
+    url: "/api/expense/deleteExpenseCategory",
     method: "DELETE",
     headers: {
       authorization: `Bearer ${token}`,
@@ -72,6 +89,7 @@ const deleteExpenseCategoryApi = async (
 };
 
 export {
+  addUserExpenseApi,
   addExpenseCategoryApi,
   getExpenseCategoriesApi,
   deleteExpenseCategoryApi,

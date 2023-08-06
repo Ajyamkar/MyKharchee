@@ -47,7 +47,7 @@ const AddExpensesDrawer: React.FC = () => {
   /**
    * State to add expense/income for the selected date.
    */
-  const [date, setDate] = React.useState<Dayjs | null>(dayjs());
+  const [date, setDate] = React.useState<Dayjs>(dayjs());
 
   /**
    * State to show create-new-category flow.
@@ -216,6 +216,7 @@ const AddExpensesDrawer: React.FC = () => {
 
             {activeButton === "addExpenses" ? (
               <AddExpenses
+                selectedDate={date}
                 setShowAddNewCategoryModel={setShowAddNewCategoryModel}
                 expenseCategoriesList={expenseCategoriesList}
                 setExpenseCategoriesList={setExpenseCategoriesList}

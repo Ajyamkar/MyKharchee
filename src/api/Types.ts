@@ -20,6 +20,13 @@ interface authenticateWithGoogleDataType {
   forLogin: boolean;
 }
 
+interface addExpenseDataType {
+  date: Date;
+  itemName: string;
+  amount: number;
+  categoryId: string;
+}
+
 interface addExpenseCategoryDataType {
   categoryName: string;
   categoryType: string;
@@ -34,6 +41,7 @@ export type {
   loginDataType,
   updatePasswordDataType,
   authenticateWithGoogleDataType,
+  addExpenseDataType,
   addExpenseCategoryDataType,
   deleteExpenseCategoryDataType,
 };

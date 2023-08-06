@@ -13,9 +13,14 @@ import NotesIcon from "@mui/icons-material/Notes";
 import { Add } from "@mui/icons-material";
 import { ExpensesCategoriesListType, SnackbarType } from "../Types";
 import CategoriesButtonList from "../CategoriesButtonList/CategoriesButtonList";
-import { deleteExpenseCategoryApi } from "../../../api/expenses";
+import {
+  addUserExpenseApi,
+  deleteExpenseCategoryApi,
+} from "../../../api/expenses";
+import dayjs from "dayjs";
 
 interface AddExpensesProps {
+  selectedDate: dayjs.Dayjs;
   setShowAddNewCategoryModel: React.Dispatch<React.SetStateAction<boolean>>;
   expenseCategoriesList: Array<ExpensesCategoriesListType>;
   setExpenseCategoriesList: React.Dispatch<
@@ -127,11 +132,7 @@ const AddExpenses = (props: AddExpensesProps) => {
       setErrorMessage("");
       setNextButtonCounter(nextButtonCounter + 1);
       if (nextButtonCounter >= CATEGORY_BUTTONS_POSITION_INDEX) {
-        props.setSnackbarState({
-          isOpened: true,
-          status: "success",
-          message: "Successfully added the expenses",
-        });
+        saveExpenseDetails();
         props.closeDrawer();
       }
     }
@@ -154,6 +155,29 @@ const AddExpenses = (props: AddExpensesProps) => {
       err = "Please select the category";
     }
     return err;
+  };
+
+  /**
+   * Function to save expense.
+   */
+  const saveExpenseDetails = () => {
+    addUserExpenseApi({
+      date: props.selectedDate.toDate(),
+      itemName,
+      amount: amount ?? 0,
+      categoryId: selectedCategoryId,
+    })
+      .then((response) => {
+        console.log(response);
+        props.setSnackbarState({
+          isOpened: true,
+          status: "success",
+          message: "Successfully added the expenses",
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
