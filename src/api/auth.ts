@@ -1,5 +1,5 @@
 import instance from "../instance";
-import { getCookie } from "../utils/Cookie";
+import { getUserAuthorizationToken } from "../utils/Cookie";
 import {
   authenticateWithGoogleDataType,
   loginDataType,
@@ -51,12 +51,11 @@ const updateUserPasswordApi = async (data: updatePasswordDataType) => {
  * Api call to check if the user is logged in or not.
  */
 const isUserLoggedInApi = async () => {
-  const token = getCookie("token");
   const response = await instance({
     url: "/api/auth/isUserLoggedIn",
     method: "GET",
     headers: {
-      authorization: `Bearer ${token}`,
+      authorization: getUserAuthorizationToken(),
     },
   });
   return response;
