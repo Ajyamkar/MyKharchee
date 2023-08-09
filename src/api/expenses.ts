@@ -84,10 +84,22 @@ const deleteExpenseCategoryApi = async (
   return response;
 };
 
+const getExpenseForSelectedDateApi = async (selectedDate: Date) => {
+  const response = await instance({
+    url: `/api/expense/getUserExpensesForSelectedDate/${selectedDate}`,
+    method: "GET",
+    headers: {
+      authorization: getUserAuthorizationToken(),
+    },
+  });
+  return response;
+};
+
 export {
   addUserExpenseApi,
   addExpenseCategoryApi,
   getExpenseCategoriesApi,
   deleteExpenseCategoryApi,
   getIncomeCategoriesApi,
+  getExpenseForSelectedDateApi,
 };
