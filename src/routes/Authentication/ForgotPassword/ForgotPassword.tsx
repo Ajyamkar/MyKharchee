@@ -12,6 +12,8 @@ import {
 import React from "react";
 import { Link } from "react-router-dom";
 import { updateUserPasswordApi } from "../../../api/auth";
+import usePassword from "../../../hooks/Authentication/usePassword";
+import useEmail from "../../../hooks/Authentication/useEmail";
 import { ToastType } from "../../../Types";
 import { setCookie } from "../../../utils/Cookie";
 import { EMAIL_REGEX } from "../Constants";
@@ -32,7 +34,7 @@ type passwordsFieldsArrayType = Array<{
   label: string;
   stateName: "newPassword" | "confirmPassword";
   stateValue: string;
-  setStateFunction: React.Dispatch<React.SetStateAction<string>>;
+  setStateFunction: (password: string) => void;
 }>;
 
 /**
@@ -43,17 +45,18 @@ const ForgotPassword = (props: ForgotPasswordPropsType) => {
   /**
    * State to keep track of user's email address.
    */
-  const [email, setEmail] = React.useState("");
+  const { email, addEmail } = useEmail();
 
   /**
    * State to keep track of user's new password.
    */
-  const [newPassword, setNewPassword] = React.useState("");
+  const { password: newPassword, addPassword } = usePassword();
 
   /**
    * State to keep track of confirm new password field.
    */
-  const [confirmPassword, setConfirmPassword] = React.useState("");
+  const { password: confirmPassword, addPassword: addConfirmPassword } =
+    usePassword();
 
   /**
    * State to show/hide password.
@@ -79,14 +82,14 @@ const ForgotPassword = (props: ForgotPasswordPropsType) => {
       label: "New password",
       stateName: "newPassword",
       stateValue: newPassword,
-      setStateFunction: setNewPassword,
+      setStateFunction: addPassword,
     },
     {
       id: "confirm-password",
       label: "Confirm password",
       stateName: "confirmPassword",
       stateValue: confirmPassword,
-      setStateFunction: setConfirmPassword,
+      setStateFunction: addConfirmPassword,
     },
   ];
 
@@ -180,7 +183,7 @@ const ForgotPassword = (props: ForgotPasswordPropsType) => {
             error={validationError.email ? true : false}
             helperText={validationError.email}
             onChange={(e) => {
-              setEmail(e.target.value);
+              addEmail(e.target.value);
               setEmailValidationError(e.target.value);
             }}
             onBlur={() => {

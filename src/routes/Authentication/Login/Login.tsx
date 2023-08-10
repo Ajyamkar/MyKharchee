@@ -24,6 +24,8 @@ import {
   onSuccessWhileAuthenticating,
 } from "../../../utils/Auth";
 import googleIcon from "../../../assets/google-icon.png";
+import useEmail from "../../../hooks/Authentication/useEmail";
+import usePassword from "../../../hooks/Authentication/usePassword";
 
 interface LoginPropsType {
   setToastState: React.Dispatch<React.SetStateAction<ToastType>>;
@@ -42,12 +44,12 @@ const Login = (props: LoginPropsType) => {
   /**
    * State to keep track of user's email address.
    */
-  const [email, setEmail] = React.useState("");
+  const { email, addEmail } = useEmail();
 
   /**
    * State to keep track of user's password.
    */
-  const [password, setPassword] = React.useState("");
+  const { password, addPassword } = usePassword();
 
   /**
    * State to show/hide password.
@@ -168,7 +170,7 @@ const Login = (props: LoginPropsType) => {
             error={validationError.email ? true : false}
             helperText={validationError.email}
             onChange={(e) => {
-              setEmail(e.target.value);
+              addEmail(e.target.value);
               setEmailValidationError(e.target.value);
             }}
             onBlur={() => {
@@ -189,7 +191,7 @@ const Login = (props: LoginPropsType) => {
               type={showPassword ? "text" : "password"}
               error={validationError.password ? true : false}
               onChange={(e) => {
-                setPassword(e.target.value);
+                addPassword(e.target.value);
                 setValidationError({ ...validationError, password: "" });
               }}
               onBlur={() => {
