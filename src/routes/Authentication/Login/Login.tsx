@@ -17,15 +17,16 @@ import {
 } from "@mui/material";
 import { ToastType } from "../../../Types";
 import { isUserLoggedInApi, loginUserApi } from "../../../api/auth";
-import { EMAIL_REGEX } from "../Constants";
 import {
   onfailureWhileAuthenticating,
   googleAuthUrl,
   onSuccessWhileAuthenticating,
+  emailValidationError,
 } from "../../../utils/Auth";
 import googleIcon from "../../../assets/google-icon.png";
 import useEmail from "../../../hooks/Authentication/useEmail";
 import usePassword from "../../../hooks/Authentication/usePassword";
+import useValidationError from "../../../hooks/Authentication/useValidationErrors";
 
 interface LoginPropsType {
   setToastState: React.Dispatch<React.SetStateAction<ToastType>>;
@@ -64,8 +65,8 @@ const Login = (props: LoginPropsType) => {
   /**
    * State to show errors for respective user fields.
    */
-  const [validationError, setValidationError] =
-    React.useState<LoginValidationErrorType>({
+  const { validationError, addValidationError } =
+    useValidationError<LoginValidationErrorType>({
       email: "",
       password: "",
     });
@@ -89,20 +90,6 @@ const Login = (props: LoginPropsType) => {
    */
   const isLoginButtonDisabled =
     email && !validationError.email && password ? false : true;
-
-  /**
-   * Function to throw error if email is missing or invalid email address.
-   * @param value - email address of the user.
-   */
-  const setEmailValidationError = (value: string) => {
-    let err = "";
-    if (!value) {
-      err = "Email address is required";
-    } else if (!EMAIL_REGEX.test(value)) {
-      err = "Enter a valid email address";
-    }
-    setValidationError({ ...validationError, email: err });
-  };
 
   /**
    * Function to login the user.
@@ -171,10 +158,16 @@ const Login = (props: LoginPropsType) => {
             helperText={validationError.email}
             onChange={(e) => {
               addEmail(e.target.value);
-              setEmailValidationError(e.target.value);
+              addValidationError({
+                ...validationError,
+                email: emailValidationError(e.target.value),
+              });
             }}
             onBlur={() => {
-              setEmailValidationError(email);
+              addValidationError({
+                ...validationError,
+                email: emailValidationError(email),
+              });
             }}
           />
           <FormControl
@@ -192,10 +185,10 @@ const Login = (props: LoginPropsType) => {
               error={validationError.password ? true : false}
               onChange={(e) => {
                 addPassword(e.target.value);
-                setValidationError({ ...validationError, password: "" });
+                addValidationError({ ...validationError, password: "" });
               }}
               onBlur={() => {
-                setValidationError({
+                addValidationError({
                   ...validationError,
                   password: !password ? "Password is required" : "",
                 });

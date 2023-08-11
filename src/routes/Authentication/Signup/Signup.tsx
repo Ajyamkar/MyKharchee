@@ -15,15 +15,16 @@ import {
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { isUserLoggedInApi, registerUserApi } from "../../../api/auth";
 import { ToastType } from "../../../Types";
-import { EMAIL_REGEX } from "../Constants";
 import {
   onfailureWhileAuthenticating,
   googleAuthUrl,
   onSuccessWhileAuthenticating,
+  emailValidationError,
 } from "../../../utils/Auth";
 import googleIcon from "../../../assets/google-icon.png";
 import useEmail from "../../../hooks/Authentication/useEmail";
 import usePassword from "../../../hooks/Authentication/usePassword";
+import useValidationError from "../../../hooks/Authentication/useValidationErrors";
 
 interface SignupPropsType {
   setToastState: React.Dispatch<React.SetStateAction<ToastType>>;
@@ -64,8 +65,8 @@ const Signup = (props: SignupPropsType) => {
   /**
    * State to show errors for respective user fields.
    */
-  const [validationError, setValidationError] =
-    React.useState<SignupValidationErrorType>({
+  const { validationError, addValidationError } =
+    useValidationError<SignupValidationErrorType>({
       firstName: "",
       lastName: "",
       email: "",
@@ -98,20 +99,6 @@ const Signup = (props: SignupPropsType) => {
     firstName && lastName && email && !validationError.email && password
       ? false
       : true;
-
-  /**
-   * Function to throw error if email is missing or invalid email address.
-   * @param value - email address of the user.
-   */
-  const setEmailValidationError = (value: string) => {
-    let err = "";
-    if (!value) {
-      err = "Email address is required";
-    } else if (!EMAIL_REGEX.test(value)) {
-      err = "Enter a valid email address";
-    }
-    setValidationError({ ...validationError, email: err });
-  };
 
   /**
    * Function to create new user.
@@ -179,10 +166,10 @@ const Signup = (props: SignupPropsType) => {
             helperText={validationError.firstName}
             onChange={(e) => {
               setFirstName(e.target.value);
-              setValidationError({ ...validationError, firstName: "" });
+              addValidationError({ ...validationError, firstName: "" });
             }}
             onBlur={() => {
-              setValidationError({
+              addValidationError({
                 ...validationError,
                 firstName: !firstName ? "First name is required" : "",
               });
@@ -198,10 +185,10 @@ const Signup = (props: SignupPropsType) => {
             helperText={validationError.lastName}
             onChange={(e) => {
               setLastName(e.target.value);
-              setValidationError({ ...validationError, lastName: "" });
+              addValidationError({ ...validationError, lastName: "" });
             }}
             onBlur={() => {
-              setValidationError({
+              addValidationError({
                 ...validationError,
                 lastName: !lastName ? "Last name is required" : "",
               });
@@ -217,10 +204,16 @@ const Signup = (props: SignupPropsType) => {
             helperText={validationError.email}
             onChange={(e) => {
               addEmail(e.target.value);
-              setEmailValidationError(e.target.value);
+              addValidationError({
+                ...validationError,
+                email: emailValidationError(e.target.value),
+              });
             }}
             onBlur={() => {
-              setEmailValidationError(email);
+              addValidationError({
+                ...validationError,
+                email: emailValidationError(email),
+              });
             }}
           />
           <FormControl
@@ -238,10 +231,10 @@ const Signup = (props: SignupPropsType) => {
               error={validationError.password ? true : false}
               onChange={(e) => {
                 addPassword(e.target.value);
-                setValidationError({ ...validationError, password: "" });
+                addValidationError({ ...validationError, password: "" });
               }}
               onBlur={() => {
-                setValidationError({
+                addValidationError({
                   ...validationError,
                   password: !password ? "Password is required" : "",
                 });

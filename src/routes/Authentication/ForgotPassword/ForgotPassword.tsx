@@ -16,8 +16,9 @@ import usePassword from "../../../hooks/Authentication/usePassword";
 import useEmail from "../../../hooks/Authentication/useEmail";
 import { ToastType } from "../../../Types";
 import { setCookie } from "../../../utils/Cookie";
-import { EMAIL_REGEX } from "../Constants";
 import "./ForgotPassword.scss";
+import useValidationError from "../../../hooks/Authentication/useValidationErrors";
+import { emailValidationError } from "../../../utils/Auth";
 
 interface ForgotPasswordPropsType {
   setToastState: React.Dispatch<React.SetStateAction<ToastType>>;
@@ -66,8 +67,8 @@ const ForgotPassword = (props: ForgotPasswordPropsType) => {
   /**
    * State to show errors for respective user fields.
    */
-  const [validationError, setValidationError] =
-    React.useState<ForgotPasswordValidationErrorType>({
+  const { validationError, addValidationError } =
+    useValidationError<ForgotPasswordValidationErrorType>({
       email: "",
       newPassword: "",
       confirmPassword: "",
@@ -100,20 +101,6 @@ const ForgotPassword = (props: ForgotPasswordPropsType) => {
     email && !validationError.email && newPassword && confirmPassword
       ? false
       : true;
-
-  /**
-   * Function to throw error if email is missing or invalid email address.
-   * @param value - email address of the user.
-   */
-  const setEmailValidationError = (value: string) => {
-    let err = "";
-    if (!value) {
-      err = "Email address is required";
-    } else if (!EMAIL_REGEX.test(value)) {
-      err = "Enter a valid email address";
-    }
-    setValidationError({ ...validationError, email: err });
-  };
 
   /**
    * Function to update the user's new password.
@@ -184,10 +171,16 @@ const ForgotPassword = (props: ForgotPasswordPropsType) => {
             helperText={validationError.email}
             onChange={(e) => {
               addEmail(e.target.value);
-              setEmailValidationError(e.target.value);
+              addValidationError({
+                ...validationError,
+                email: emailValidationError(e.target.value),
+              });
             }}
             onBlur={() => {
-              setEmailValidationError(email);
+              addValidationError({
+                ...validationError,
+                email: emailValidationError(email),
+              });
             }}
           />
 
@@ -208,13 +201,13 @@ const ForgotPassword = (props: ForgotPasswordPropsType) => {
                   type={showPassword ? "text" : "password"}
                   onChange={(e) => {
                     field.setStateFunction(e.target.value);
-                    setValidationError({
+                    addValidationError({
                       ...validationError,
                       [field.stateName]: "",
                     });
                   }}
                   onBlur={() => {
-                    setValidationError({
+                    addValidationError({
                       ...validationError,
                       [field.stateName]: !field.stateValue
                         ? `${field.label} is required`

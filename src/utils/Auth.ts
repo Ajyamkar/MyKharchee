@@ -4,6 +4,11 @@ import { ToastType } from "../Types";
 import { setCookie } from "./Cookie";
 
 /**
+ * Regex to validate email address.
+ */
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/**
  * Function will be called onSucces while signingUp/loggingIn with google or email & password.
  * It will store the signUp/login token in cookie and redirect to Dashboard.
  * @param response - success response returned by the signup/login api.
@@ -106,8 +111,23 @@ const googleAuthUrl = (
     });
 };
 
+/**
+ * Function to return error if email is missing or invalid email address.
+ * @param value - email address of the user.
+ */
+const emailValidationError = (value: string) => {
+  let err = "";
+  if (!value) {
+    err = "Email address is required";
+  } else if (!EMAIL_REGEX.test(value)) {
+    err = "Enter a valid email address";
+  }
+  return err;
+};
+
 export {
   onSuccessWhileAuthenticating,
   onfailureWhileAuthenticating,
   googleAuthUrl,
+  emailValidationError,
 };
