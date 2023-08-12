@@ -9,20 +9,19 @@ import {
   OutlinedInput,
   TextField,
 } from "@mui/material";
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { updateUserPasswordApi } from "../../../api/auth";
 import usePassword from "../../../hooks/Authentication/usePassword";
 import useEmail from "../../../hooks/Authentication/useEmail";
-import { ToastType } from "../../../Types";
-import { setCookie } from "../../../utils/Cookie";
 import "./ForgotPassword.scss";
 import useValidationError from "../../../hooks/Authentication/useValidationErrors";
-import { emailValidationError } from "../../../utils/Auth";
-
-interface ForgotPasswordPropsType {
-  setToastState: React.Dispatch<React.SetStateAction<ToastType>>;
-}
+import {
+  emailValidationError,
+  onfailureWhileAuthenticating,
+  onSuccessWhileAuthenticating,
+} from "../../../utils/Auth";
+import ToastContext from "../../../hooks/ToastContext";
 
 interface ForgotPasswordValidationErrorType {
   email: string | undefined;
@@ -40,9 +39,8 @@ type passwordsFieldsArrayType = Array<{
 
 /**
  * Component to render Forgot password page.
- * @param props.setToastState - function to show toast on success/failure of updating the user password.
  */
-const ForgotPassword = (props: ForgotPasswordPropsType) => {
+const ForgotPassword = () => {
   /**
    * State to keep track of user's email address.
    */
@@ -73,6 +71,11 @@ const ForgotPassword = (props: ForgotPasswordPropsType) => {
       newPassword: "",
       confirmPassword: "",
     });
+
+  /**
+   * function to show toast on success/failure of updating the user password.
+   */
+  const { setToastState } = useContext(ToastContext);
 
   /**
    * Created this array to increase the reusability of password related mui-components.
@@ -109,7 +112,7 @@ const ForgotPassword = (props: ForgotPasswordPropsType) => {
    */
   const updatePassword = async () => {
     if (newPassword !== confirmPassword) {
-      props.setToastState({
+      setToastState({
         isOpened: true,
         status: "error",
         message: "Confirm password should match with password.",
@@ -121,29 +124,9 @@ const ForgotPassword = (props: ForgotPasswordPropsType) => {
         email,
         updatedPassword: confirmPassword,
       });
-      setCookie("token", response.data.token);
-      props.setToastState({
-        isOpened: true,
-        status: "success",
-        message: "Successfully updated the password.",
-      });
-      setTimeout(() => {
-        window.location.href = "/dashboard";
-      }, 2000);
+      onSuccessWhileAuthenticating(response, setToastState);
     } catch (error: any) {
-      let errMessage = error.response?.data ?? "Internal server error.";
-      // if user doesn't exists it will be redirected to signup page.
-      if (error.response?.status === 404) {
-        errMessage = `${error.response?.data}. Redirecting to signup, Try to signup`;
-        setTimeout(() => {
-          window.location.href = "/signup";
-        }, 2000);
-      }
-      props.setToastState({
-        isOpened: true,
-        status: "error",
-        message: errMessage,
-      });
+      onfailureWhileAuthenticating(error, setToastState);
     }
   };
 

@@ -15,7 +15,6 @@ import {
   OutlinedInput,
   TextField,
 } from "@mui/material";
-import { ToastType } from "../../../Types";
 import { isUserLoggedInApi, loginUserApi } from "../../../api/auth";
 import {
   onfailureWhileAuthenticating,
@@ -27,10 +26,7 @@ import googleIcon from "../../../assets/google-icon.png";
 import useEmail from "../../../hooks/Authentication/useEmail";
 import usePassword from "../../../hooks/Authentication/usePassword";
 import useValidationError from "../../../hooks/Authentication/useValidationErrors";
-
-interface LoginPropsType {
-  setToastState: React.Dispatch<React.SetStateAction<ToastType>>;
-}
+import ToastContext from "../../../hooks/ToastContext";
 
 interface LoginValidationErrorType {
   email: string | undefined;
@@ -39,9 +35,8 @@ interface LoginValidationErrorType {
 
 /**
  * Component to render Login page.
- * @param props.setToastState - function to show toast on success/failure of login.
  */
-const Login = (props: LoginPropsType) => {
+const Login = () => {
   /**
    * State to keep track of user's email address.
    */
@@ -70,6 +65,11 @@ const Login = (props: LoginPropsType) => {
       email: "",
       password: "",
     });
+
+  /**
+   * function to show toast on success/failure of login.
+   */
+  const { setToastState } = React.useContext(ToastContext);
 
   /**
    * Checks if the user is loggedIn or no, if loggedin redirects to dashboard route.
@@ -101,12 +101,12 @@ const Login = (props: LoginPropsType) => {
       .then((response) => {
         onSuccessWhileAuthenticating(
           response,
-          props.setToastState,
+          setToastState,
           isRememberMeChecked
         );
       })
       .catch((err) => {
-        onfailureWhileAuthenticating(err, props.setToastState, true);
+        onfailureWhileAuthenticating(err, setToastState);
       });
   };
 
@@ -115,7 +115,7 @@ const Login = (props: LoginPropsType) => {
    * OnSuccess - will redirect to google signIn url.
    */
   const getGoogleAuthUrl = () => {
-    googleAuthUrl(props.setToastState, true);
+    googleAuthUrl(setToastState, true);
   };
 
   return (

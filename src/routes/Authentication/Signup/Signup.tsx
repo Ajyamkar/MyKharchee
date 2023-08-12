@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import "./Signup.scss";
 import { Link } from "react-router-dom";
 import {
@@ -14,7 +14,6 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { isUserLoggedInApi, registerUserApi } from "../../../api/auth";
-import { ToastType } from "../../../Types";
 import {
   onfailureWhileAuthenticating,
   googleAuthUrl,
@@ -25,10 +24,7 @@ import googleIcon from "../../../assets/google-icon.png";
 import useEmail from "../../../hooks/Authentication/useEmail";
 import usePassword from "../../../hooks/Authentication/usePassword";
 import useValidationError from "../../../hooks/Authentication/useValidationErrors";
-
-interface SignupPropsType {
-  setToastState: React.Dispatch<React.SetStateAction<ToastType>>;
-}
+import ToastContext from "../../../hooks/ToastContext";
 
 interface SignupValidationErrorType {
   firstName: string | undefined;
@@ -39,9 +35,8 @@ interface SignupValidationErrorType {
 
 /**
  * Component to render Signup page.
- * @param props.setToastState - function to show toast on success/failure of signup.
  */
-const Signup = (props: SignupPropsType) => {
+const Signup = () => {
   /**
    * State to keep track of user's first name.
    */
@@ -61,6 +56,11 @@ const Signup = (props: SignupPropsType) => {
    * State to keep track of user's password.
    */
   const { password, addPassword } = usePassword();
+
+  /**
+   * function to show toast on success/failure of signup.
+   */
+  const { setToastState } = useContext(ToastContext);
 
   /**
    * State to show errors for respective user fields.
@@ -113,10 +113,10 @@ const Signup = (props: SignupPropsType) => {
       password,
     })
       .then((response) => {
-        onSuccessWhileAuthenticating(response, props.setToastState);
+        onSuccessWhileAuthenticating(response, setToastState);
       })
       .catch((err) => {
-        onfailureWhileAuthenticating(err, props.setToastState);
+        onfailureWhileAuthenticating(err, setToastState);
       });
   };
 
@@ -125,7 +125,7 @@ const Signup = (props: SignupPropsType) => {
    * OnSuccess - will redirect to google signUp url.
    */
   const getGoogleAuthUrl = () => {
-    googleAuthUrl(props.setToastState);
+    googleAuthUrl(setToastState);
   };
 
   return (

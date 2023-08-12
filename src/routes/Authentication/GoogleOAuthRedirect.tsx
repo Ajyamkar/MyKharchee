@@ -1,27 +1,24 @@
-import React from "react";
+import React, { useContext } from "react";
 import { authenticateWithGoogleApi } from "../../api/auth";
-import { ToastType } from "../../Types";
+import ToastContext from "../../hooks/ToastContext";
 import {
   onfailureWhileAuthenticating,
   onSuccessWhileAuthenticating,
 } from "../../utils/Auth";
 import { destroyCookie, getCookie } from "../../utils/Cookie";
 
-interface GoogleOAuthRedirectPropsType {
-  setToastState: React.Dispatch<React.SetStateAction<ToastType>>;
-}
-
 /**
  * Transition component.
  * It will be called by google while performing the oauth to exchange the code.
  * OnSuccess - will store the signUp/loginIn token in cookie and redirect to Dashboard.
  * OnFailure - will redirect to login/signUp if there is failure while signingUp/loggingIn
- * @param props.setToastState - function to show toast on success/failure while signing up
- *
  */
-const GoogleOAuthRedirect = ({
-  setToastState,
-}: GoogleOAuthRedirectPropsType) => {
+const GoogleOAuthRedirect = () => {
+  /**
+   * function to show toast on success/failure while signing up/logginIn
+   */
+  const { setToastState } = useContext(ToastContext);
+
   /**
    * This is used to access the code from query param of redirect url and send code to
    * backend api to authenticate with google. Along with code we send forLogin boolean to
@@ -41,17 +38,19 @@ const GoogleOAuthRedirect = ({
         })
         .catch((err) => {
           destroyCookie("forLogin");
-          onfailureWhileAuthenticating(err, setToastState, forLogin);
+          onfailureWhileAuthenticating(err, setToastState);
         });
     } else {
       setToastState({
         isOpened: true,
         status: "error",
-        message: "Something went wrong redirecting to signup",
+        message: `Something went wrong redirecting to ${
+          forLogin ? "login" : "signup"
+        }`,
       });
 
       setTimeout(() => {
-        window.location.href = "/signup";
+        window.location.href = forLogin ? "/login" : "/signup";
       }, 2000);
     }
   }, [setToastState]);

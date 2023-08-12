@@ -40,12 +40,10 @@ const onSuccessWhileAuthenticating = (
  * It will redirect to login if user already exists
  * @param err - error response retured by the signup/login api
  * @param setToastState - callback function to show toast on failure of signup/login
- * @param forLogin - boolean to indicate whether to authenticate for google login.
  */
 const onfailureWhileAuthenticating = (
   err: any,
-  setToastState: React.Dispatch<React.SetStateAction<ToastType>>,
-  forLogin = false
+  setToastState: React.Dispatch<React.SetStateAction<ToastType>>
 ) => {
   const { response } = err;
   // if user already exists redirect to login after 2 seconds
@@ -59,7 +57,7 @@ const onfailureWhileAuthenticating = (
       window.location.href = "/login";
     }, 2000);
   } // If user does not exists redirect to the signup page after 2 seconds.
-  else if (response?.status === 404 && forLogin) {
+  else if (response?.status === 404) {
     setToastState({
       isOpened: true,
       status: "error",

@@ -14,6 +14,7 @@ import { ToastType } from "./Types";
 import ForgotPassword from "./routes/Authentication/ForgotPassword/ForgotPassword";
 import Layout from "./components/Layout";
 import GoogleOAuthRedirect from "./routes/Authentication/GoogleOAuthRedirect";
+import ToastContext from "./hooks/ToastContext";
 
 function App() {
   /**
@@ -33,49 +34,39 @@ function App() {
   };
 
   return (
-    <div className="app">
-      <Routes>
-        <Route element={<Layout />}>
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="expenses" element={<Expenses />} />
-          <Route path="analytics" element={<Analytics />} />
-          <Route path="profile" element={<Profile />} />
-        </Route>
-        <Route
-          path="/login"
-          element={<Login setToastState={setToastState} />}
-        />
-        <Route
-          path="/signup"
-          element={<Signup setToastState={setToastState} />}
-        />
-        <Route
-          path="/forgot-password"
-          element={<ForgotPassword setToastState={setToastState} />}
-        />
-        <Route
-          path="/googleRedirect"
-          element={<GoogleOAuthRedirect setToastState={setToastState} />}
-        />
-        <Route path="/" element={<LandingPage />} />
-        <Route path="*" element={<PageNotFound />} />
-      </Routes>
+    <ToastContext.Provider value={{ setToastState }}>
+      <div className="app">
+        <Routes>
+          <Route element={<Layout />}>
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="expenses" element={<Expenses />} />
+            <Route path="analytics" element={<Analytics />} />
+            <Route path="profile" element={<Profile />} />
+          </Route>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/googleRedirect" element={<GoogleOAuthRedirect />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
 
-      <Snackbar
-        open={toastState.isOpened}
-        autoHideDuration={2000}
-        onClose={closeToast}
-      >
-        <Alert
-          severity={toastState.status}
+        <Snackbar
+          open={toastState.isOpened}
+          autoHideDuration={2000}
           onClose={closeToast}
-          sx={{ width: "100%" }}
-          variant="filled"
         >
-          {toastState.message}
-        </Alert>
-      </Snackbar>
-    </div>
+          <Alert
+            severity={toastState.status}
+            onClose={closeToast}
+            sx={{ width: "100%" }}
+            variant="filled"
+          >
+            {toastState.message}
+          </Alert>
+        </Snackbar>
+      </div>
+    </ToastContext.Provider>
   );
 }
 
