@@ -5,14 +5,14 @@ import {
   FormControl,
   InputAdornment,
 } from "@mui/material";
-import React from "react";
+import React, { useContext } from "react";
+import ToastContext from "../../../hooks/ToastContext";
 import CategoriesButtonList from "../CategoriesButtonList/CategoriesButtonList";
-import { IncomeCategoriesListType, SnackbarType } from "../Types";
+import { IncomeCategoriesListType } from "../Types";
 import "./AddIncome.scss";
 
 interface AddIncomeProps {
   incomeCategoriesList: Array<IncomeCategoriesListType>;
-  setSnackbarState: React.Dispatch<React.SetStateAction<SnackbarType>>;
   closeDrawer: () => void;
 }
 
@@ -20,7 +20,6 @@ interface AddIncomeProps {
  * Component to render Add Income section.
  *
  * @param props.incomeCategoriesList - list of categories of income.
- * @param props.setSnackbarState - callback function to trigger feedback.
  * @param props.closeDrawer - callback function to close drawer on successfully adding income.
  */
 const AddIncome = (props: AddIncomeProps) => {
@@ -35,6 +34,11 @@ const AddIncome = (props: AddIncomeProps) => {
   const [selectedCategoryId, setSelectedCategoryId] = React.useState("");
 
   /**
+   * Function to show toast on success/failure while creating new category.
+   */
+  const { setToastState } = useContext(ToastContext);
+
+  /**
    * Function to update amount spent on an item.
    * @param event - input change event
    */
@@ -46,7 +50,7 @@ const AddIncome = (props: AddIncomeProps) => {
    * Function to save the income details.
    */
   const saveIncomeDetails = () => {
-    props.setSnackbarState({
+    setToastState({
       isOpened: true,
       status: "success",
       message: "Successfully added the income",

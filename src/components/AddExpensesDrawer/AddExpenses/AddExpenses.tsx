@@ -6,18 +6,19 @@ import {
   FormHelperText,
   InputAdornment,
 } from "@mui/material";
-import React from "react";
+import React, { useContext } from "react";
 import "./AddExpenses.scss";
 import CurrencyRupeeRoundedIcon from "@mui/icons-material/CurrencyRupeeRounded";
 import NotesIcon from "@mui/icons-material/Notes";
 import { Add } from "@mui/icons-material";
-import { ExpensesCategoriesListType, SnackbarType } from "../Types";
+import { ExpensesCategoriesListType } from "../Types";
 import CategoriesButtonList from "../CategoriesButtonList/CategoriesButtonList";
 import {
   addUserExpenseApi,
   deleteExpenseCategoryApi,
 } from "../../../api/expenses";
 import dayjs from "dayjs";
+import ToastContext from "../../../hooks/ToastContext";
 
 interface AddExpensesProps {
   selectedDate: dayjs.Dayjs;
@@ -26,7 +27,6 @@ interface AddExpensesProps {
   setExpenseCategoriesList: React.Dispatch<
     React.SetStateAction<Array<ExpensesCategoriesListType>>
   >;
-  setSnackbarState: React.Dispatch<React.SetStateAction<SnackbarType>>;
   closeDrawer: () => void;
 }
 
@@ -42,7 +42,6 @@ const CATEGORY_BUTTONS_POSITION_INDEX = 2;
  * @param props.expenseCategoriesList - list of categories of expenses.
  * @param props.setShowAddNewCategoryModel- callback function to show/hide this component.
  * @param props.setExpenseCategoriesList - callback function to update list of expenses category.
- * @param props.setSnackbarState - callback function to trigger feedback.
  * @param props.closeDrawer - callback function to close drawer on successfully adding expense.
  */
 const AddExpenses = (props: AddExpensesProps) => {
@@ -70,6 +69,11 @@ const AddExpenses = (props: AddExpensesProps) => {
    * State to show error message if any.
    */
   const [errorMessage, setErrorMessage] = React.useState("");
+
+  /**
+   * Function to show toast on success/failure of api call.
+   */
+  const { setToastState } = useContext(ToastContext);
 
   /**
    * Function to update amount spent on an item.
@@ -101,21 +105,26 @@ const AddExpenses = (props: AddExpensesProps) => {
    * on double clicking category button.
    * @param categoryIdToBeRemoved - id of the category to be deleted
    */
-  const removeSelectedCategory = (categoryIdToBeRemoved: string): void => {
-    deleteExpenseCategoryApi({ expenseCategoryId: categoryIdToBeRemoved }).then(
-      (response) => {
+  const removeSelectedCategory = (categoryIdToBeRemoved: string) => {
+    deleteExpenseCategoryApi({ expenseCategoryId: categoryIdToBeRemoved })
+      .then((response) => {
         props.setExpenseCategoriesList(
           response.data
             .updatedCategoriesList as Array<ExpensesCategoriesListType>
         );
-        setSelectedCategoryId("");
-        props.setSnackbarState({
+        setToastState({
           isOpened: true,
           status: "success",
           message: response.data.message,
         });
-      }
-    );
+      })
+      .catch((error) => {
+        setToastState({
+          isOpened: true,
+          status: "error",
+          message: "Something went wrong",
+        });
+      });
   };
 
   /**
@@ -168,15 +177,18 @@ const AddExpenses = (props: AddExpensesProps) => {
       categoryId: selectedCategoryId,
     })
       .then((response) => {
-        console.log(response);
-        props.setSnackbarState({
+        setToastState({
           isOpened: true,
           status: "success",
           message: "Successfully added the expenses",
         });
       })
       .catch((error) => {
-        console.log(error);
+        setToastState({
+          isOpened: true,
+          status: "error",
+          message: "Something went wrong",
+        });
       });
   };
 

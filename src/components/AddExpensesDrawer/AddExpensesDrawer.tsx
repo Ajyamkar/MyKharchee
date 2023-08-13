@@ -1,12 +1,5 @@
 import "./AddExpensesDrawer.scss";
-import {
-  Alert,
-  Button,
-  ButtonGroup,
-  Drawer,
-  IconButton,
-  Snackbar,
-} from "@mui/material";
+import { Button, ButtonGroup, Drawer, IconButton } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import React from "react";
@@ -18,11 +11,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import AddExpenses from "./AddExpenses/AddExpenses";
 import AddIncome from "./AddIncome/AddIncome";
 import AddCategory from "./AddCategory/AddCategory";
-import {
-  ExpensesCategoriesListType,
-  IncomeCategoriesListType,
-  SnackbarType,
-} from "./Types";
+import { ExpensesCategoriesListType, IncomeCategoriesListType } from "./Types";
 import {
   getExpenseCategoriesApi,
   getIncomeCategoriesApi,
@@ -54,15 +43,6 @@ const AddExpensesDrawer: React.FC = () => {
    */
   const [showAddNewCategoryModel, setShowAddNewCategoryModel] =
     React.useState(false);
-
-  /**
-   * State to open or close snackbar after saving new category.
-   */
-  const [snackbarState, setSnackbarState] = React.useState<SnackbarType>({
-    isOpened: false,
-    status: "success",
-    message: "",
-  });
 
   /**
    * List of available income categories.
@@ -98,13 +78,6 @@ const AddExpensesDrawer: React.FC = () => {
     } else {
       setDate(dayjs());
     }
-  };
-
-  /**
-   * Function to close snackbar.
-   */
-  const closeSnackbar = () => {
-    setSnackbarState({ ...snackbarState, isOpened: false });
   };
 
   /**
@@ -163,8 +136,6 @@ const AddExpensesDrawer: React.FC = () => {
               setShowAddNewCategoryModel={setShowAddNewCategoryModel}
               setExpenseCategoriesList={setExpenseCategoriesList}
               expenseCategoriesList={expenseCategoriesList}
-              snackbarState={snackbarState}
-              setSnackbarState={setSnackbarState}
             />
           </div>
 
@@ -220,34 +191,17 @@ const AddExpensesDrawer: React.FC = () => {
                 setShowAddNewCategoryModel={setShowAddNewCategoryModel}
                 expenseCategoriesList={expenseCategoriesList}
                 setExpenseCategoriesList={setExpenseCategoriesList}
-                setSnackbarState={setSnackbarState}
                 closeDrawer={closeDrawer}
               />
             ) : (
               <AddIncome
                 incomeCategoriesList={incomeCategoriesList.current}
                 closeDrawer={closeDrawer}
-                setSnackbarState={setSnackbarState}
               />
             )}
           </div>
         </div>
       </Drawer>
-
-      <Snackbar
-        open={snackbarState.isOpened}
-        autoHideDuration={2000}
-        onClose={closeSnackbar}
-      >
-        <Alert
-          severity={snackbarState.status}
-          onClose={closeSnackbar}
-          sx={{ width: "100%" }}
-          variant="filled"
-        >
-          {snackbarState.message}
-        </Alert>
-      </Snackbar>
     </div>
   );
 };

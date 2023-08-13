@@ -1,12 +1,9 @@
 import { ArrowBackRounded } from "@mui/icons-material";
 import { Button, Radio, TextField } from "@mui/material";
-import React from "react";
+import React, { useContext } from "react";
 import { addExpenseCategoryApi } from "../../../api/expenses";
-import {
-  ExpensesCategoriesListType,
-  ExpensesCategoryType,
-  SnackbarType,
-} from "../Types";
+import ToastContext from "../../../hooks/ToastContext";
+import { ExpensesCategoriesListType, ExpensesCategoryType } from "../Types";
 import "./AddCategory.scss";
 
 interface AddCategoryProps {
@@ -15,8 +12,6 @@ interface AddCategoryProps {
   setExpenseCategoriesList: React.Dispatch<
     React.SetStateAction<Array<ExpensesCategoriesListType>>
   >;
-  snackbarState: SnackbarType;
-  setSnackbarState: React.Dispatch<React.SetStateAction<SnackbarType>>;
 }
 
 /**
@@ -33,10 +28,8 @@ const expensesTypes = [
  * Component to create new category.
  *
  * @param props.expenseCategoriesList - list of categories of expenses.
- * @param props.snackbarState - feedback to be shown on creating new category.
  * @param props.setShowAddNewCategoryModel- callback function to show/hide this component.
  * @param props.setExpenseCategoriesList - callback function to update list of expenses category.
- * @param props.setSnackbarState - callback function to trigger feedback.
  */
 const AddCategory = (props: AddCategoryProps) => {
   /**
@@ -49,6 +42,11 @@ const AddCategory = (props: AddCategoryProps) => {
    */
   const [selectedExpenseType, setSelectedExpenseType] =
     React.useState<ExpensesCategoryType | null>();
+
+  /**
+   * Function to show toast on success/failure while creating new category.
+   */
+  const { setToastState } = useContext(ToastContext);
 
   /**
    * Add category button will be disabled
@@ -97,14 +95,14 @@ const AddCategory = (props: AddCategoryProps) => {
             },
           ]);
 
-          props.setSnackbarState({
+          setToastState({
             isOpened: true,
             status: "success",
             message: response.data.message,
           });
         })
         .catch((err) => {
-          props.setSnackbarState({
+          setToastState({
             isOpened: true,
             status: "error",
             message: "something went wrong try again",
