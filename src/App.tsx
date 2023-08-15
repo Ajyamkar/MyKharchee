@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { isUserLoggedInApi } from "./api/auth";
 import "./App.scss";
 import AppRoutes from "./AppRoutes";
 import Toast from "./components/Toast";
+import AuthenticateContext from "./hooks/Authentication/AuthenticateContext";
 import ToastContext from "./hooks/ToastContext";
 import { ToastType } from "./Types";
 
@@ -22,10 +24,27 @@ function App() {
     setToastState({ ...toastState, isOpened: false });
   };
 
+  /**
+   * State to check whether user is loggedin or not.
+   */
+  const [isUserLoggedIn, setIsUserLoggedIn] = React.useState(false);
+
+  useEffect(() => {
+    isUserLoggedInApi()
+      .then(() => {
+        setIsUserLoggedIn(true);
+      })
+      .catch(() => {
+        setIsUserLoggedIn(false);
+      });
+  }, []);
+
   return (
     <ToastContext.Provider value={{ setToastState }}>
       <div className="app">
-        <AppRoutes />
+        <AuthenticateContext.Provider value={{ isUserLoggedIn }}>
+          <AppRoutes />
+        </AuthenticateContext.Provider>
 
         <Toast toastState={toastState} closeToast={closeToast} />
       </div>

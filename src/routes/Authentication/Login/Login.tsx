@@ -15,7 +15,7 @@ import {
   OutlinedInput,
   TextField,
 } from "@mui/material";
-import { isUserLoggedInApi, loginUserApi } from "../../../api/auth";
+import { loginUserApi } from "../../../api/auth";
 import {
   onfailureWhileAuthenticating,
   googleAuthUrl,
@@ -27,6 +27,7 @@ import useEmail from "../../../hooks/Authentication/useEmail";
 import usePassword from "../../../hooks/Authentication/usePassword";
 import useValidationError from "../../../hooks/Authentication/useValidationErrors";
 import ToastContext from "../../../hooks/ToastContext";
+import AuthenticateContext from "../../../hooks/Authentication/AuthenticateContext";
 
 interface LoginValidationErrorType {
   email: string | undefined;
@@ -72,18 +73,19 @@ const Login = () => {
   const { setToastState } = React.useContext(ToastContext);
 
   /**
+   * boolean to check whether user is loggedin or not.
+   */
+  const { isUserLoggedIn } = React.useContext(AuthenticateContext);
+
+  /**
    * Checks if the user is loggedIn or no, if loggedin redirects to dashboard route.
    * So that user can't access login page if user is already loggedIn.
    */
   React.useEffect(() => {
-    isUserLoggedInApi()
-      .then(() => {
-        window.location.href = "/dashboard";
-      })
-      .catch((err) => {
-        return;
-      });
-  }, []);
+    if (isUserLoggedIn) {
+      window.location.href = "/dashboard";
+    }
+  }, [isUserLoggedIn]);
 
   /**
    * Create account button will be enabled if all the fields valid values are added.
