@@ -22,6 +22,7 @@ import {
   onSuccessWhileAuthenticating,
 } from "../../../utils/Auth";
 import ToastContext from "../../../hooks/ToastContext";
+import AuthenticateContext from "../../../hooks/Authentication/AuthenticateContext";
 
 interface ForgotPasswordValidationErrorType {
   email: string | undefined;
@@ -129,6 +130,21 @@ const ForgotPassword = () => {
       onfailureWhileAuthenticating(error, setToastState);
     }
   };
+
+  /**
+   * boolean to check whether user is loggedin or not.
+   */
+  const { isUserLoggedIn } = React.useContext(AuthenticateContext);
+
+  /**
+   * Checks if the user is loggedIn or no, if loggedin redirects to dashboard route.
+   * So that user can't access forgot password page if user is already loggedIn.
+   */
+  React.useEffect(() => {
+    if (isUserLoggedIn) {
+      window.location.href = "/dashboard";
+    }
+  }, [isUserLoggedIn]);
 
   return (
     <div className="forgot-password display-flex justify-content-center align-items-center">

@@ -27,8 +27,13 @@ function App() {
   /**
    * State to check whether user is loggedin or not.
    */
-  const [isUserLoggedIn, setIsUserLoggedIn] = React.useState(false);
+  const [isUserLoggedIn, setIsUserLoggedIn] = React.useState<null | boolean>(
+    null
+  );
 
+  /**
+   * Authenticate whether user is loggedIn or not.
+   */
   useEffect(() => {
     isUserLoggedInApi()
       .then(() => {
@@ -37,6 +42,7 @@ function App() {
       .catch(() => {
         setIsUserLoggedIn(false);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
