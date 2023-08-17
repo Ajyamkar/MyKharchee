@@ -85,6 +85,10 @@ const AddExpensesDrawer: React.FC = () => {
    */
   const closeDrawer = (): void => {
     resetStatesToDefaultValues();
+    // clearing the localStorage, since we are storing the expense details
+    // before user clicks on add-new-category button
+    localStorage.length && localStorage.clear();
+
     setOpenDrawer(false);
   };
 
@@ -127,79 +131,73 @@ const AddExpensesDrawer: React.FC = () => {
         onClose={closeDrawer}
       >
         <div className="addExpensesDrawer-drawer_container">
-          <div
-            className={
-              showAddNewCategoryModel ? "display-block" : "display-none"
-            }
-          >
+          {showAddNewCategoryModel ? (
             <AddCategory
               setShowAddNewCategoryModel={setShowAddNewCategoryModel}
               setExpenseCategoriesList={setExpenseCategoriesList}
               expenseCategoriesList={expenseCategoriesList}
             />
-          </div>
+          ) : (
+            <>
+              <div className="addExpensesDrawer-drawer_top_container display-flex justify-content-space-between align-items-center">
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={["DatePicker"]}>
+                    <DatePicker
+                      label={datePickerLabel}
+                      value={date}
+                      onChange={(newValue) => {
+                        newValue && handleDateChange(newValue);
+                      }}
+                      format="DD-MM-YYYY"
+                      slotProps={{ textField: { size: "small" } }}
+                      className="date-picker"
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
+                <HighlightOffOutlinedIcon
+                  onClick={closeDrawer}
+                  fontSize="large"
+                  sx={{ cursor: "pointer" }}
+                />
+              </div>
 
-          <div
-            className={
-              showAddNewCategoryModel ? "display-none" : "display-block"
-            }
-          >
-            <div className="addExpensesDrawer-drawer_top_container display-flex justify-content-space-between align-items-center">
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={["DatePicker"]}>
-                  <DatePicker
-                    label={datePickerLabel}
-                    value={date}
-                    onChange={(newValue) => {
-                      newValue && handleDateChange(newValue);
-                    }}
-                    format="DD-MM-YYYY"
-                    slotProps={{ textField: { size: "small" } }}
-                    className="date-picker"
-                  />
-                </DemoContainer>
-              </LocalizationProvider>
-              <HighlightOffOutlinedIcon
-                onClick={closeDrawer}
-                fontSize="large"
-                sx={{ cursor: "pointer" }}
-              />
-            </div>
+              <ButtonGroup className="addExpensesDrawer-add_button_group display-flex justify-content-center">
+                <Button
+                  className={
+                    activeButton === "addExpenses" ? "active-button" : ""
+                  }
+                  onClick={() => setActiveButton("addExpenses")}
+                >
+                  Add Expenses
+                </Button>
+                <Button
+                  className={
+                    activeButton === "addIncome" ? "active-button" : ""
+                  }
+                  onClick={() => {
+                    setActiveButton("addIncome");
+                  }}
+                >
+                  Add Income
+                </Button>
+              </ButtonGroup>
 
-            <ButtonGroup className="addExpensesDrawer-add_button_group display-flex justify-content-center">
-              <Button
-                className={
-                  activeButton === "addExpenses" ? "active-button" : ""
-                }
-                onClick={() => setActiveButton("addExpenses")}
-              >
-                Add Expenses
-              </Button>
-              <Button
-                className={activeButton === "addIncome" ? "active-button" : ""}
-                onClick={() => {
-                  setActiveButton("addIncome");
-                }}
-              >
-                Add Income
-              </Button>
-            </ButtonGroup>
-
-            {activeButton === "addExpenses" ? (
-              <AddExpenses
-                selectedDate={date}
-                setShowAddNewCategoryModel={setShowAddNewCategoryModel}
-                expenseCategoriesList={expenseCategoriesList}
-                setExpenseCategoriesList={setExpenseCategoriesList}
-                closeDrawer={closeDrawer}
-              />
-            ) : (
-              <AddIncome
-                incomeCategoriesList={incomeCategoriesList.current}
-                closeDrawer={closeDrawer}
-              />
-            )}
-          </div>
+              {activeButton === "addExpenses" ? (
+                <AddExpenses
+                  selectedDate={date}
+                  setShowAddNewCategoryModel={setShowAddNewCategoryModel}
+                  expenseCategoriesList={expenseCategoriesList}
+                  setExpenseCategoriesList={setExpenseCategoriesList}
+                  closeDrawer={closeDrawer}
+                />
+              ) : (
+                <AddIncome
+                  incomeCategoriesList={incomeCategoriesList.current}
+                  closeDrawer={closeDrawer}
+                />
+              )}
+            </>
+          )}
         </div>
       </Drawer>
     </div>

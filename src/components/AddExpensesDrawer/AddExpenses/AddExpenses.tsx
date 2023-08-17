@@ -6,7 +6,7 @@ import {
   FormHelperText,
   InputAdornment,
 } from "@mui/material";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import "./AddExpenses.scss";
 import CurrencyRupeeRoundedIcon from "@mui/icons-material/CurrencyRupeeRounded";
 import NotesIcon from "@mui/icons-material/Notes";
@@ -53,7 +53,7 @@ const AddExpenses = (props: AddExpensesProps) => {
   /**
    * State to keep track of amount spent on an item.
    */
-  const [amount, setAmount] = React.useState<number | null>();
+  const [amount, setAmount] = React.useState<number | null>(null);
 
   /**
    * State to keep track of selected category id.
@@ -76,6 +76,23 @@ const AddExpenses = (props: AddExpensesProps) => {
   const { setToastState } = useContext(ToastContext);
 
   /**
+   * Updates the states with previously added expense details that were stored in localStorage
+   * when the user click's on add new category.
+   */
+  useEffect(() => {
+    if (localStorage.length) {
+      const itemNameLSKey = localStorage.getItem("itemName");
+      const amountLSKey = localStorage.getItem("amount");
+      const nextButtonCounterLSKey = localStorage.getItem("nextButtonCounter");
+
+      itemNameLSKey && setItemName(itemNameLSKey);
+      amountLSKey && setAmount(parseInt(amountLSKey));
+      nextButtonCounterLSKey &&
+        setNextButtonCounter(parseInt(nextButtonCounterLSKey));
+    }
+  }, []);
+
+  /**
    * Function to update amount spent on an item.
    * @param event - input change event
    */
@@ -94,9 +111,18 @@ const AddExpenses = (props: AddExpensesProps) => {
   /**
    * Function to show create-new-category model,
    * on clicking add new category button.
+   *
+   * Before showing add-category model, current states(eg: itemName,amount,nextButtonCounter) will be stored
+   * in localStorage, so that the user need not to add the previously added expenses details
+   * when the user redirects back to this component again on saving new category
    */
   const showNewCategoryModel = (): void => {
     setSelectedCategoryId("");
+
+    localStorage.setItem("itemName", itemName);
+    localStorage.setItem("amount", `${amount}`);
+    localStorage.setItem("nextButtonCounter", `${nextButtonCounter}`);
+
     props.setShowAddNewCategoryModel(true);
   };
 
