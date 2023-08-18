@@ -3,11 +3,7 @@ import { Button, ButtonGroup, Drawer, IconButton } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import React from "react";
-import dayjs, { Dayjs } from "dayjs";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
 import AddExpenses from "./AddExpenses/AddExpenses";
 import AddIncome from "./AddIncome/AddIncome";
 import AddCategory from "./AddCategory/AddCategory";
@@ -16,6 +12,8 @@ import {
   getExpenseCategoriesApi,
   getIncomeCategoriesApi,
 } from "../../api/expenses";
+import Calendar from "../Calendar/Calendar";
+import useDate from "../../hooks/useDate";
 
 /**
  * Component to render AddExpense/AddIncome model.
@@ -36,7 +34,7 @@ const AddExpensesDrawer: React.FC = () => {
   /**
    * State to add expense/income for the selected date.
    */
-  const [date, setDate] = React.useState<Dayjs>(dayjs());
+  const { date, datePickerLabel, handleDateChange } = useDate();
 
   /**
    * State to show create-new-category flow.
@@ -59,33 +57,11 @@ const AddExpensesDrawer: React.FC = () => {
   >([]);
 
   /**
-   * Label text for date picker.
-   */
-  const datePickerLabel =
-    new Date(dayjs(date).format()).toDateString() === new Date().toDateString()
-      ? "Today"
-      : "Selected date";
-
-  /**
-   * function to handle date change,
-   * new date will be selected if selected date is previous date compared with today's date
-   * or it will be set to today's date.
-   * @param newValue - new selected date
-   */
-  const handleDateChange = (newValue: Dayjs) => {
-    if (new Date(dayjs(newValue).format()) <= new Date()) {
-      setDate(newValue);
-    } else {
-      setDate(dayjs());
-    }
-  };
-
-  /**
    * function to close add expenses/income drawer.
    */
   const closeDrawer = (): void => {
     resetStatesToDefaultValues();
-    // clearing the localStorage, since we are storing the expense details
+    // clearing the localStorage, since we were storing the expense details
     // before user clicks on add-new-category button
     localStorage.length && localStorage.clear();
 
@@ -97,7 +73,7 @@ const AddExpensesDrawer: React.FC = () => {
    */
   const resetStatesToDefaultValues = (): void => {
     setActiveButton("addExpenses");
-    setDate(dayjs());
+    handleDateChange(dayjs());
     setShowAddNewCategoryModel(false);
   };
 
@@ -140,20 +116,11 @@ const AddExpensesDrawer: React.FC = () => {
           ) : (
             <>
               <div className="addExpensesDrawer-drawer_top_container display-flex justify-content-space-between align-items-center">
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer components={["DatePicker"]}>
-                    <DatePicker
-                      label={datePickerLabel}
-                      value={date}
-                      onChange={(newValue) => {
-                        newValue && handleDateChange(newValue);
-                      }}
-                      format="DD-MM-YYYY"
-                      slotProps={{ textField: { size: "small" } }}
-                      className="date-picker"
-                    />
-                  </DemoContainer>
-                </LocalizationProvider>
+                <Calendar
+                  datePickerLabel={datePickerLabel}
+                  date={date}
+                  handleDateChange={handleDateChange}
+                />
                 <HighlightOffOutlinedIcon
                   onClick={closeDrawer}
                   fontSize="large"
