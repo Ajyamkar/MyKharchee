@@ -10,15 +10,26 @@ interface CalendarPropsType {
   handleDateChange: (newDate: Dayjs) => void;
 }
 
-const Calendar = (props: CalendarPropsType) => {
+/**
+ * Component to render DatePicker
+ * @param datePickerLabel - label text for date picker input
+ * @param date - selected date
+ * @param handleDateChange - callback function to chnage the date
+ * @returns
+ */
+const Calendar = ({
+  datePickerLabel,
+  date,
+  handleDateChange,
+}: CalendarPropsType) => {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DemoContainer components={["DatePicker"]}>
         <DatePicker
-          label={props.datePickerLabel}
-          value={props.date}
+          label={datePickerLabel}
+          value={date}
           onChange={(newValue) => {
-            newValue && props.handleDateChange(newValue);
+            newValue && handleDateChange(newValue);
           }}
           format="DD-MM-YYYY"
           slotProps={{ textField: { size: "small" } }}

@@ -1,3 +1,6 @@
-.date-picker > .MuiInputBase-root {
-  width: 8rem;
+.date-picker {
+  min-width: auto !important;
+  > .MuiInputBase-root {
+    width: 8rem;
+  }
 }
