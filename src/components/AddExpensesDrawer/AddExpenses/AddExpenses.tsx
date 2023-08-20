@@ -220,27 +220,29 @@ const AddExpenses = (props: AddExpensesProps) => {
 
   return (
     <div className="addExpenses mt-1">
-      <h1 className="mb-0">On which item did you spend?</h1>
-      <FormControl fullWidth variant="filled">
-        <FilledInput
-          placeholder="Enter the description.."
-          value={itemName}
-          startAdornment={
-            <InputAdornment className="mt-0" position="start">
-              <NotesIcon />
-            </InputAdornment>
-          }
-          onChange={handleItemNameChange}
-          className="expense-description-input font-size-large"
-        />
-      </FormControl>
+      <div className="expense-option">
+        <h1 className="mb-0">On which item did you spend?</h1>
+        <FormControl fullWidth variant="filled">
+          <FilledInput
+            placeholder="Enter the description.."
+            value={itemName}
+            startAdornment={
+              <InputAdornment className="mt-0" position="start">
+                <NotesIcon />
+              </InputAdornment>
+            }
+            onChange={handleItemNameChange}
+            className="expense-description-input font-size-large"
+          />
+        </FormControl>
+      </div>
 
       <div
-        className={
+        className={`expense-option ${
           nextButtonCounter < AMOUNT_POSITION_INDEX
             ? "display-none"
             : "display-block"
-        }
+        }`}
       >
         <h1 className="mb-0">How much did you spend?</h1>
         <FormControl fullWidth variant="filled">
@@ -262,11 +264,11 @@ const AddExpenses = (props: AddExpensesProps) => {
         </FormControl>
       </div>
       <div
-        className={
+        className={`expense-option ${
           nextButtonCounter < CATEGORY_BUTTONS_POSITION_INDEX
             ? "display-none"
             : "display-block"
-        }
+        }`}
       >
         <h1 className="mb-0">Select the expenes category</h1>
         <div className="categories-button-group">

@@ -60,32 +60,36 @@ const AddIncome = (props: AddIncomeProps) => {
 
   return (
     <div className="add-income mt-1">
-      <h1 className="mb-0">Amount</h1>
-      <FormControl fullWidth variant="filled">
-        <FilledInput
-          placeholder="Enter the amount"
-          value={amount || ""}
-          type={"number"}
-          startAdornment={
-            <InputAdornment className="mt-0" position="start">
-              <CurrencyRupeeRounded />
-            </InputAdornment>
-          }
-          onChange={handleAmountChange}
-          className="income-amount-input bold font-size-large"
-        />
-      </FormControl>
+      <div className="add-income-options">
+        <h1 className="mb-0">Amount</h1>
+        <FormControl fullWidth variant="filled">
+          <FilledInput
+            placeholder="Enter the amount"
+            value={amount || ""}
+            type={"number"}
+            startAdornment={
+              <InputAdornment className="mt-0" position="start">
+                <CurrencyRupeeRounded />
+              </InputAdornment>
+            }
+            onChange={handleAmountChange}
+            className="income-amount-input bold font-size-large"
+          />
+        </FormControl>
+      </div>
 
-      <h1 className="mb-0">Select the category</h1>
-      <CategoriesButtonList
-        categoriesList={props.incomeCategoriesList}
-        selectedCategoryId={selectedCategoryId}
-        setSelectedCategoryId={setSelectedCategoryId}
-        categoryListType="addIncome"
-      />
+      <div className="add-income-options">
+        <h1 className="mb-0">Select the category</h1>
+        <CategoriesButtonList
+          categoriesList={props.incomeCategoriesList}
+          selectedCategoryId={selectedCategoryId}
+          setSelectedCategoryId={setSelectedCategoryId}
+          categoryListType="addIncome"
+        />
+      </div>
 
       <Button
-        className="save-button font-size-large bold"
+        className="save-button font-size-large bold mt-1"
         variant="contained"
         disabled={!amount || selectedCategoryId === ""}
         fullWidth

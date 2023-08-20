@@ -142,7 +142,7 @@ const Login = () => {
           </Button>
         </div>
 
-        <Divider className="pt-1 pb-1 bold">OR</Divider>
+        <Divider className="bold">OR</Divider>
 
         <form
           className="login-form"

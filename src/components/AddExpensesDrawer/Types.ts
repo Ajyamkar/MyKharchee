@@ -1,12 +1,3 @@
-/**
- * Type for Snackbar.
- */
-export interface SnackbarType {
-  isOpened: boolean;
-  status: "success" | "error";
-  message: string;
-}
-
 /*
  * Type for list of expense categories that will be created by user.
  */

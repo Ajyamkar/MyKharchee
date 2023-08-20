@@ -137,7 +137,7 @@ const Signup = () => {
         <p className="color-info">
           Already have an account? <Link to="/login">Sign in</Link>
         </p>
-        <div className="display-flex justify-content-space-between mt-1 pt-1">
+        <div className="display-flex justify-content-space-between mt-1">
           <Button
             className="auth-btn bold font-size-large"
             onClick={getGoogleAuthUrl}

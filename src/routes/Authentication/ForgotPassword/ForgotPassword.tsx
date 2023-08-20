@@ -149,10 +149,7 @@ const ForgotPassword = () => {
   return (
     <div className="forgot-password display-flex justify-content-center align-items-center">
       <div>
-        <div className="font-size-large">
-          <h1 className="m0">Forgot</h1>
-          <h1 className="m0">Password?</h1>
-        </div>
+        <h1 className="font-size-large">Forgot Password?</h1>
         <p>Enter the email associated with your account</p>
 
         <form
