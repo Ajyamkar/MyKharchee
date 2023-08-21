@@ -1,3 +1,5 @@
+import { Delete, Edit } from "@mui/icons-material";
+import { IconButton } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getExpenseForSelectedDateApi } from "../../api/expenses";
 import { ExpensesCategoriesListType } from "../../components/AddExpensesDrawer/Types";
@@ -48,9 +50,24 @@ const Expenses = () => {
         {expensesForSelectedDate.length ? (
           expensesForSelectedDate.map((expense) => (
             <div className="expense-continer" key={expense._id}>
-              <h1>{expense.itemName}</h1>
-              <h1>{expense.amount}</h1>
-              <h2>Category: {expense.category.categoryName}</h2>
+              <div className="display-flex justify-content-space-between align-items-center">
+                <h2>{expense.itemName}</h2>
+                <div>
+                  <IconButton>
+                    <Edit />
+                  </IconButton>
+                  <IconButton>
+                    <Delete />
+                  </IconButton>
+                </div>
+              </div>
+
+              <div className="display-flex justify-content-space-between align-items-center">
+                <h2 className="color-error">- {expense.amount}</h2>
+                <span className="category">
+                  {expense.category.categoryName}
+                </span>
+              </div>
             </div>
           ))
         ) : (

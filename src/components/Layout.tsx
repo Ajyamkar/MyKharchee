@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import AuthenticateContext from "../hooks/Authentication/AuthenticateContext";
 import AddExpensesDrawer from "./AddExpensesDrawer/AddExpensesDrawer";
 import Navbar from "./TopAppBar/Navbar";
+import "./Layout.scss";
 
 /**
  * Component to render routes other than authentication routes.
@@ -26,7 +27,9 @@ const Layout = () => {
   return (
     <>
       <Navbar />
-      <Outlet />
+      <div className="outlet">
+        <Outlet />
+      </div>
       <AddExpensesDrawer />
     </>
   );
