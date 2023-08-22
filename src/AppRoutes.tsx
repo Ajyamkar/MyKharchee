@@ -10,6 +10,7 @@ import Signup from "./routes/Authentication/Signup/Signup";
 import ForgotPassword from "./routes/Authentication/ForgotPassword/ForgotPassword";
 import Layout from "./components/Layout";
 import GoogleOAuthRedirect from "./routes/Authentication/GoogleOAuthRedirect";
+import AddIncomeOrExpense from "./routes/AddIncomeOrExpense/AddIncomeOrExpense";
 
 const AppRoutes = () => {
   return (
@@ -20,6 +21,7 @@ const AppRoutes = () => {
           <Route path="expenses" element={<Expenses />} />
           <Route path="analytics" element={<Analytics />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="addExpenses" element={<AddIncomeOrExpense />} />
         </Route>
 
         <Route path="/login" element={<Login />} />

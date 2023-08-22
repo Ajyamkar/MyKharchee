@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import AuthenticateContext from "../hooks/Authentication/AuthenticateContext";
-import AddExpensesDrawer from "./AddExpensesDrawer/AddExpensesDrawer";
 import Navbar from "./TopAppBar/Navbar";
 import "./Layout.scss";
+import { IconButton } from "@mui/material";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 /**
  * Component to render routes other than authentication routes.
@@ -30,7 +31,15 @@ const Layout = () => {
       <div className="outlet">
         <Outlet />
       </div>
-      <AddExpensesDrawer />
+
+      <IconButton
+        className="addExpensesDrawer-button"
+        onClick={() => {
+          window.location.href = "/addExpenses";
+        }}
+      >
+        <AddCircleIcon className="addExpensesDrawer-icon" />
+      </IconButton>
     </>
   );
 };

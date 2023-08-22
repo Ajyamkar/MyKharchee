@@ -16,9 +16,9 @@ import CategoriesButtonList from "../CategoriesButtonList/CategoriesButtonList";
 import {
   addUserExpenseApi,
   deleteExpenseCategoryApi,
-} from "../../../api/expenses";
+} from "../../api/expenses";
 import dayjs from "dayjs";
-import ToastContext from "../../../hooks/ToastContext";
+import ToastContext from "../../hooks/ToastContext";
 
 interface AddExpensesProps {
   selectedDate: dayjs.Dayjs;

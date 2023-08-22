@@ -6,7 +6,7 @@ import {
   InputAdornment,
 } from "@mui/material";
 import React, { useContext } from "react";
-import ToastContext from "../../../hooks/ToastContext";
+import ToastContext from "../../hooks/ToastContext";
 import CategoriesButtonList from "../CategoriesButtonList/CategoriesButtonList";
 import { IncomeCategoriesListType } from "../Types";
 import "./AddIncome.scss";

@@ -2,7 +2,7 @@ import { Delete, Edit } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getExpenseForSelectedDateApi } from "../../api/expenses";
-import { ExpensesCategoriesListType } from "../../components/AddExpensesDrawer/Types";
+import { ExpensesCategoriesListType } from "../../components/Types";
 import Calendar from "../../components/Calendar/Calendar";
 import useDate from "../../hooks/useDate";
 import "./Expenses.scss";

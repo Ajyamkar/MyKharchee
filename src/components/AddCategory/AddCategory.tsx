@@ -1,8 +1,8 @@
 import { ArrowBackRounded } from "@mui/icons-material";
 import { Button, Radio, TextField } from "@mui/material";
 import React, { useContext } from "react";
-import { addExpenseCategoryApi } from "../../../api/expenses";
-import ToastContext from "../../../hooks/ToastContext";
+import { addExpenseCategoryApi } from "../../api/expenses";
+import ToastContext from "../../hooks/ToastContext";
 import { ExpensesCategoriesListType, ExpensesCategoryType } from "../Types";
 import "./AddCategory.scss";
 

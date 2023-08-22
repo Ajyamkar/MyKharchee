@@ -1,0 +1,26 @@
+.addIncomeOrExpense-drawer {
+  > .MuiPaper-root {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    max-height: 90%;
+  }
+}
+
+.addIncomeOrExpense-drawer_container {
+  padding: 1rem;
+
+  .addIncomeOrExpense-drawer_top_container {
+    margin-bottom: 1rem;
+  }
+
+  .addIncomeOrExpense-add_button_group {
+    button {
+      border-radius: 1rem;
+    }
+
+    .active-button {
+      background: black;
+      color: white;
+    }
+  }
+}

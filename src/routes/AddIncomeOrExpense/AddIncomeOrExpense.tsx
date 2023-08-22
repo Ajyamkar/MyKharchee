@@ -1,28 +1,30 @@
-import "./AddExpensesDrawer.scss";
-import { Button, ButtonGroup, Drawer, IconButton } from "@mui/material";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
+import "./AddIncomeOrExpense.scss";
+import { Button, ButtonGroup, Drawer } from "@mui/material";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import React from "react";
 import dayjs from "dayjs";
-import AddExpenses from "./AddExpenses/AddExpenses";
-import AddIncome from "./AddIncome/AddIncome";
-import AddCategory from "./AddCategory/AddCategory";
-import { ExpensesCategoriesListType, IncomeCategoriesListType } from "./Types";
+import AddExpenses from "../../components/AddExpenses/AddExpenses";
+import AddIncome from "../../components/AddIncome/AddIncome";
+import AddCategory from "../../components/AddCategory/AddCategory";
+import {
+  ExpensesCategoriesListType,
+  IncomeCategoriesListType,
+} from "../../components/Types";
 import {
   getExpenseCategoriesApi,
   getIncomeCategoriesApi,
 } from "../../api/expenses";
-import Calendar from "../Calendar/Calendar";
+import Calendar from "../../components/Calendar/Calendar";
 import useDate from "../../hooks/useDate";
 
 /**
  * Component to render AddExpense/AddIncome model.
  */
-const AddExpensesDrawer: React.FC = () => {
+const AddIncomeOrExpense = () => {
   /**
    * State to open or close add-expenses drawer.
    */
-  const [openDrawer, setOpenDrawer] = React.useState<boolean>(false);
+  const [openDrawer, setOpenDrawer] = React.useState(true);
 
   /**
    * State to show add-expenses/income flow.
@@ -90,23 +92,14 @@ const AddExpensesDrawer: React.FC = () => {
   }, []);
 
   return (
-    <div className="addExpensesDrawer-main-container">
-      <IconButton
-        className="addExpensesDrawer-button"
-        onClick={() => {
-          setOpenDrawer(true);
-        }}
-      >
-        <AddCircleIcon className="addExpensesDrawer-icon" />
-      </IconButton>
-
+    <div className="addIncomeOrExpense-main-container">
       <Drawer
-        className="addExpensesDrawer-drawer"
+        className="addIncomeOrExpense-drawer"
         anchor="bottom"
         open={openDrawer}
         onClose={closeDrawer}
       >
-        <div className="addExpensesDrawer-drawer_container">
+        <div className="addIncomeOrExpense-drawer_container">
           {showAddNewCategoryModel ? (
             <AddCategory
               setShowAddNewCategoryModel={setShowAddNewCategoryModel}
@@ -115,7 +108,7 @@ const AddExpensesDrawer: React.FC = () => {
             />
           ) : (
             <>
-              <div className="addExpensesDrawer-drawer_top_container display-flex justify-content-space-between align-items-center">
+              <div className="addIncomeOrExpense-drawer_top_container display-flex justify-content-space-between align-items-center">
                 <Calendar
                   datePickerLabel={datePickerLabel}
                   date={date}
@@ -128,7 +121,7 @@ const AddExpensesDrawer: React.FC = () => {
                 />
               </div>
 
-              <ButtonGroup className="addExpensesDrawer-add_button_group display-flex justify-content-center">
+              <ButtonGroup className="addIncomeOrExpense-add_button_group display-flex justify-content-center">
                 <Button
                   className={
                     activeButton === "addExpenses" ? "active-button" : ""
@@ -171,4 +164,4 @@ const AddExpensesDrawer: React.FC = () => {
   );
 };
 
-export default AddExpensesDrawer;
+export default AddIncomeOrExpense;
