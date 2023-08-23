@@ -6,6 +6,7 @@ import { ExpensesCategoriesListType } from "../../components/Types";
 import Calendar from "../../components/Calendar/Calendar";
 import useDate from "../../hooks/useDate";
 import "./Expenses.scss";
+import { Outlet } from "react-router-dom";
 
 interface ExpensesListType {
   _id: string;
@@ -36,45 +37,49 @@ const Expenses = () => {
   }, [date]);
 
   return (
-    <div className="expenses-main-container">
-      <div className="header display-flex align-items-center justify-content-space-between">
-        <h1>Expenses</h1>
-        <Calendar
-          date={date}
-          datePickerLabel={datePickerLabel}
-          handleDateChange={handleDateChange}
-        />
-      </div>
+    <>
+      <div className="expenses-main-container">
+        <div className="header display-flex align-items-center justify-content-space-between">
+          <h1>Expenses</h1>
+          <Calendar
+            date={date}
+            datePickerLabel={datePickerLabel}
+            handleDateChange={handleDateChange}
+          />
+        </div>
 
-      <div className="expenses-list-container">
-        {expensesForSelectedDate.length ? (
-          expensesForSelectedDate.map((expense) => (
-            <div className="expense-continer" key={expense._id}>
-              <div className="display-flex justify-content-space-between align-items-center">
-                <h2>{expense.itemName}</h2>
-                <div>
-                  <IconButton>
-                    <Edit />
-                  </IconButton>
-                  <IconButton>
-                    <Delete />
-                  </IconButton>
+        <div className="expenses-list-container">
+          {expensesForSelectedDate.length ? (
+            expensesForSelectedDate.map((expense) => (
+              <div className="expense-continer" key={expense._id}>
+                <div className="display-flex justify-content-space-between align-items-center">
+                  <h2>{expense.itemName}</h2>
+                  <div>
+                    <IconButton>
+                      <Edit />
+                    </IconButton>
+                    <IconButton>
+                      <Delete />
+                    </IconButton>
+                  </div>
+                </div>
+
+                <div className="display-flex justify-content-space-between align-items-center">
+                  <h2 className="color-error">- {expense.amount}</h2>
+                  <span className="category">
+                    {expense.category.categoryName}
+                  </span>
                 </div>
               </div>
-
-              <div className="display-flex justify-content-space-between align-items-center">
-                <h2 className="color-error">- {expense.amount}</h2>
-                <span className="category">
-                  {expense.category.categoryName}
-                </span>
-              </div>
-            </div>
-          ))
-        ) : (
-          <h1>Expenses not added for selected date</h1>
-        )}
+            ))
+          ) : (
+            <h1>Expenses not added for selected date</h1>
+          )}
+        </div>
       </div>
-    </div>
+
+      <Outlet />
+    </>
   );
 };
 

@@ -8,7 +8,7 @@ import PageNotFound from "./routes/PageNotFound/PageNotFound";
 import Profile from "./routes/Profile/Profile";
 import Signup from "./routes/Authentication/Signup/Signup";
 import ForgotPassword from "./routes/Authentication/ForgotPassword/ForgotPassword";
-import Layout from "./components/Layout";
+import Layout from "./components/Layout/Layout";
 import GoogleOAuthRedirect from "./routes/Authentication/GoogleOAuthRedirect";
 import AddIncomeOrExpense from "./routes/AddIncomeOrExpense/AddIncomeOrExpense";
 
@@ -17,11 +17,38 @@ const AppRoutes = () => {
     <BrowserRouter>
       <Routes>
         <Route element={<Layout />}>
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="expenses" element={<Expenses />} />
-          <Route path="analytics" element={<Analytics />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="addExpenses" element={<AddIncomeOrExpense />} />
+          <Route path="dashboard" element={<Dashboard />}>
+            <Route
+              path="addExpenses"
+              element={<AddIncomeOrExpense type={"addExpenses"} />}
+            />
+          </Route>
+
+          <Route path="expenses" element={<Expenses />}>
+            <Route
+              path="addExpenses"
+              element={<AddIncomeOrExpense type={"addExpenses"} />}
+            />
+          </Route>
+
+          <Route path="analytics" element={<Analytics />}>
+            <Route
+              path="addExpenses"
+              element={<AddIncomeOrExpense type={"addExpenses"} />}
+            />
+          </Route>
+
+          <Route path="profile" element={<Profile />}>
+            <Route
+              path="addExpenses"
+              element={<AddIncomeOrExpense type={"addExpenses"} />}
+            />
+          </Route>
+
+          <Route
+            path="addIncome"
+            element={<AddIncomeOrExpense type={"addIncome"} />}
+          />
         </Route>
 
         <Route path="/login" element={<Login />} />

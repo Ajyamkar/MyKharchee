@@ -17,21 +17,26 @@ import {
 import Calendar from "../../components/Calendar/Calendar";
 import useDate from "../../hooks/useDate";
 
+interface PropsType {
+  type: "addExpenses" | "addIncome";
+}
+
 /**
  * Component to render AddExpense/AddIncome model.
+ * @param type - to render model for addExpenses or addIncome
  */
-const AddIncomeOrExpense = () => {
+const AddIncomeOrExpense = ({ type }: PropsType) => {
   /**
    * State to open or close add-expenses drawer.
    */
-  const [openDrawer, setOpenDrawer] = React.useState(true);
+  const [openDrawer, setOpenDrawer] = React.useState(false);
 
   /**
    * State to show add-expenses/income flow.
    */
   const [activeButton, setActiveButton] = React.useState<
     "addExpenses" | "addIncome"
-  >("addExpenses");
+  >(type);
 
   /**
    * State to add expense/income for the selected date.
@@ -80,6 +85,7 @@ const AddIncomeOrExpense = () => {
   };
 
   React.useEffect(() => {
+    setOpenDrawer(true);
     getExpenseCategoriesApi().then((response) => {
       setExpenseCategoriesList(
         response.data as Array<ExpensesCategoriesListType>
@@ -126,7 +132,7 @@ const AddIncomeOrExpense = () => {
                   className={
                     activeButton === "addExpenses" ? "active-button" : ""
                   }
-                  onClick={() => setActiveButton("addExpenses")}
+                  onClick={() => (window.location.href = "/addExpenses")}
                 >
                   Add Expenses
                 </Button>
@@ -134,9 +140,7 @@ const AddIncomeOrExpense = () => {
                   className={
                     activeButton === "addIncome" ? "active-button" : ""
                   }
-                  onClick={() => {
-                    setActiveButton("addIncome");
-                  }}
+                  onClick={() => (window.location.href = "/addIncome")}
                 >
                   Add Income
                 </Button>
