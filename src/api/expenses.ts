@@ -84,9 +84,28 @@ const deleteExpenseCategoryApi = async (
   return response;
 };
 
+/**
+ * Api call to get an expenses list for a selected date
+ * @param selectedDate - date
+ */
 const getExpenseForSelectedDateApi = async (selectedDate: Date) => {
   const response = await instance({
     url: `/api/expense/getUserExpensesForSelectedDate/${selectedDate}`,
+    method: "GET",
+    headers: {
+      authorization: getUserAuthorizationToken(),
+    },
+  });
+  return response;
+};
+
+/**
+ * Api call to call to get an expense by an expensesId
+ * @param expenseId - id of the expense
+ */
+const getExpenseByIdApi = async (expenseId: string) => {
+  const response = await instance({
+    url: `/api/expense/getExpenseById/${expenseId}`,
     method: "GET",
     headers: {
       authorization: getUserAuthorizationToken(),
@@ -102,4 +121,5 @@ export {
   deleteExpenseCategoryApi,
   getIncomeCategoriesApi,
   getExpenseForSelectedDateApi,
+  getExpenseByIdApi,
 };

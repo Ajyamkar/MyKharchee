@@ -16,9 +16,11 @@ import CategoriesButtonList from "../CategoriesButtonList/CategoriesButtonList";
 import {
   addUserExpenseApi,
   deleteExpenseCategoryApi,
+  getExpenseByIdApi,
 } from "../../api/expenses";
 import dayjs from "dayjs";
 import ToastContext from "../../hooks/ToastContext";
+import { useParams } from "react-router-dom";
 
 interface AddExpensesProps {
   selectedDate: dayjs.Dayjs;
@@ -76,11 +78,22 @@ const AddExpenses = (props: AddExpensesProps) => {
   const { setToastState } = useContext(ToastContext);
 
   /**
+   * Get expenseId from the url
+   */
+  const { expenseId } = useParams();
+
+  /**
    * Updates the states with previously added expense details that were stored in localStorage
    * when the user click's on add new category.
    */
   useEffect(() => {
-    if (localStorage.length) {
+    if (expenseId) {
+      getExpenseByIdApi(expenseId)
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((err) => console.log(err));
+    } else if (localStorage.length) {
       const itemNameLSKey = localStorage.getItem("itemName");
       const amountLSKey = localStorage.getItem("amount");
       const nextButtonCounterLSKey = localStorage.getItem("nextButtonCounter");
@@ -90,7 +103,7 @@ const AddExpenses = (props: AddExpensesProps) => {
       nextButtonCounterLSKey &&
         setNextButtonCounter(parseInt(nextButtonCounterLSKey));
     }
-  }, []);
+  }, [expenseId]);
 
   /**
    * Function to update amount spent on an item.

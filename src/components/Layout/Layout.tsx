@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import AuthenticateContext from "../../hooks/Authentication/AuthenticateContext";
 import Navbar from "../TopAppBar/Navbar";
 import "./Layout.scss";
@@ -32,13 +32,10 @@ const Layout = () => {
         <Outlet />
       </div>
 
-      <IconButton
-        className="addExpensesDrawer-button"
-        onClick={() => {
-          window.location.href = `${window.location.pathname}/addExpenses`;
-        }}
-      >
-        <AddCircleIcon className="addExpensesDrawer-icon" />
+      <IconButton className="addExpensesDrawer-button">
+        <Link to={`${window.location.pathname}/addExpenses`}>
+          <AddCircleIcon className="addExpensesDrawer-icon" />
+        </Link>
       </IconButton>
     </>
   );

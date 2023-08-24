@@ -19,35 +19,39 @@ const AppRoutes = () => {
         <Route element={<Layout />}>
           <Route path="dashboard" element={<Dashboard />}>
             <Route
-              path="addExpenses"
-              element={<AddIncomeOrExpense type={"addExpenses"} />}
+              path={"addExpenses"}
+              element={<AddIncomeOrExpense type={"expenses"} />}
             />
           </Route>
 
           <Route path="expenses" element={<Expenses />}>
             <Route
               path="addExpenses"
-              element={<AddIncomeOrExpense type={"addExpenses"} />}
+              element={<AddIncomeOrExpense type={"expenses"} />}
+            />
+            <Route
+              path="editExpense/:expenseId"
+              element={<AddIncomeOrExpense type={"expenses"} />}
             />
           </Route>
 
           <Route path="analytics" element={<Analytics />}>
             <Route
               path="addExpenses"
-              element={<AddIncomeOrExpense type={"addExpenses"} />}
+              element={<AddIncomeOrExpense type={"expenses"} />}
             />
           </Route>
 
           <Route path="profile" element={<Profile />}>
             <Route
               path="addExpenses"
-              element={<AddIncomeOrExpense type={"addExpenses"} />}
+              element={<AddIncomeOrExpense type={"expenses"} />}
             />
           </Route>
 
           <Route
             path="addIncome"
-            element={<AddIncomeOrExpense type={"addIncome"} />}
+            element={<AddIncomeOrExpense type={"income"} />}
           />
         </Route>
 

@@ -6,7 +6,7 @@ import { ExpensesCategoriesListType } from "../../components/Types";
 import Calendar from "../../components/Calendar/Calendar";
 import useDate from "../../hooks/useDate";
 import "./Expenses.scss";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 
 interface ExpensesListType {
   _id: string;
@@ -56,7 +56,11 @@ const Expenses = () => {
                   <h2>{expense.itemName}</h2>
                   <div>
                     <IconButton>
-                      <Edit />
+                      <Link
+                        to={`${window.location.pathname}/editExpense/${expense._id}`}
+                      >
+                        <Edit />
+                      </Link>
                     </IconButton>
                     <IconButton>
                       <Delete />

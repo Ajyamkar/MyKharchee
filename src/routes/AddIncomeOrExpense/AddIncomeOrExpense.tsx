@@ -18,7 +18,7 @@ import Calendar from "../../components/Calendar/Calendar";
 import useDate from "../../hooks/useDate";
 
 interface PropsType {
-  type: "addExpenses" | "addIncome";
+  type: "expenses" | "income";
 }
 
 /**
@@ -34,9 +34,9 @@ const AddIncomeOrExpense = ({ type }: PropsType) => {
   /**
    * State to show add-expenses/income flow.
    */
-  const [activeButton, setActiveButton] = React.useState<
-    "addExpenses" | "addIncome"
-  >(type);
+  const [activeButton, setActiveButton] = React.useState<"expenses" | "income">(
+    type
+  );
 
   /**
    * State to add expense/income for the selected date.
@@ -65,37 +65,45 @@ const AddIncomeOrExpense = ({ type }: PropsType) => {
 
   /**
    * function to close add expenses/income drawer.
+   * And redirect to previous route.
    */
   const closeDrawer = (): void => {
     resetStatesToDefaultValues();
     // clearing the localStorage, since we were storing the expense details
     // before user clicks on add-new-category button
     localStorage.length && localStorage.clear();
-
     setOpenDrawer(false);
+    // redirect to previous route after a delay 200ms
+    // so that user can experience drawer close instead of directly redirecting
+    setTimeout(() => {
+      window.history.back();
+    }, 200);
   };
 
   /**
    * function to set all the states to default value.
    */
   const resetStatesToDefaultValues = (): void => {
-    setActiveButton("addExpenses");
+    setActiveButton("expenses");
     handleDateChange(dayjs());
     setShowAddNewCategoryModel(false);
   };
 
   React.useEffect(() => {
     setOpenDrawer(true);
-    getExpenseCategoriesApi().then((response) => {
-      setExpenseCategoriesList(
-        response.data as Array<ExpensesCategoriesListType>
-      );
-    });
-    getIncomeCategoriesApi().then((response) => {
-      incomeCategoriesList.current = response.data
-        .list as Array<IncomeCategoriesListType>;
-    });
-  }, []);
+    if (type === "expenses") {
+      getExpenseCategoriesApi().then((response) => {
+        setExpenseCategoriesList(
+          response.data as Array<ExpensesCategoriesListType>
+        );
+      });
+    } else {
+      getIncomeCategoriesApi().then((response) => {
+        incomeCategoriesList.current = response.data
+          .list as Array<IncomeCategoriesListType>;
+      });
+    }
+  }, [type]);
 
   return (
     <div className="addIncomeOrExpense-main-container">
@@ -129,24 +137,20 @@ const AddIncomeOrExpense = ({ type }: PropsType) => {
 
               <ButtonGroup className="addIncomeOrExpense-add_button_group display-flex justify-content-center">
                 <Button
-                  className={
-                    activeButton === "addExpenses" ? "active-button" : ""
-                  }
+                  className={activeButton === "expenses" ? "active-button" : ""}
                   onClick={() => (window.location.href = "/addExpenses")}
                 >
                   Add Expenses
                 </Button>
                 <Button
-                  className={
-                    activeButton === "addIncome" ? "active-button" : ""
-                  }
+                  className={activeButton === "income" ? "active-button" : ""}
                   onClick={() => (window.location.href = "/addIncome")}
                 >
                   Add Income
                 </Button>
               </ButtonGroup>
 
-              {activeButton === "addExpenses" ? (
+              {activeButton === "expenses" ? (
                 <AddExpenses
                   selectedDate={date}
                   setShowAddNewCategoryModel={setShowAddNewCategoryModel}
