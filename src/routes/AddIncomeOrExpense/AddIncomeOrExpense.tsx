@@ -16,6 +16,7 @@ import {
 } from "../../api/expenses";
 import Calendar from "../../components/Calendar/Calendar";
 import useDate from "../../hooks/useDate";
+import { useParams } from "react-router-dom";
 
 interface PropsType {
   type: "expenses" | "income";
@@ -62,6 +63,11 @@ const AddIncomeOrExpense = ({ type }: PropsType) => {
   const [expenseCategoriesList, setExpenseCategoriesList] = React.useState<
     Array<ExpensesCategoriesListType>
   >([]);
+
+  /**
+   * Get expenseId from the url
+   */
+  const { expenseId } = useParams();
 
   /**
    * function to close add expenses/income drawer.
@@ -135,20 +141,28 @@ const AddIncomeOrExpense = ({ type }: PropsType) => {
                 />
               </div>
 
-              <ButtonGroup className="addIncomeOrExpense-add_button_group display-flex justify-content-center">
-                <Button
-                  className={activeButton === "expenses" ? "active-button" : ""}
-                  onClick={() => (window.location.href = "/addExpenses")}
-                >
-                  Add Expenses
-                </Button>
-                <Button
-                  className={activeButton === "income" ? "active-button" : ""}
-                  onClick={() => (window.location.href = "/addIncome")}
-                >
-                  Add Income
-                </Button>
-              </ButtonGroup>
+              {expenseId ? (
+                <h2 className="text-align-center">Edit an expense</h2>
+              ) : (
+                <ButtonGroup className="addIncomeOrExpense-add_button_group display-flex justify-content-center">
+                  <Button
+                    className={
+                      activeButton === "expenses" ? "active-button" : ""
+                    }
+                    onClick={() =>
+                      activeButton !== "expenses" && window.history.back()
+                    }
+                  >
+                    Add Expenses
+                  </Button>
+                  <Button
+                    className={activeButton === "income" ? "active-button" : ""}
+                    onClick={() => (window.location.href = "/addIncome")}
+                  >
+                    Add Income
+                  </Button>
+                </ButtonGroup>
+              )}
 
               {activeButton === "expenses" ? (
                 <AddExpenses
@@ -157,6 +171,7 @@ const AddIncomeOrExpense = ({ type }: PropsType) => {
                   expenseCategoriesList={expenseCategoriesList}
                   setExpenseCategoriesList={setExpenseCategoriesList}
                   closeDrawer={closeDrawer}
+                  handleDateChange={handleDateChange}
                 />
               ) : (
                 <AddIncome

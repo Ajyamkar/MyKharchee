@@ -18,9 +18,10 @@ import {
   deleteExpenseCategoryApi,
   getExpenseByIdApi,
 } from "../../api/expenses";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import ToastContext from "../../hooks/ToastContext";
 import { useParams } from "react-router-dom";
+import { AxiosResponse } from "axios";
 
 interface AddExpensesProps {
   selectedDate: dayjs.Dayjs;
@@ -30,6 +31,7 @@ interface AddExpensesProps {
     React.SetStateAction<Array<ExpensesCategoriesListType>>
   >;
   closeDrawer: () => void;
+  handleDateChange: (newDate: Dayjs) => void;
 }
 
 /**
@@ -90,9 +92,29 @@ const AddExpenses = (props: AddExpensesProps) => {
     if (expenseId) {
       getExpenseByIdApi(expenseId)
         .then((response) => {
-          console.log(response.data);
+          const {
+            amount: initialAmount,
+            date: dateOfExpense,
+            itemName: initialItemName,
+            category: initialCategory,
+          } = response.data;
+
+          props.handleDateChange(dayjs(dateOfExpense));
+          setAmount(initialAmount);
+          setItemName(initialItemName);
+          setSelectedCategoryId(initialCategory._id);
+          setNextButtonCounter(2);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          setToastState({
+            status: "error",
+            message: err.response.data,
+            isOpened: true,
+          });
+          setTimeout(() => {
+            window.history.back();
+          }, 1000);
+        });
     } else if (localStorage.length) {
       const itemNameLSKey = localStorage.getItem("itemName");
       const amountLSKey = localStorage.getItem("amount");
@@ -209,17 +231,29 @@ const AddExpenses = (props: AddExpensesProps) => {
    * Function to save expense.
    */
   const saveExpenseDetails = () => {
-    addUserExpenseApi({
-      date: props.selectedDate.toDate(),
-      itemName,
-      amount: amount ?? 0,
-      categoryId: selectedCategoryId,
-    })
+    let promise: Promise<AxiosResponse<any, any>>;
+    if (expenseId) {
+      promise = addUserExpenseApi({
+        date: props.selectedDate.toDate(),
+        itemName,
+        amount: amount ?? 0,
+        categoryId: selectedCategoryId,
+      });
+    } else {
+      promise = addUserExpenseApi({
+        date: props.selectedDate.toDate(),
+        itemName,
+        amount: amount ?? 0,
+        categoryId: selectedCategoryId,
+      });
+    }
+
+    promise
       .then((response) => {
         setToastState({
           isOpened: true,
           status: "success",
-          message: "Successfully added the expenses",
+          message: response.data,
         });
       })
       .catch((error) => {
