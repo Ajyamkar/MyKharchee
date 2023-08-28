@@ -114,6 +114,26 @@ const getExpenseByIdApi = async (expenseId: string) => {
   return response;
 };
 
+/**
+ * Api call to edit an expense by an expenseId
+ * @param data - expense data to be updated.
+ * @param expenseId - id of expense to be updated.
+ */
+const updateExpenseByExpenseIdApi = async (
+  data: { editedData: any },
+  expenseId: string
+) => {
+  const response = await instance({
+    url: `/api/expense/updateExpenseByExpenseId/${expenseId}`,
+    method: "PUT",
+    headers: {
+      authorization: getUserAuthorizationToken(),
+    },
+    data,
+  });
+  return response;
+};
+
 export {
   addUserExpenseApi,
   addExpenseCategoryApi,
@@ -122,4 +142,5 @@ export {
   getIncomeCategoriesApi,
   getExpenseForSelectedDateApi,
   getExpenseByIdApi,
+  updateExpenseByExpenseIdApi,
 };

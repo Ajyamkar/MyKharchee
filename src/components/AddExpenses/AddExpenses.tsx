@@ -17,6 +17,7 @@ import {
   addUserExpenseApi,
   deleteExpenseCategoryApi,
   getExpenseByIdApi,
+  updateExpenseByExpenseIdApi,
 } from "../../api/expenses";
 import dayjs, { Dayjs } from "dayjs";
 import ToastContext from "../../hooks/ToastContext";
@@ -212,7 +213,7 @@ const AddExpenses = (props: AddExpensesProps) => {
    * Function to validate inputs on every next button click.
    * @returns errors text if any.
    */
-  const validateInputFields = (): string => {
+  const validateInputFields = () => {
     let err = "";
     if (!itemName) {
       err = "Please enter item name";
@@ -228,17 +229,23 @@ const AddExpenses = (props: AddExpensesProps) => {
   };
 
   /**
-   * Function to save expense.
+   * Function to save edited or new expense.
    */
   const saveExpenseDetails = () => {
     let promise: Promise<AxiosResponse<any, any>>;
+
     if (expenseId) {
-      promise = addUserExpenseApi({
-        date: props.selectedDate.toDate(),
-        itemName,
-        amount: amount ?? 0,
-        categoryId: selectedCategoryId,
-      });
+      promise = updateExpenseByExpenseIdApi(
+        {
+          editedData: {
+            itemName,
+            amount,
+            date: props.selectedDate,
+            categoryId: selectedCategoryId,
+          },
+        },
+        expenseId
+      );
     } else {
       promise = addUserExpenseApi({
         date: props.selectedDate.toDate(),
