@@ -55,13 +55,13 @@ const Expenses = () => {
                 <div className="display-flex justify-content-space-between align-items-center">
                   <h2>{expense.itemName}</h2>
                   <div>
-                    <IconButton>
-                      <Link
-                        to={`${window.location.pathname}/editExpense/${expense._id}`}
-                      >
+                    <Link
+                      to={`${window.location.pathname}/editExpense/${expense._id}`}
+                    >
+                      <IconButton>
                         <Edit />
-                      </Link>
-                    </IconButton>
+                      </IconButton>
+                    </Link>
                     <IconButton>
                       <Delete />
                     </IconButton>

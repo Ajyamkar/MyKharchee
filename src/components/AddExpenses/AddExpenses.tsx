@@ -224,6 +224,8 @@ const AddExpenses = (props: AddExpensesProps) => {
       nextButtonCounter >= CATEGORY_BUTTONS_POSITION_INDEX
     ) {
       err = "Please select the category";
+    } else if (amount && amount <= 0) {
+      err = "Amount should be positive";
     }
     return err;
   };
@@ -363,9 +365,7 @@ const AddExpenses = (props: AddExpensesProps) => {
         onClick={updateButtonCounter}
         className="mt-1 bold font-size-large"
       >
-        {nextButtonCounter >= CATEGORY_BUTTONS_POSITION_INDEX
-          ? "Confirm"
-          : "Next"}
+        {nextButtonCounter >= CATEGORY_BUTTONS_POSITION_INDEX ? "Save" : "Next"}
       </Button>
     </div>
   );

@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { InboxRounded } from "@mui/icons-material";
+import { Link } from "react-router-dom";
 
 const Navbar: React.FC = () => {
   /**
@@ -62,12 +63,15 @@ const Navbar: React.FC = () => {
               selected={selectedMenuOptionIndex === index}
               onClick={() => {
                 setSelectedMenuOptionIndex(index);
+                setOpenMenu(false);
               }}
             >
-              <ListItemIcon>
-                <InboxRounded />
-                <ListItemText primary={option} />
-              </ListItemIcon>
+              <Link to={option.toLocaleLowerCase()}>
+                <ListItemIcon>
+                  <InboxRounded />
+                  <ListItemText primary={option} />
+                </ListItemIcon>
+              </Link>
             </ListItemButton>
           </ListItem>
         );
