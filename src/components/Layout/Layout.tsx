@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import AuthenticateContext from "../../hooks/Authentication/AuthenticateContext";
 import Navbar from "../TopAppBar/Navbar";
 import "./Layout.scss";
@@ -25,6 +25,11 @@ const Layout = () => {
     }
   }, [isUserLoggedIn]);
 
+  /**
+   * To navigate to another route.
+   */
+  const navigate = useNavigate();
+
   return (
     <>
       <Navbar />
@@ -32,10 +37,11 @@ const Layout = () => {
         <Outlet />
       </div>
 
-      <IconButton className="addExpensesDrawer-button">
-        <Link to={`${window.location.pathname}/addExpenses`}>
-          <AddCircleIcon className="addExpensesDrawer-icon" />
-        </Link>
+      <IconButton
+        onClick={() => navigate(`${window.location.pathname}/addExpenses`)}
+        className="addExpensesDrawer-button"
+      >
+        <AddCircleIcon className="addExpensesDrawer-icon" />
       </IconButton>
     </>
   );

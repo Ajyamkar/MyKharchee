@@ -25,12 +25,6 @@ const Navbar: React.FC = () => {
   const [openMenu, setOpenMenu] = React.useState<boolean>(false);
 
   /**
-   * State to keep track of selected menu option.
-   */
-  const [selectedMenuOptionIndex, setSelectedMenuOptionIndex] =
-    React.useState<number>(0);
-
-  /**
    * List of menu options.
    */
   const menuOptions = ["Dashboard", "Expenses", "Analytics", "Profile"];
@@ -60,11 +54,10 @@ const Navbar: React.FC = () => {
         return (
           <ListItem key={index}>
             <ListItemButton
-              selected={selectedMenuOptionIndex === index}
-              onClick={() => {
-                setSelectedMenuOptionIndex(index);
-                setOpenMenu(false);
-              }}
+              selected={window.location.href.includes(
+                option.toLocaleLowerCase()
+              )}
+              onClick={() => setOpenMenu(false)}
             >
               <Link to={option.toLocaleLowerCase()}>
                 <ListItemIcon>

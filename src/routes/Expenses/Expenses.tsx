@@ -1,12 +1,13 @@
 import { Delete, Edit } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
-import { useEffect, useState } from "react";
+import { CircularProgress, IconButton } from "@mui/material";
+import { useContext, useEffect, useState } from "react";
 import { getExpenseForSelectedDateApi } from "../../api/expenses";
 import { ExpensesCategoriesListType } from "../../components/Types";
 import Calendar from "../../components/Calendar/Calendar";
 import useDate from "../../hooks/useDate";
 import "./Expenses.scss";
 import { Link, Outlet } from "react-router-dom";
+import ToastContext from "../../hooks/ToastContext";
 
 interface ExpensesListType {
   _id: string;
@@ -21,20 +22,37 @@ const Expenses = () => {
    */
   const { date, datePickerLabel, handleDateChange } = useDate();
 
+  /**
+   * State to keep to track of expenses list for a selected date.
+   */
   const [expensesForSelectedDate, setExpensesForSelectedDate] = useState<
     Array<ExpensesListType>
   >([]);
 
+  const { toastState } = useContext(ToastContext);
+
+  /**
+   * Boolean to show loader while data is being fetched.
+   */
+  const [isFetching, setIsFetching] = useState(true);
+
+  /**
+   * Expenses are re-fetched whenever there is change in date & toastState,
+   * ToastState is added in dependency arr so that whenever add/edit/delete
+   * expense operation is completed, the updated expensesForSelectedDate is
+   * upto date with latest data.
+   */
   useEffect(() => {
+    setIsFetching(true);
     getExpenseForSelectedDateApi(date.toDate())
-      .then((response) => {
-        console.log(response.data as ExpensesListType);
-        setExpensesForSelectedDate(response.data as Array<ExpensesListType>);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [date]);
+      .then((response) =>
+        setExpensesForSelectedDate(
+          response.data.expenses as Array<ExpensesListType>
+        )
+      )
+      .catch((err) => setExpensesForSelectedDate([]))
+      .finally(() => setIsFetching(false));
+  }, [date, toastState]);
 
   return (
     <>
@@ -49,7 +67,9 @@ const Expenses = () => {
         </div>
 
         <div className="expenses-list-container">
-          {expensesForSelectedDate.length ? (
+          {isFetching ? (
+            <CircularProgress />
+          ) : expensesForSelectedDate.length ? (
             expensesForSelectedDate.map((expense) => (
               <div className="expense-continer" key={expense._id}>
                 <div className="display-flex justify-content-space-between align-items-center">

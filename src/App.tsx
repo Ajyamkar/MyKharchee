@@ -36,17 +36,13 @@ function App() {
    */
   useEffect(() => {
     isUserLoggedInApi()
-      .then(() => {
-        setIsUserLoggedIn(true);
-      })
-      .catch(() => {
-        setIsUserLoggedIn(false);
-      });
+      .then(() => setIsUserLoggedIn(true))
+      .catch(() => setIsUserLoggedIn(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <ToastContext.Provider value={{ setToastState }}>
+    <ToastContext.Provider value={{ setToastState, toastState }}>
       <div className="app">
         <AuthenticateContext.Provider value={{ isUserLoggedIn }}>
           <AppRoutes />
