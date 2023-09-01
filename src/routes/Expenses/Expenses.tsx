@@ -29,6 +29,11 @@ const Expenses = () => {
     Array<ExpensesListType>
   >([]);
 
+  /**
+   * State to keep track of total expenses amount for a selected date.
+   */
+  const [totalExpenseAmount, setTotalExpenseAmount] = useState(0);
+
   const { toastState } = useContext(ToastContext);
 
   /**
@@ -45,12 +50,13 @@ const Expenses = () => {
   useEffect(() => {
     setIsFetching(true);
     getExpenseForSelectedDateApi(date.toDate())
-      .then((response) =>
+      .then((response) => {
         setExpensesForSelectedDate(
           response.data.expenses as Array<ExpensesListType>
-        )
-      )
-      .catch((err) => setExpensesForSelectedDate([]))
+        );
+        setTotalExpenseAmount(response.data.totalExpenseAmount as number);
+      })
+      .catch(() => setExpensesForSelectedDate([]))
       .finally(() => setIsFetching(false));
   }, [date, toastState]);
 
@@ -70,32 +76,38 @@ const Expenses = () => {
           {isFetching ? (
             <CircularProgress />
           ) : expensesForSelectedDate.length ? (
-            expensesForSelectedDate.map((expense) => (
-              <div className="expense-continer" key={expense._id}>
-                <div className="display-flex justify-content-space-between align-items-center">
-                  <h2>{expense.itemName}</h2>
-                  <div>
-                    <Link
-                      to={`${window.location.pathname}/editExpense/${expense._id}`}
-                    >
+            <>
+              <h3 className="text-align-center">
+                Total Expenses for {date.toDate().toDateString()} is{" "}
+                <span className="color-error">{totalExpenseAmount}</span>
+              </h3>
+              {expensesForSelectedDate.map((expense) => (
+                <div className="expense-continer" key={expense._id}>
+                  <div className="display-flex justify-content-space-between align-items-center">
+                    <h2>{expense.itemName}</h2>
+                    <div>
+                      <Link
+                        to={`${window.location.pathname}/editExpense/${expense._id}`}
+                      >
+                        <IconButton>
+                          <Edit />
+                        </IconButton>
+                      </Link>
                       <IconButton>
-                        <Edit />
+                        <Delete />
                       </IconButton>
-                    </Link>
-                    <IconButton>
-                      <Delete />
-                    </IconButton>
+                    </div>
+                  </div>
+
+                  <div className="display-flex justify-content-space-between align-items-center">
+                    <h2 className="color-error">- {expense.amount}</h2>
+                    <span className="category">
+                      {expense.category.categoryName}
+                    </span>
                   </div>
                 </div>
-
-                <div className="display-flex justify-content-space-between align-items-center">
-                  <h2 className="color-error">- {expense.amount}</h2>
-                  <span className="category">
-                    {expense.category.categoryName}
-                  </span>
-                </div>
-              </div>
-            ))
+              ))}
+            </>
           ) : (
             <h1>Expenses not added for selected date</h1>
           )}
