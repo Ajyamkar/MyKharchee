@@ -1,7 +1,10 @@
 import { Delete, Edit } from "@mui/icons-material";
 import { CircularProgress, IconButton } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { getExpenseForSelectedDateApi } from "../../api/expenses";
+import {
+  deleteExpenseByExpenseId,
+  getExpenseForSelectedDateApi,
+} from "../../api/expenses";
 import { ExpensesCategoriesListType } from "../../components/Types";
 import Calendar from "../../components/Calendar/Calendar";
 import useDate from "../../hooks/useDate";
@@ -34,7 +37,7 @@ const Expenses = () => {
    */
   const [totalExpenseAmount, setTotalExpenseAmount] = useState(0);
 
-  const { toastState } = useContext(ToastContext);
+  const { toastState, setToastState } = useContext(ToastContext);
 
   /**
    * Boolean to show loader while data is being fetched.
@@ -59,6 +62,28 @@ const Expenses = () => {
       .catch(() => setExpensesForSelectedDate([]))
       .finally(() => setIsFetching(false));
   }, [date, toastState]);
+
+  /**
+   * Function to delete an expense.
+   * @param expenseId - id of the expense to be deleted
+   */
+  const deleteExpense = (expenseId: string) => {
+    deleteExpenseByExpenseId(expenseId)
+      .then(() => {
+        setToastState({
+          isOpened: true,
+          message: "Successfully deleted an expense",
+          status: "success",
+        });
+      })
+      .catch((err) => {
+        setToastState({
+          isOpened: true,
+          message: "Something went wrong, try again",
+          status: "error",
+        });
+      });
+  };
 
   return (
     <>
@@ -93,7 +118,11 @@ const Expenses = () => {
                           <Edit />
                         </IconButton>
                       </Link>
-                      <IconButton>
+                      <IconButton
+                        onClick={() => {
+                          deleteExpense(expense._id);
+                        }}
+                      >
                         <Delete />
                       </IconButton>
                     </div>

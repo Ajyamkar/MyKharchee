@@ -134,6 +134,21 @@ const updateExpenseByExpenseIdApi = async (
   return response;
 };
 
+/**
+ * Api call to delete an expense by an expenseId
+ * @param expenseId - id of an expense to be deleted
+ */
+const deleteExpenseByExpenseId = async (expenseId: string) => {
+  const response = await instance({
+    url: `/api/expense/deleteExpenseByExpenseId/${expenseId}`,
+    method: "DELETE",
+    headers: {
+      authorization: getUserAuthorizationToken(),
+    },
+  });
+  return response;
+};
+
 export {
   addUserExpenseApi,
   addExpenseCategoryApi,
@@ -143,4 +158,5 @@ export {
   getExpenseForSelectedDateApi,
   getExpenseByIdApi,
   updateExpenseByExpenseIdApi,
+  deleteExpenseByExpenseId,
 };
