@@ -100,7 +100,7 @@ const AddIncomeOrExpense = ({ type }: PropsType) => {
     if (type === "expenses") {
       getExpenseCategoriesApi().then((response) => {
         setExpenseCategoriesList(
-          response.data as Array<ExpensesCategoriesListType>
+          response?.data as Array<ExpensesCategoriesListType>
         );
       });
     } else {

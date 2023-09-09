@@ -1,10 +1,12 @@
 import {
   Alert,
+  Box,
   Button,
   FilledInput,
   FormControl,
   FormHelperText,
   InputAdornment,
+  Skeleton,
 } from "@mui/material";
 import React, { useContext, useEffect } from "react";
 import "./AddExpenses.scss";
@@ -48,6 +50,8 @@ const CATEGORY_BUTTONS_POSITION_INDEX = 2;
  * @param props.setShowAddNewCategoryModel- callback function to show/hide this component.
  * @param props.setExpenseCategoriesList - callback function to update list of expenses category.
  * @param props.closeDrawer - callback function to close drawer on successfully adding expense.
+ * @param props.selectedDate - selected date to add/update expense.
+ * @param props.handleDateChange - callback function to change the date.
  */
 const AddExpenses = (props: AddExpensesProps) => {
   /**
@@ -86,11 +90,22 @@ const AddExpenses = (props: AddExpensesProps) => {
   const { expenseId } = useParams();
 
   /**
+   * Boolean for showing intermediate state while saving the expense
+   */
+  const [isSaving, setIsSaving] = React.useState(false);
+
+  /**
+   * Boolean to show loader while fetching data.
+   */
+  const [isFetching, setIsFetching] = React.useState(false);
+
+  /**
    * Updates the states with previously added expense details that were stored in localStorage
    * when the user click's on add new category.
    */
   useEffect(() => {
     if (expenseId) {
+      setIsFetching(true);
       getExpenseByIdApi(expenseId)
         .then((response) => {
           const {
@@ -103,7 +118,10 @@ const AddExpenses = (props: AddExpensesProps) => {
           props.handleDateChange(dayjs(dateOfExpense));
           setAmount(initialAmount);
           setItemName(initialItemName);
-          setSelectedCategoryId(initialCategory._id);
+
+          // category can be a previously deleted category so select only non-deleted category
+          initialCategory.categoryName !== "Deleted Category" &&
+            setSelectedCategoryId(initialCategory._id);
           setNextButtonCounter(2);
         })
         .catch((err) => {
@@ -115,7 +133,8 @@ const AddExpenses = (props: AddExpensesProps) => {
           setTimeout(() => {
             window.history.back();
           }, 1000);
-        });
+        })
+        .finally(() => setIsFetching(false));
     } else if (localStorage.length) {
       const itemNameLSKey = localStorage.getItem("itemName");
       const amountLSKey = localStorage.getItem("amount");
@@ -204,7 +223,6 @@ const AddExpenses = (props: AddExpensesProps) => {
       setNextButtonCounter(nextButtonCounter + 1);
       if (nextButtonCounter >= CATEGORY_BUTTONS_POSITION_INDEX) {
         saveExpenseDetails();
-        props.closeDrawer();
       }
     }
   };
@@ -234,8 +252,9 @@ const AddExpenses = (props: AddExpensesProps) => {
    * Function to save edited or new expense.
    */
   const saveExpenseDetails = () => {
-    let promise: Promise<AxiosResponse<any, any>>;
+    setIsSaving(true);
 
+    let promise: Promise<AxiosResponse<any, any>>;
     if (expenseId) {
       promise = updateExpenseByExpenseIdApi(
         {
@@ -271,102 +290,122 @@ const AddExpenses = (props: AddExpensesProps) => {
           status: "error",
           message: "Something went wrong",
         });
+      })
+      .finally(() => {
+        setIsSaving(false);
+        props.closeDrawer();
       });
   };
 
   return (
     <div className="addExpenses mt-1">
-      <div className="expense-option">
-        <h1 className="mb-0">On which item did you spend?</h1>
-        <FormControl fullWidth variant="filled">
-          <FilledInput
-            placeholder="Enter the description.."
-            value={itemName}
-            startAdornment={
-              <InputAdornment className="mt-0" position="start">
-                <NotesIcon />
-              </InputAdornment>
-            }
-            onChange={handleItemNameChange}
-            className="expense-description-input font-size-large"
-          />
-        </FormControl>
-      </div>
-
-      <div
-        className={`expense-option ${
-          nextButtonCounter < AMOUNT_POSITION_INDEX
-            ? "display-none"
-            : "display-block"
-        }`}
-      >
-        <h1 className="mb-0">How much did you spend?</h1>
-        <FormControl fullWidth variant="filled">
-          <FilledInput
-            value={amount || ""}
-            startAdornment={
-              <InputAdornment className="mt-0" position="start">
-                <CurrencyRupeeRoundedIcon />
-              </InputAdornment>
-            }
-            onChange={handleAmountChange}
-            type={"number"}
-            className="amount-spent-input bold font-size-large"
-          />
-          <FormHelperText className="amount-helper-text ml-0">
-            Enter the amount you have spent to help us keep track of your
-            expenses
-          </FormHelperText>
-        </FormControl>
-      </div>
-      <div
-        className={`expense-option ${
-          nextButtonCounter < CATEGORY_BUTTONS_POSITION_INDEX
-            ? "display-none"
-            : "display-block"
-        }`}
-      >
-        <h1 className="mb-0">Select the expenes category</h1>
-        <div className="categories-button-group">
-          <CategoriesButtonList
-            categoriesList={props.expenseCategoriesList}
-            selectedCategoryId={selectedCategoryId}
-            categoryListType="addExpenses"
-            setSelectedCategoryId={setSelectedCategoryId}
-            removeSelectedCategory={removeSelectedCategory}
-          />
-          <Button
-            variant="outlined"
-            startIcon={<Add />}
-            onClick={showNewCategoryModel}
-            className="category-button outlined-button"
+      {isFetching ? (
+        <Box>
+          <Skeleton height={100} />
+          <Skeleton height={100} />
+          <Skeleton height={300} className="m0" />
+        </Box>
+      ) : (
+        <>
+          <div className="expense-option">
+            <h1 className="mb-0">On which item did you spend?</h1>
+            <FormControl fullWidth variant="filled">
+              <FilledInput
+                placeholder="Enter the description.."
+                value={itemName}
+                startAdornment={
+                  <InputAdornment className="mt-0" position="start">
+                    <NotesIcon />
+                  </InputAdornment>
+                }
+                onChange={handleItemNameChange}
+                className="expense-description-input font-size-large"
+              />
+            </FormControl>
+          </div>
+          <div
+            className={`expense-option ${
+              nextButtonCounter < AMOUNT_POSITION_INDEX
+                ? "display-none"
+                : "display-block"
+            }`}
           >
-            New Category
+            <h1 className="mb-0">How much did you spend?</h1>
+            <FormControl fullWidth variant="filled">
+              <FilledInput
+                value={amount || ""}
+                startAdornment={
+                  <InputAdornment className="mt-0" position="start">
+                    <CurrencyRupeeRoundedIcon />
+                  </InputAdornment>
+                }
+                onChange={handleAmountChange}
+                type={"number"}
+                className="amount-spent-input bold font-size-large"
+              />
+              <FormHelperText className="amount-helper-text ml-0">
+                Enter the amount you have spent to help us keep track of your
+                expenses
+              </FormHelperText>
+            </FormControl>
+          </div>
+          <div
+            className={`expense-option ${
+              nextButtonCounter < CATEGORY_BUTTONS_POSITION_INDEX
+                ? "display-none"
+                : "display-block"
+            }`}
+          >
+            <h1 className="mb-0">Select the expenes category</h1>
+            <div className="categories-button-group">
+              <CategoriesButtonList
+                categoriesList={props.expenseCategoriesList}
+                selectedCategoryId={selectedCategoryId}
+                categoryListType="addExpenses"
+                setSelectedCategoryId={setSelectedCategoryId}
+                removeSelectedCategory={removeSelectedCategory}
+              />
+              <Button
+                variant="outlined"
+                startIcon={<Add />}
+                onClick={showNewCategoryModel}
+                className="category-button outlined-button"
+              >
+                New Category
+              </Button>
+            </div>
+            <FormHelperText className="ml-1">
+              Double click to delete category
+            </FormHelperText>
+          </div>
+          <Alert
+            className={`pt-0 pb-0 mt-1 align-items-center ${
+              errorMessage ? "display-flex" : "display-none"
+            }`}
+            severity="error"
+          >
+            {errorMessage}
+          </Alert>
+          <Button
+            fullWidth
+            variant="contained"
+            color="success"
+            onClick={updateButtonCounter}
+            className="mt-1 bold font-size-large"
+            disabled={isSaving}
+          >
+            {isSaving ? (
+              <span>Saving...</span>
+            ) : (
+              <span>
+                {nextButtonCounter >= CATEGORY_BUTTONS_POSITION_INDEX
+                  ? "Save"
+                  : "Next"}
+              </span>
+            )}
           </Button>
-        </div>
-        <FormHelperText className="ml-1">
-          Double click to delete category
-        </FormHelperText>
-      </div>
-
-      <Alert
-        className={`pt-0 pb-0 mt-1 align-items-center ${
-          errorMessage ? "display-flex" : "display-none"
-        }`}
-        severity="error"
-      >
-        {errorMessage}
-      </Alert>
-
-      <Button
-        fullWidth
-        variant="contained"
-        color="success"
-        onClick={updateButtonCounter}
-        className="mt-1 bold font-size-large"
-      >
-        {nextButtonCounter >= CATEGORY_BUTTONS_POSITION_INDEX ? "Save" : "Next"}
-      </Button>
+        </>
+      )}
     </div>
   );
 };

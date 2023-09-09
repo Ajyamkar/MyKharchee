@@ -131,7 +131,7 @@ const Expenses = () => {
                   <div className="display-flex justify-content-space-between align-items-center">
                     <h2 className="color-error">- {expense.amount}</h2>
                     <span className="category">
-                      {expense.category.categoryName}
+                      {expense.category.categoryName || "Deleted Category"}
                     </span>
                   </div>
                 </div>
