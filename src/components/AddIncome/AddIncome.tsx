@@ -5,7 +5,9 @@ import {
   FormControl,
   InputAdornment,
 } from "@mui/material";
+import dayjs from "dayjs";
 import React, { useContext } from "react";
+import { saveUserIncome } from "../../api/income";
 import ToastContext from "../../hooks/ToastContext";
 import CategoriesButtonList from "../CategoriesButtonList/CategoriesButtonList";
 import { IncomeCategoriesListType } from "../Types";
@@ -14,6 +16,7 @@ import "./AddIncome.scss";
 interface AddIncomeProps {
   incomeCategoriesList: Array<IncomeCategoriesListType>;
   closeDrawer: () => void;
+  selectedDate: dayjs.Dayjs;
 }
 
 /**
@@ -50,12 +53,26 @@ const AddIncome = (props: AddIncomeProps) => {
    * Function to save the income details.
    */
   const saveIncomeDetails = () => {
-    setToastState({
-      isOpened: true,
-      status: "success",
-      message: "Successfully added the income",
-    });
-    props.closeDrawer();
+    saveUserIncome({
+      date: props.selectedDate.toDate(),
+      amount: amount ?? 0,
+      categoryId: selectedCategoryId,
+    })
+      .then((response) => {
+        setToastState({
+          isOpened: true,
+          status: "success",
+          message: response.data,
+        });
+      })
+      .catch(() => {
+        setToastState({
+          isOpened: true,
+          status: "error",
+          message: "something went wrong, try again",
+        });
+      })
+      .finally(() => props.closeDrawer());
   };
 
   return (

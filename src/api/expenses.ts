@@ -53,21 +53,6 @@ const getExpenseCategoriesApi = async () => {
 };
 
 /**
- * Api call to get list of income categories.
- * currently all user's will have a default income categories.
- */
-const getIncomeCategoriesApi = async () => {
-  const response = await instance({
-    url: "/api/income/getDefaultIncomeCategories",
-    method: "GET",
-    headers: {
-      authorization: getUserAuthorizationToken(),
-    },
-  });
-  return response;
-};
-
-/**
  * Api call to delete an expense category of a user.
  */
 const deleteExpenseCategoryApi = async (
@@ -154,7 +139,6 @@ export {
   addExpenseCategoryApi,
   getExpenseCategoriesApi,
   deleteExpenseCategoryApi,
-  getIncomeCategoriesApi,
   getExpenseForSelectedDateApi,
   getExpenseByIdApi,
   updateExpenseByExpenseIdApi,

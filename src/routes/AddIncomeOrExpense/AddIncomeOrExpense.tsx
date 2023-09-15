@@ -10,13 +10,11 @@ import {
   ExpensesCategoriesListType,
   IncomeCategoriesListType,
 } from "../../components/Types";
-import {
-  getExpenseCategoriesApi,
-  getIncomeCategoriesApi,
-} from "../../api/expenses";
+import { getExpenseCategoriesApi } from "../../api/expenses";
 import Calendar from "../../components/Calendar/Calendar";
 import useDate from "../../hooks/useDate";
 import { useParams } from "react-router-dom";
+import { getIncomeCategoriesApi } from "../../api/income";
 
 interface PropsType {
   type: "expenses" | "income";
@@ -177,6 +175,7 @@ const AddIncomeOrExpense = ({ type }: PropsType) => {
                 <AddIncome
                   incomeCategoriesList={incomeCategoriesList.current}
                   closeDrawer={closeDrawer}
+                  selectedDate={date}
                 />
               )}
             </>

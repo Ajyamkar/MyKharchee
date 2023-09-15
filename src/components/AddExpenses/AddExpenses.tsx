@@ -261,7 +261,7 @@ const AddExpenses = (props: AddExpensesProps) => {
           editedData: {
             itemName,
             amount,
-            date: props.selectedDate,
+            date: props.selectedDate.toDate(),
             categoryId: selectedCategoryId,
           },
         },

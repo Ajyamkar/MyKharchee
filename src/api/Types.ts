@@ -36,6 +36,12 @@ interface deleteExpenseCategoryDataType {
   expenseCategoryId: string;
 }
 
+interface addIncomeDataType {
+  date: Date;
+  amount: number;
+  categoryId: string;
+}
+
 export type {
   signupDataType,
   loginDataType,
@@ -44,4 +50,5 @@ export type {
   addExpenseDataType,
   addExpenseCategoryDataType,
   deleteExpenseCategoryDataType,
+  addIncomeDataType,
 };
