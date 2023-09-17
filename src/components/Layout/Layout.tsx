@@ -30,6 +30,20 @@ const Layout = () => {
    */
   const navigate = useNavigate();
 
+  /**
+   * Onclicking add income button,
+   * Will navigate to addIncome route if the current route is income route OR
+   * Will navigate to addExpenses route
+   */
+  const route = () => {
+    const { pathname } = window.location;
+    let redirectTo = "addExpenses";
+    if (pathname.includes("income")) {
+      redirectTo = "addIncome";
+    }
+    return `${pathname}/${redirectTo}`;
+  };
+
   return (
     <>
       <Navbar />
@@ -38,7 +52,7 @@ const Layout = () => {
       </div>
 
       <IconButton
-        onClick={() => navigate(`${window.location.pathname}/addExpenses`)}
+        onClick={() => navigate(route())}
         className="addExpensesDrawer-button"
       >
         <AddCircleIcon className="addExpensesDrawer-icon" />

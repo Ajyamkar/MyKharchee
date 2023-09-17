@@ -155,7 +155,7 @@ const AddIncomeOrExpense = ({ type }: PropsType) => {
                   </Button>
                   <Button
                     className={activeButton === "income" ? "active-button" : ""}
-                    onClick={() => (window.location.href = "/addIncome")}
+                    onClick={() => (window.location.href = "/income/addIncome")}
                   >
                     Add Income
                   </Button>

@@ -27,7 +27,13 @@ const Navbar: React.FC = () => {
   /**
    * List of menu options.
    */
-  const menuOptions = ["Dashboard", "Expenses", "Analytics", "Profile"];
+  const menuOptions = [
+    "Dashboard",
+    "Expenses",
+    "Income",
+    "Analytics",
+    "Profile",
+  ];
 
   /**
    * funtion to open or close on clicking the menu button.
@@ -53,19 +59,22 @@ const Navbar: React.FC = () => {
       {menuOptions.map((option, index) => {
         return (
           <ListItem key={index}>
-            <ListItemButton
-              selected={window.location.href.includes(
-                option.toLocaleLowerCase()
-              )}
-              onClick={() => setOpenMenu(false)}
+            <Link
+              to={option.toLocaleLowerCase()}
+              className="text-decoration-none"
             >
-              <Link to={option.toLocaleLowerCase()}>
+              <ListItemButton
+                selected={window.location.href.includes(
+                  option.toLocaleLowerCase()
+                )}
+                onClick={() => setOpenMenu(false)}
+              >
                 <ListItemIcon>
                   <InboxRounded />
                   <ListItemText primary={option} />
                 </ListItemIcon>
-              </Link>
-            </ListItemButton>
+              </ListItemButton>
+            </Link>
           </ListItem>
         );
       })}
