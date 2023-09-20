@@ -8,6 +8,7 @@ interface CalendarPropsType {
   datePickerLabel: string;
   date: Dayjs;
   handleDateChange: (newDate: Dayjs) => void;
+  calenderView?: "monthAndYear" | "fullview";
 }
 
 /**
@@ -15,12 +16,13 @@ interface CalendarPropsType {
  * @param datePickerLabel - label text for date picker input
  * @param date - selected date
  * @param handleDateChange - callback function to chnage the date
- * @returns
+ * @param calenderView (optional) - to indicate whether to show only month & year or full date format default value is full date
  */
 const Calendar = ({
   datePickerLabel,
   date,
   handleDateChange,
+  calenderView = "fullview",
 }: CalendarPropsType) => {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -31,9 +33,14 @@ const Calendar = ({
           onChange={(newValue) => {
             newValue && handleDateChange(newValue);
           }}
-          format="DD-MM-YYYY"
+          format={calenderView === "fullview" ? "DD-MM-YYYY" : undefined}
           slotProps={{ textField: { size: "small" } }}
-          className="date-picker"
+          className={calenderView === "fullview" ? "date-picker" : ""}
+          views={
+            calenderView === "fullview"
+              ? ["year", "month", "day"]
+              : ["month", "year"]
+          }
         />
       </DemoContainer>
     </LocalizationProvider>

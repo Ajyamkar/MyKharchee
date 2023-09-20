@@ -1,38 +1,43 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import { getUserIncome } from "../../api/income";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import useDate from "../../hooks/useDate";
+import Calendar from "../../components/Calendar/Calendar";
 
+/**
+ * Component renders user income get for a particular month
+ */
 const Income = () => {
+  /**
+   * State to show income for the selected date.
+   */
+  const { date, handleDateChange } = useDate();
+
   React.useEffect(() => {
-    getUserIncome(new Date())
+    getUserIncome(date.toDate())
       .then((response) => {
         console.log(response.data);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [date]);
 
   return (
     <div>
       <div>
         <h1>Income</h1>
 
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DemoContainer components={["DatePicker"]}>
-            <DatePicker
-              label={'"month" and "year"'}
-              views={["month", "year"]}
-              onChange={(newValue) => {
-                console.log(newValue);
-              }}
-            />
-          </DemoContainer>
-        </LocalizationProvider>
+        <Calendar
+          date={date}
+          handleDateChange={handleDateChange}
+          datePickerLabel={
+            date.toDate().getMonth() === new Date().getMonth()
+              ? "this month"
+              : "Selected month"
+          }
+          calenderView="monthAndYear"
+        />
       </div>
       <Outlet />
     </div>

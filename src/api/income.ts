@@ -38,12 +38,14 @@ const saveUserIncome = async (data: addIncomeDataType) => {
  * @param selectedDate - selected date
  */
 const getUserIncome = async (selectedDate: Date) => {
-  const month = new Date(selectedDate).toLocaleString("default", {
+  const date = new Date(selectedDate);
+  const month = date.toLocaleString("default", {
     month: "long",
   });
+  const year = date.getFullYear();
   const response = instance({
     method: "GET",
-    url: `/api/income/getIncome/${month}`,
+    url: `/api/income/getIncome/month/${month}/year/${year}`,
     headers: {
       authorization: getUserAuthorizationToken(),
     },
