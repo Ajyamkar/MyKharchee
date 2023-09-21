@@ -51,9 +51,9 @@ const AddIncomeOrExpense = ({ type }: PropsType) => {
   /**
    * List of available income categories.
    */
-  const incomeCategoriesList = React.useRef<Array<IncomeCategoriesListType>>(
-    []
-  );
+  const [incomeCategoriesList, setIncomeCategoriesList] = React.useState<
+    Array<IncomeCategoriesListType>
+  >([]);
 
   /**
    * State to maintain list of expense categories.
@@ -103,8 +103,9 @@ const AddIncomeOrExpense = ({ type }: PropsType) => {
       });
     } else {
       getIncomeCategoriesApi().then((response) => {
-        incomeCategoriesList.current = response.data
-          .list as Array<IncomeCategoriesListType>;
+        setIncomeCategoriesList(
+          response.data.list as Array<IncomeCategoriesListType>
+        );
       });
     }
   }, [type]);
@@ -173,7 +174,7 @@ const AddIncomeOrExpense = ({ type }: PropsType) => {
                 />
               ) : (
                 <AddIncome
-                  incomeCategoriesList={incomeCategoriesList.current}
+                  incomeCategoriesList={incomeCategoriesList}
                   closeDrawer={closeDrawer}
                   selectedDate={date}
                 />

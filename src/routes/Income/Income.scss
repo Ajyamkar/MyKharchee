@@ -1,0 +1,23 @@
+.income {
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  li {
+    background: aliceblue;
+    padding: 0.5rem 1rem;
+    border-radius: 9px;
+    margin: 0.5rem 0;
+  }
+
+  .category {
+    color: whitesmoke;
+    background: black;
+    padding: 0.5rem;
+    border-radius: 5px;
+    width: fit-content;
+    margin: 0.5rem 0;
+    font-size: 14px;
+  }
+}
