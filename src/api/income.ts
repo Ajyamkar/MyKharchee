@@ -53,4 +53,19 @@ const getUserIncome = async (selectedDate: Date) => {
   return response;
 };
 
-export { getIncomeCategoriesApi, saveUserIncome, getUserIncome };
+/**
+ * Api call to delete an income by an incomeId
+ * @param selectedId - income id to delete
+ */
+const deleteIncome = async (selectedId: string) => {
+  const response = instance({
+    method: "DELETE",
+    url: `/api/income/deleteIncome/${selectedId}`,
+    headers: {
+      authorization: getUserAuthorizationToken(),
+    },
+  });
+  return response;
+};
+
+export { getIncomeCategoriesApi, saveUserIncome, getUserIncome, deleteIncome };

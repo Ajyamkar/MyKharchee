@@ -1,11 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useState } from "react";
 import { Outlet } from "react-router-dom";
-import { getUserIncome } from "../../api/income";
+import { deleteIncome, getUserIncome } from "../../api/income";
 import useDate from "../../hooks/useDate";
 import Calendar from "../../components/Calendar/Calendar";
 import "./Income.scss";
 import ToastContext from "../../hooks/ToastContext";
+import { IconButton } from "@mui/material";
+import { Delete, Edit } from "@mui/icons-material";
 
 interface IncomesListType {
   _id: string;
@@ -14,7 +16,6 @@ interface IncomesListType {
   month: string;
   year: number;
   source: {
-    _id: string;
     category: string;
   };
 }
@@ -57,6 +58,28 @@ const Income = () => {
       });
   }, [date, toastState]);
 
+  /**
+   * function to delete an income for the selected income
+   * @param selectedId - id of the income to be deleted
+   */
+  const deleteSelectedIncome = (selectedId: string) => {
+    deleteIncome(selectedId)
+      .then((response) => {
+        setToastState({
+          isOpened: true,
+          status: "success",
+          message: response.data,
+        });
+      })
+      .catch(() => {
+        setToastState({
+          isOpened: true,
+          status: "error",
+          message: "something went wrong try again",
+        });
+      });
+  };
+
   return (
     <div className="income">
       <div>
@@ -75,7 +98,7 @@ const Income = () => {
       </div>
 
       <p className="text-align-center">
-        Total expense for <b>{selectedMonth}</b> is{" "}
+        Total income for <b>{selectedMonth}</b> is{" "}
         <span className="color-success bold font-size-larger">
           {totalIncomeForMonth}
         </span>
@@ -83,7 +106,7 @@ const Income = () => {
       <ul>
         {incomesList.map((income) => {
           return (
-            <li>
+            <li key={income._id}>
               <div className="display-flex justify-content-space-between align-items-center">
                 <p>{income.date}</p>
                 <span className="bold color-success font-size-larger">
@@ -92,6 +115,14 @@ const Income = () => {
               </div>
               <div className="display-flex justify-content-space-between align-items-center">
                 <p className="category">{income.source.category}</p>
+                <div>
+                  <IconButton>
+                    <Edit />
+                  </IconButton>
+                  <IconButton onClick={() => deleteSelectedIncome(income._id)}>
+                    <Delete />
+                  </IconButton>
+                </div>
               </div>
             </li>
           );
