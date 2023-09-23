@@ -6,9 +6,10 @@ import {
   InputAdornment,
 } from "@mui/material";
 import dayjs from "dayjs";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { saveUserIncome } from "../../api/income";
 import ToastContext from "../../hooks/ToastContext";
+import useIntermediateStates from "../../hooks/useIntermediateStates";
 import CategoriesButtonList from "../CategoriesButtonList/CategoriesButtonList";
 import { IncomeCategoriesListType } from "../Types";
 import "./AddIncome.scss";
@@ -29,17 +30,22 @@ const AddIncome = (props: AddIncomeProps) => {
   /**
    * State to keep track of income amount.
    */
-  const [amount, setAmount] = React.useState<number>();
+  const [amount, setAmount] = useState<number>();
 
   /**
    * State to keep track of selected income category id.
    */
-  const [selectedCategoryId, setSelectedCategoryId] = React.useState("");
+  const [selectedCategoryId, setSelectedCategoryId] = useState("");
 
   /**
    * Function to show toast on success/failure while creating new category.
    */
   const { setToastState } = useContext(ToastContext);
+
+  /**
+   * Hook to manage intermediate states such as isfetching, isSaving etc.
+   */
+  const { intermediateState, setIntermediateState } = useIntermediateStates();
 
   /**
    * Function to update amount spent on an item.
@@ -53,6 +59,7 @@ const AddIncome = (props: AddIncomeProps) => {
    * Function to save the income details.
    */
   const saveIncomeDetails = () => {
+    setIntermediateState({ ...intermediateState, isSaving: true });
     saveUserIncome({
       date: props.selectedDate.toDate(),
       amount: amount ?? 0,
@@ -72,7 +79,10 @@ const AddIncome = (props: AddIncomeProps) => {
           message: "something went wrong, try again",
         });
       })
-      .finally(() => props.closeDrawer());
+      .finally(() => {
+        setIntermediateState({ ...intermediateState, isSaving: false });
+        props.closeDrawer();
+      });
   };
 
   return (
@@ -108,11 +118,13 @@ const AddIncome = (props: AddIncomeProps) => {
       <Button
         className="save-button font-size-large bold mt-1"
         variant="contained"
-        disabled={!amount || selectedCategoryId === ""}
+        disabled={
+          !amount || selectedCategoryId === "" || intermediateState.isSaving
+        }
         fullWidth
         onClick={saveIncomeDetails}
       >
-        Save
+        {intermediateState.isSaving ? "Saving..." : "Save"}
       </Button>
     </div>
   );

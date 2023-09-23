@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Delete, Edit } from "@mui/icons-material";
-import { CircularProgress, IconButton } from "@mui/material";
+import { Box, IconButton, Skeleton } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import {
   deleteExpenseByExpenseId,
@@ -11,6 +12,7 @@ import useDate from "../../hooks/useDate";
 import "./Expenses.scss";
 import { Link, Outlet } from "react-router-dom";
 import ToastContext from "../../hooks/ToastContext";
+import useIntermediateStates from "../../hooks/useIntermediateStates";
 
 interface ExpensesListType {
   _id: string;
@@ -40,9 +42,9 @@ const Expenses = () => {
   const { toastState, setToastState } = useContext(ToastContext);
 
   /**
-   * Boolean to show loader while data is being fetched.
+   * Hook to manage intermediate states such as isfetching, isSaving etc.
    */
-  const [isFetching, setIsFetching] = useState(true);
+  const { intermediateState, setIntermediateState } = useIntermediateStates();
 
   /**
    * Expenses are re-fetched whenever there is change in date & toastState,
@@ -51,7 +53,7 @@ const Expenses = () => {
    * upto date with latest data.
    */
   useEffect(() => {
-    setIsFetching(true);
+    setIntermediateState({ ...intermediateState, isFetching: true });
     getExpenseForSelectedDateApi(date.toDate())
       .then((response) => {
         setExpensesForSelectedDate(
@@ -60,7 +62,9 @@ const Expenses = () => {
         setTotalExpenseAmount(response.data.totalExpenseAmount as number);
       })
       .catch(() => setExpensesForSelectedDate([]))
-      .finally(() => setIsFetching(false));
+      .finally(() =>
+        setIntermediateState({ ...intermediateState, isFetching: false })
+      );
   }, [date, toastState]);
 
   /**
@@ -68,6 +72,10 @@ const Expenses = () => {
    * @param expenseId - id of the expense to be deleted
    */
   const deleteExpense = (expenseId: string) => {
+    setIntermediateState({
+      ...intermediateState,
+      isDeleting: true,
+    });
     deleteExpenseByExpenseId(expenseId)
       .then(() => {
         setToastState({
@@ -82,7 +90,10 @@ const Expenses = () => {
           message: "Something went wrong, try again",
           status: "error",
         });
-      });
+      })
+      .finally(() =>
+        setIntermediateState({ ...intermediateState, isDeleting: false })
+      );
   };
 
   return (
@@ -98,8 +109,14 @@ const Expenses = () => {
         </div>
 
         <div className="expenses-list-container">
-          {isFetching ? (
-            <CircularProgress />
+          {intermediateState.isFetching || intermediateState.isDeleting ? (
+            <Box>
+              <Skeleton height={50} />
+              <Skeleton height={150} className="expenseSkeleton" />
+              <Skeleton height={150} className="expenseSkeleton" />
+              <Skeleton height={150} className="expenseSkeleton" />
+              <Skeleton height={150} className="expenseSkeleton" />
+            </Box>
           ) : expensesForSelectedDate.length ? (
             <>
               <h3 className="text-align-center">
@@ -118,11 +135,7 @@ const Expenses = () => {
                           <Edit />
                         </IconButton>
                       </Link>
-                      <IconButton
-                        onClick={() => {
-                          deleteExpense(expense._id);
-                        }}
-                      >
+                      <IconButton onClick={() => deleteExpense(expense._id)}>
                         <Delete />
                       </IconButton>
                     </div>

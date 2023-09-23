@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Alert,
   Box,
@@ -25,6 +26,7 @@ import dayjs, { Dayjs } from "dayjs";
 import ToastContext from "../../hooks/ToastContext";
 import { useParams } from "react-router-dom";
 import { AxiosResponse } from "axios";
+import useIntermediateStates from "../../hooks/useIntermediateStates";
 
 interface AddExpensesProps {
   selectedDate: dayjs.Dayjs;
@@ -95,9 +97,9 @@ const AddExpenses = (props: AddExpensesProps) => {
   const [isSaving, setIsSaving] = React.useState(false);
 
   /**
-   * Boolean to show loader while fetching data.
+   * Hook to manage intermediate states such as isfetching, isSaving etc.
    */
-  const [isFetching, setIsFetching] = React.useState(false);
+  const { intermediateState, setIntermediateState } = useIntermediateStates();
 
   /**
    * Updates the states with previously added expense details that were stored in localStorage
@@ -105,7 +107,7 @@ const AddExpenses = (props: AddExpensesProps) => {
    */
   useEffect(() => {
     if (expenseId) {
-      setIsFetching(true);
+      setIntermediateState({ ...intermediateState, isFetching: true });
       getExpenseByIdApi(expenseId)
         .then((response) => {
           const {
@@ -134,7 +136,9 @@ const AddExpenses = (props: AddExpensesProps) => {
             window.history.back();
           }, 1000);
         })
-        .finally(() => setIsFetching(false));
+        .finally(() =>
+          setIntermediateState({ ...intermediateState, isFetching: false })
+        );
     } else if (localStorage.length) {
       const itemNameLSKey = localStorage.getItem("itemName");
       const amountLSKey = localStorage.getItem("amount");
@@ -299,11 +303,12 @@ const AddExpenses = (props: AddExpensesProps) => {
 
   return (
     <div className="addExpenses mt-1">
-      {isFetching ? (
+      {intermediateState.isFetching ? (
         <Box>
-          <Skeleton height={100} />
-          <Skeleton height={100} />
-          <Skeleton height={300} className="m0" />
+          <Skeleton height={100} sx={{ marginTop: -3 }} />
+          <Skeleton height={100} sx={{ marginTop: -2 }} />
+          <Skeleton height={200} sx={{ marginTop: -5 }} />
+          <Skeleton height={100} sx={{ marginTop: -4 }} />
         </Box>
       ) : (
         <>
