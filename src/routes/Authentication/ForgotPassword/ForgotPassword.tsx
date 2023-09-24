@@ -1,6 +1,8 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
+  Box,
   Button,
+  CircularProgress,
   FormControl,
   FormHelperText,
   IconButton,
@@ -23,6 +25,7 @@ import {
 } from "../../../utils/Auth";
 import ToastContext from "../../../hooks/ToastContext";
 import AuthenticateContext from "../../../hooks/Authentication/AuthenticateContext";
+import useIntermediateStates from "../../../hooks/useIntermediateStates";
 
 interface ForgotPasswordValidationErrorType {
   email: string | undefined;
@@ -79,6 +82,11 @@ const ForgotPassword = () => {
   const { setToastState } = useContext(ToastContext);
 
   /**
+   * Hook to manage intermediate states such as isfetching, isSaving etc.
+   */
+  const { intermediateState, setIntermediateState } = useIntermediateStates();
+
+  /**
    * Created this array to increase the reusability of password related mui-components.
    */
   const passwordFieldsArray: passwordsFieldsArrayType = [
@@ -120,6 +128,7 @@ const ForgotPassword = () => {
       });
       return;
     }
+    setIntermediateState({ ...intermediateState, isSaving: true });
     try {
       const response = await updateUserPasswordApi({
         email,
@@ -128,6 +137,8 @@ const ForgotPassword = () => {
       onSuccessWhileAuthenticating(response, setToastState);
     } catch (error: any) {
       onfailureWhileAuthenticating(error, setToastState);
+    } finally {
+      setIntermediateState({ ...intermediateState, isSaving: false });
     }
   };
 
@@ -148,107 +159,113 @@ const ForgotPassword = () => {
 
   return (
     <div className="forgot-password display-flex justify-content-center align-items-center">
-      <div>
-        <h1 className="font-size-large">Forgot Password?</h1>
-        <p>Enter the email associated with your account</p>
+      {intermediateState.isSaving ? (
+        <Box className="loading">
+          <CircularProgress />
+        </Box>
+      ) : (
+        <div>
+          <h1 className="font-size-large">Forgot Password?</h1>
+          <p>Enter the email associated with your account</p>
 
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-          }}
-        >
-          <TextField
-            value={email}
-            className="email mt-1"
-            label="Email address"
-            fullWidth
-            required
-            error={validationError.email ? true : false}
-            helperText={validationError.email}
-            onChange={(e) => {
-              addEmail(e.target.value);
-              addValidationError({
-                ...validationError,
-                email: emailValidationError(e.target.value),
-              });
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
             }}
-            onBlur={() => {
-              addValidationError({
-                ...validationError,
-                email: emailValidationError(email),
-              });
-            }}
-          />
-
-          {passwordFieldsArray.map((field, index) => {
-            return (
-              <FormControl
-                key={index}
-                error={validationError[field.stateName] ? true : false}
-                className="password mt-1"
-                fullWidth
-                required
-                variant="outlined"
-              >
-                <InputLabel htmlFor={field.id}>{field.label}</InputLabel>
-                <OutlinedInput
-                  id={field.id}
-                  value={field.stateValue}
-                  type={showPassword ? "text" : "password"}
-                  onChange={(e) => {
-                    field.setStateFunction(e.target.value);
-                    addValidationError({
-                      ...validationError,
-                      [field.stateName]: "",
-                    });
-                  }}
-                  onBlur={() => {
-                    addValidationError({
-                      ...validationError,
-                      [field.stateName]: !field.stateValue
-                        ? `${field.label} is required`
-                        : "",
-                    });
-                  }}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => {
-                          setShowPassword(!showPassword);
-                        }}
-                        edge="end"
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                  label={field.label}
-                />
-                <FormHelperText>
-                  {validationError[field.stateName]}
-                </FormHelperText>
-              </FormControl>
-            );
-          })}
-
-          <Button
-            onClick={updatePassword}
-            disabled={isUpdateButtonDisabled}
-            className="mt-1 font-size-large"
-            variant="contained"
-            type="submit"
-            fullWidth
           >
-            Update Password
-          </Button>
+            <TextField
+              value={email}
+              className="email mt-1"
+              label="Email address"
+              fullWidth
+              required
+              error={validationError.email ? true : false}
+              helperText={validationError.email}
+              onChange={(e) => {
+                addEmail(e.target.value);
+                addValidationError({
+                  ...validationError,
+                  email: emailValidationError(e.target.value),
+                });
+              }}
+              onBlur={() => {
+                addValidationError({
+                  ...validationError,
+                  email: emailValidationError(email),
+                });
+              }}
+            />
 
-          <p className="text-align-center">
-            <Link to="/login" className="text-decoration-none">
-              Back to login
-            </Link>
-          </p>
-        </form>
-      </div>
+            {passwordFieldsArray.map((field, index) => {
+              return (
+                <FormControl
+                  key={index}
+                  error={validationError[field.stateName] ? true : false}
+                  className="password mt-1"
+                  fullWidth
+                  required
+                  variant="outlined"
+                >
+                  <InputLabel htmlFor={field.id}>{field.label}</InputLabel>
+                  <OutlinedInput
+                    id={field.id}
+                    value={field.stateValue}
+                    type={showPassword ? "text" : "password"}
+                    onChange={(e) => {
+                      field.setStateFunction(e.target.value);
+                      addValidationError({
+                        ...validationError,
+                        [field.stateName]: "",
+                      });
+                    }}
+                    onBlur={() => {
+                      addValidationError({
+                        ...validationError,
+                        [field.stateName]: !field.stateValue
+                          ? `${field.label} is required`
+                          : "",
+                      });
+                    }}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => {
+                            setShowPassword(!showPassword);
+                          }}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    label={field.label}
+                  />
+                  <FormHelperText>
+                    {validationError[field.stateName]}
+                  </FormHelperText>
+                </FormControl>
+              );
+            })}
+
+            <Button
+              onClick={updatePassword}
+              disabled={isUpdateButtonDisabled}
+              className="mt-1 font-size-large"
+              variant="contained"
+              type="submit"
+              fullWidth
+            >
+              Update Password
+            </Button>
+
+            <p className="text-align-center">
+              <Link to="/login" className="text-decoration-none">
+                Back to login
+              </Link>
+            </p>
+          </form>
+        </div>
+      )}
     </div>
   );
 };

@@ -3,8 +3,10 @@ import { Link } from "react-router-dom";
 import "./Login.scss";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
+  Box,
   Button,
   Checkbox,
+  CircularProgress,
   Divider,
   FormControl,
   FormControlLabel,
@@ -28,6 +30,7 @@ import usePassword from "../../../hooks/Authentication/usePassword";
 import useValidationError from "../../../hooks/Authentication/useValidationErrors";
 import ToastContext from "../../../hooks/ToastContext";
 import AuthenticateContext from "../../../hooks/Authentication/AuthenticateContext";
+import useIntermediateStates from "../../../hooks/useIntermediateStates";
 
 interface LoginValidationErrorType {
   email: string | undefined;
@@ -78,6 +81,10 @@ const Login = () => {
   const { isUserLoggedIn } = React.useContext(AuthenticateContext);
 
   /**
+   * Hook to manage intermediate states such as isfetching, isSaving etc.
+   */
+  const { intermediateState, setIntermediateState } = useIntermediateStates();
+  /**
    * Checks if the user is loggedIn or no, if loggedin redirects to dashboard route.
    * So that user can't access login page if user is already loggedIn.
    */
@@ -99,6 +106,7 @@ const Login = () => {
    * OnFailure - will redirect to signup if user doesn't have account.
    */
   const signInUser = () => {
+    setIntermediateState({ ...intermediateState, isSaving: true });
     loginUserApi({ email, password })
       .then((response) => {
         onSuccessWhileAuthenticating(
@@ -109,6 +117,9 @@ const Login = () => {
       })
       .catch((err) => {
         onfailureWhileAuthenticating(err, setToastState);
+      })
+      .finally(() => {
+        setIntermediateState({ ...intermediateState, isSaving: false });
       });
   };
 
@@ -117,130 +128,137 @@ const Login = () => {
    * OnSuccess - will redirect to google signIn url.
    */
   const getGoogleAuthUrl = () => {
+    setIntermediateState({ ...intermediateState, isFetching: true });
     googleAuthUrl(setToastState, true);
   };
 
   return (
     <div className="login display-flex align-items-center">
-      <div>
-        <h1 className="font-size-large">Sign in to MyKharche</h1>
+      {intermediateState.isFetching || intermediateState.isSaving ? (
+        <Box className="loading">
+          <CircularProgress />
+        </Box>
+      ) : (
+        <div>
+          <h1 className="font-size-large">Sign in to MyKharche</h1>
 
-        <p className="color-info">
-          Don't have an account? <Link to="/signup">Get started</Link>
-        </p>
+          <p className="color-info">
+            Don't have an account? <Link to="/signup">Get started</Link>
+          </p>
 
-        <div className="display-flex justify-content-space-between pt-1 pb-1">
-          <Button
-            className="auth-btn bold font-size-large"
-            onClick={getGoogleAuthUrl}
-            fullWidth
-          >
-            <div className="display-flex justify-content-center">
-              <img src={googleIcon} alt="google-icon" />
-              <span className="color-info">Google</span>
-            </div>
-          </Button>
-        </div>
+          <div className="display-flex justify-content-space-between pt-1 pb-1">
+            <Button
+              className="auth-btn bold font-size-large"
+              onClick={getGoogleAuthUrl}
+              fullWidth
+            >
+              <div className="display-flex justify-content-center">
+                <img src={googleIcon} alt="google-icon" />
+                <span className="color-info">Google</span>
+              </div>
+            </Button>
+          </div>
 
-        <Divider className="bold">OR</Divider>
+          <Divider className="bold">OR</Divider>
 
-        <form
-          className="login-form"
-          onSubmit={(e) => {
-            e.preventDefault();
-          }}
-        >
-          <TextField
-            value={email}
-            className="email mt-1"
-            label="Email address"
-            fullWidth
-            required
-            error={validationError.email ? true : false}
-            helperText={validationError.email}
-            onChange={(e) => {
-              addEmail(e.target.value);
-              addValidationError({
-                ...validationError,
-                email: emailValidationError(e.target.value),
-              });
+          <form
+            className="login-form"
+            onSubmit={(e) => {
+              e.preventDefault();
             }}
-            onBlur={() => {
-              addValidationError({
-                ...validationError,
-                email: emailValidationError(email),
-              });
-            }}
-          />
-          <FormControl
-            error={validationError.password ? true : false}
-            className="password mt-1"
-            fullWidth
-            required
-            variant="outlined"
           >
-            <InputLabel htmlFor="create-password">Password</InputLabel>
-            <OutlinedInput
-              id="create-password"
-              value={password}
-              type={showPassword ? "text" : "password"}
-              error={validationError.password ? true : false}
+            <TextField
+              value={email}
+              className="email mt-1"
+              label="Email address"
+              fullWidth
+              required
+              error={validationError.email ? true : false}
+              helperText={validationError.email}
               onChange={(e) => {
-                addPassword(e.target.value);
-                addValidationError({ ...validationError, password: "" });
+                addEmail(e.target.value);
+                addValidationError({
+                  ...validationError,
+                  email: emailValidationError(e.target.value),
+                });
               }}
               onBlur={() => {
                 addValidationError({
                   ...validationError,
-                  password: !password ? "Password is required" : "",
+                  email: emailValidationError(email),
                 });
               }}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={() => {
-                      setShowPassword(!showPassword);
+            />
+            <FormControl
+              error={validationError.password ? true : false}
+              className="password mt-1"
+              fullWidth
+              required
+              variant="outlined"
+            >
+              <InputLabel htmlFor="create-password">Password</InputLabel>
+              <OutlinedInput
+                id="create-password"
+                value={password}
+                type={showPassword ? "text" : "password"}
+                error={validationError.password ? true : false}
+                onChange={(e) => {
+                  addPassword(e.target.value);
+                  addValidationError({ ...validationError, password: "" });
+                }}
+                onBlur={() => {
+                  addValidationError({
+                    ...validationError,
+                    password: !password ? "Password is required" : "",
+                  });
+                }}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => {
+                        setShowPassword(!showPassword);
+                      }}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                label="Password"
+              />
+              <FormHelperText>{validationError.password}</FormHelperText>
+            </FormControl>
+
+            <div className="display-flex justify-content-space-between align-items-center">
+              <FormControlLabel
+                label="Remember me"
+                control={
+                  <Checkbox
+                    checked={isRememberMeChecked}
+                    onChange={(e) => {
+                      setIsRememberMeChecked(e.target.checked);
                     }}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-              label="Password"
-            />
-            <FormHelperText>{validationError.password}</FormHelperText>
-          </FormControl>
+                  />
+                }
+              />
 
-          <div className="display-flex justify-content-space-between align-items-center">
-            <FormControlLabel
-              label="Remember me"
-              control={
-                <Checkbox
-                  checked={isRememberMeChecked}
-                  onChange={(e) => {
-                    setIsRememberMeChecked(e.target.checked);
-                  }}
-                />
-              }
-            />
-
-            <Link to={"/forgot-password"} className="text-decoration-none">
-              Forgot Password?
-            </Link>
-          </div>
-          <Button
-            disabled={isLoginButtonDisabled}
-            onClick={signInUser}
-            className="mt-1 bold font-size-large"
-            type="submit"
-            variant="contained"
-            fullWidth
-          >
-            Login
-          </Button>
-        </form>
-      </div>
+              <Link to={"/forgot-password"} className="text-decoration-none">
+                Forgot Password?
+              </Link>
+            </div>
+            <Button
+              disabled={isLoginButtonDisabled}
+              onClick={signInUser}
+              className="mt-1 bold font-size-large"
+              type="submit"
+              variant="contained"
+              fullWidth
+            >
+              Login
+            </Button>
+          </form>
+        </div>
+      )}
     </div>
   );
 };

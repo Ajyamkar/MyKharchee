@@ -2,7 +2,9 @@ import React, { useContext } from "react";
 import "./Signup.scss";
 import { Link } from "react-router-dom";
 import {
+  Box,
   Button,
+  CircularProgress,
   Divider,
   FormControl,
   FormHelperText,
@@ -26,6 +28,7 @@ import usePassword from "../../../hooks/Authentication/usePassword";
 import useValidationError from "../../../hooks/Authentication/useValidationErrors";
 import ToastContext from "../../../hooks/ToastContext";
 import AuthenticateContext from "../../../hooks/Authentication/AuthenticateContext";
+import useIntermediateStates from "../../../hooks/useIntermediateStates";
 
 interface SignupValidationErrorType {
   firstName: string | undefined;
@@ -62,6 +65,11 @@ const Signup = () => {
    * function to show toast on success/failure of signup.
    */
   const { setToastState } = useContext(ToastContext);
+
+  /**
+   * Hook to manage intermediate states such as isfetching, isSaving etc.
+   */
+  const { intermediateState, setIntermediateState } = useIntermediateStates();
 
   /**
    * State to show errors for respective user fields.
@@ -108,6 +116,7 @@ const Signup = () => {
    * OnFailure - will redirect to login if user already exists
    */
   const createUser = () => {
+    setIntermediateState({ ...intermediateState, isSaving: true });
     registerUserApi({
       firstName,
       lastName,
@@ -119,6 +128,9 @@ const Signup = () => {
       })
       .catch((err) => {
         onfailureWhileAuthenticating(err, setToastState);
+      })
+      .finally(() => {
+        setIntermediateState({ ...intermediateState, isSaving: false });
       });
   };
 
@@ -127,148 +139,155 @@ const Signup = () => {
    * OnSuccess - will redirect to google signUp url.
    */
   const getGoogleAuthUrl = () => {
+    setIntermediateState({ ...intermediateState, isFetching: true });
     googleAuthUrl(setToastState);
   };
 
   return (
     <div className="signup display-flex justify-content-center align-items-center">
-      <div>
-        <h1 className="font-size-large">Get started absolutely free</h1>
-        <p className="color-info">
-          Already have an account? <Link to="/login">Sign in</Link>
-        </p>
-        <div className="display-flex justify-content-space-between mt-1">
-          <Button
-            className="auth-btn bold font-size-large"
-            onClick={getGoogleAuthUrl}
-            fullWidth
-          >
-            <div className="display-flex justify-content-center">
-              <img src={googleIcon} alt="google-icon" />
-              <span className="color-info">Google</span>
-            </div>
-          </Button>
-        </div>
+      {intermediateState.isFetching || intermediateState.isSaving ? (
+        <Box className="loading">
+          <CircularProgress />
+        </Box>
+      ) : (
+        <div>
+          <h1 className="font-size-large">Get started absolutely free</h1>
+          <p className="color-info">
+            Already have an account? <Link to="/login">Sign in</Link>
+          </p>
+          <div className="display-flex justify-content-space-between mt-1">
+            <Button
+              className="auth-btn bold font-size-large"
+              onClick={getGoogleAuthUrl}
+              fullWidth
+            >
+              <div className="display-flex justify-content-center">
+                <img src={googleIcon} alt="google-icon" />
+                <span className="color-info">Google</span>
+              </div>
+            </Button>
+          </div>
 
-        <Divider className="mt-1 pb-1 bold">OR</Divider>
+          <Divider className="mt-1 pb-1 bold">OR</Divider>
 
-        <form
-          className="signup-form"
-          onSubmit={(e) => {
-            e.preventDefault();
-          }}
-        >
-          <TextField
-            value={firstName}
-            className="first-name"
-            label="First name"
-            fullWidth
-            required
-            error={validationError.firstName ? true : false}
-            helperText={validationError.firstName}
-            onChange={(e) => {
-              setFirstName(e.target.value);
-              addValidationError({ ...validationError, firstName: "" });
+          <form
+            className="signup-form"
+            onSubmit={(e) => {
+              e.preventDefault();
             }}
-            onBlur={() => {
-              addValidationError({
-                ...validationError,
-                firstName: !firstName ? "First name is required" : "",
-              });
-            }}
-          />
-          <TextField
-            value={lastName}
-            className="last-name mt-1"
-            label="Last name"
-            fullWidth
-            required
-            error={validationError.lastName ? true : false}
-            helperText={validationError.lastName}
-            onChange={(e) => {
-              setLastName(e.target.value);
-              addValidationError({ ...validationError, lastName: "" });
-            }}
-            onBlur={() => {
-              addValidationError({
-                ...validationError,
-                lastName: !lastName ? "Last name is required" : "",
-              });
-            }}
-          />
-          <TextField
-            value={email}
-            className="email mt-1"
-            label="Email address"
-            fullWidth
-            required
-            error={validationError.email ? true : false}
-            helperText={validationError.email}
-            onChange={(e) => {
-              addEmail(e.target.value);
-              addValidationError({
-                ...validationError,
-                email: emailValidationError(e.target.value),
-              });
-            }}
-            onBlur={() => {
-              addValidationError({
-                ...validationError,
-                email: emailValidationError(email),
-              });
-            }}
-          />
-          <FormControl
-            error={validationError.password ? true : false}
-            className="password mt-1"
-            fullWidth
-            required
-            variant="outlined"
           >
-            <InputLabel htmlFor="create-password">Password</InputLabel>
-            <OutlinedInput
-              id="create-password"
-              value={password}
-              type={showPassword ? "text" : "password"}
-              error={validationError.password ? true : false}
+            <TextField
+              value={firstName}
+              className="first-name"
+              label="First name"
+              fullWidth
+              required
+              error={validationError.firstName ? true : false}
+              helperText={validationError.firstName}
               onChange={(e) => {
-                addPassword(e.target.value);
-                addValidationError({ ...validationError, password: "" });
+                setFirstName(e.target.value);
+                addValidationError({ ...validationError, firstName: "" });
               }}
               onBlur={() => {
                 addValidationError({
                   ...validationError,
-                  password: !password ? "Password is required" : "",
+                  firstName: !firstName ? "First name is required" : "",
                 });
               }}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={() => {
-                      setShowPassword(!showPassword);
-                    }}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-              label="Password"
             />
-            <FormHelperText>{validationError.password}</FormHelperText>
-          </FormControl>
-          <Button
-            disabled={isCreateButtonDisabled}
-            className="mt-1 bold font-size-large"
-            type="submit"
-            variant="contained"
-            onClick={createUser}
-            fullWidth
-          >
-            Create account
-          </Button>
-        </form>
-      </div>
+            <TextField
+              value={lastName}
+              className="last-name mt-1"
+              label="Last name"
+              fullWidth
+              required
+              error={validationError.lastName ? true : false}
+              helperText={validationError.lastName}
+              onChange={(e) => {
+                setLastName(e.target.value);
+                addValidationError({ ...validationError, lastName: "" });
+              }}
+              onBlur={() => {
+                addValidationError({
+                  ...validationError,
+                  lastName: !lastName ? "Last name is required" : "",
+                });
+              }}
+            />
+            <TextField
+              value={email}
+              className="email mt-1"
+              label="Email address"
+              fullWidth
+              required
+              error={validationError.email ? true : false}
+              helperText={validationError.email}
+              onChange={(e) => {
+                addEmail(e.target.value);
+                addValidationError({
+                  ...validationError,
+                  email: emailValidationError(e.target.value),
+                });
+              }}
+              onBlur={() => {
+                addValidationError({
+                  ...validationError,
+                  email: emailValidationError(email),
+                });
+              }}
+            />
+            <FormControl
+              error={validationError.password ? true : false}
+              className="password mt-1"
+              fullWidth
+              required
+              variant="outlined"
+            >
+              <InputLabel htmlFor="create-password">Password</InputLabel>
+              <OutlinedInput
+                id="create-password"
+                value={password}
+                type={showPassword ? "text" : "password"}
+                error={validationError.password ? true : false}
+                onChange={(e) => {
+                  addPassword(e.target.value);
+                  addValidationError({ ...validationError, password: "" });
+                }}
+                onBlur={() => {
+                  addValidationError({
+                    ...validationError,
+                    password: !password ? "Password is required" : "",
+                  });
+                }}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => {
+                        setShowPassword(!showPassword);
+                      }}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                label="Password"
+              />
+              <FormHelperText>{validationError.password}</FormHelperText>
+            </FormControl>
+            <Button
+              disabled={isCreateButtonDisabled}
+              className="mt-1 bold font-size-large"
+              type="submit"
+              variant="contained"
+              onClick={createUser}
+              fullWidth
+            >
+              Create account
+            </Button>
+          </form>
+        </div>
+      )}
     </div>
   );
 };

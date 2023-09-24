@@ -1,6 +1,13 @@
 .login {
   margin: 0 1.5rem;
-  height: 80vh;
+  height: 100vh;
+
+  .loading {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
   .MuiOutlinedInput-root {
     border-radius: 0.5rem;
