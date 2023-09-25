@@ -4,4 +4,10 @@ interface ToastType {
   message: string;
 }
 
-export type { ToastType };
+interface IntermediateStateType {
+  isFetching: boolean;
+  isSaving: boolean;
+  isDeleting: boolean;
+}
+
+export type { ToastType, IntermediateStateType };

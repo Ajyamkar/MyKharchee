@@ -191,6 +191,7 @@ const AddExpenses = (props: AddExpensesProps) => {
    * @param categoryIdToBeRemoved - id of the category to be deleted
    */
   const removeSelectedCategory = (categoryIdToBeRemoved: string) => {
+    setIntermediateState({ ...intermediateState, isDeleting: true });
     deleteExpenseCategoryApi({ expenseCategoryId: categoryIdToBeRemoved })
       .then((response) => {
         props.setExpenseCategoriesList(
@@ -209,7 +210,10 @@ const AddExpenses = (props: AddExpensesProps) => {
           status: "error",
           message: "Something went wrong",
         });
-      });
+      })
+      .finally(() =>
+        setIntermediateState({ ...intermediateState, isDeleting: false })
+      );
   };
 
   /**
@@ -303,7 +307,7 @@ const AddExpenses = (props: AddExpensesProps) => {
 
   return (
     <div className="addExpenses mt-1">
-      {intermediateState.isFetching ? (
+      {intermediateState.isFetching || intermediateState.isDeleting ? (
         <Box>
           <Skeleton height={100} sx={{ marginTop: -3 }} />
           <Skeleton height={100} sx={{ marginTop: -2 }} />

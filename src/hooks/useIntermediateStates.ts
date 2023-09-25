@@ -1,10 +1,5 @@
 import { useState } from "react";
-
-interface IntermediateStateType {
-  isFetching: boolean;
-  isSaving: boolean;
-  isDeleting: boolean;
-}
+import { IntermediateStateType } from "../Types";
 
 /**
  * Custome hook to manage intermediate states such isfetching, isSaving etc.
