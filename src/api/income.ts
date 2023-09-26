@@ -68,4 +68,25 @@ const deleteIncome = async (selectedId: string) => {
   return response;
 };
 
-export { getIncomeCategoriesApi, saveUserIncome, getUserIncome, deleteIncome };
+/**
+ * Api call for fetching income info from incomeId
+ * @param incomeId - income id to get income
+ */
+const getIncomeById = async (incomeId: string) => {
+  const response = instance({
+    method: "GET",
+    url: `/api/income/getIncome/${incomeId}`,
+    headers: {
+      authorization: getUserAuthorizationToken(),
+    },
+  });
+  return response;
+};
+
+export {
+  getIncomeCategoriesApi,
+  saveUserIncome,
+  getUserIncome,
+  deleteIncome,
+  getIncomeById,
+};

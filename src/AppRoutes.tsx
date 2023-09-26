@@ -41,6 +41,10 @@ const AppRoutes = () => {
               path="addIncome"
               element={<AddIncomeOrExpense type={"income"} />}
             />
+            <Route
+              path="editIncome/:incomeId"
+              element={<AddIncomeOrExpense type={"income"} />}
+            />
           </Route>
 
           <Route path="analytics" element={<Analytics />}>

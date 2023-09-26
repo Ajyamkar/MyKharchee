@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import { deleteIncome, getUserIncome } from "../../api/income";
 import useDate from "../../hooks/useDate";
 import Calendar from "../../components/Calendar/Calendar";
@@ -149,9 +149,13 @@ const Income = () => {
                   <div className="display-flex justify-content-space-between align-items-center">
                     <p className="category">{income.source.category}</p>
                     <div>
-                      <IconButton>
-                        <Edit />
-                      </IconButton>
+                      <Link
+                        to={`${window.location.pathname}/editIncome/${income._id}`}
+                      >
+                        <IconButton>
+                          <Edit />
+                        </IconButton>
+                      </Link>
                       <IconButton
                         onClick={() => deleteSelectedIncome(income._id)}
                       >

@@ -6,8 +6,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import dayjs from "dayjs";
-import React, { useContext, useState } from "react";
-import { saveUserIncome } from "../../api/income";
+import React, { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { getIncomeById, saveUserIncome } from "../../api/income";
 import ToastContext from "../../hooks/ToastContext";
 import useIntermediateStates from "../../hooks/useIntermediateStates";
 import CategoriesButtonList from "../CategoriesButtonList/CategoriesButtonList";
@@ -46,6 +47,23 @@ const AddIncome = (props: AddIncomeProps) => {
    * Hook to manage intermediate states such as isfetching, isSaving etc.
    */
   const { intermediateState, setIntermediateState } = useIntermediateStates();
+
+  /**
+   * Get incomeId from url.
+   */
+  const { incomeId } = useParams();
+
+  useEffect(() => {
+    if (incomeId) {
+      getIncomeById(incomeId)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [incomeId]);
 
   /**
    * Function to update amount spent on an item.
