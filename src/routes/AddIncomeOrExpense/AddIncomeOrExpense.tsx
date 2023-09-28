@@ -177,6 +177,7 @@ const AddIncomeOrExpense = ({ type }: PropsType) => {
                   incomeCategoriesList={incomeCategoriesList}
                   closeDrawer={closeDrawer}
                   selectedDate={date}
+                  handleDateChange={handleDateChange}
                 />
               )}
             </>

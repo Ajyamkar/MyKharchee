@@ -83,10 +83,28 @@ const getIncomeById = async (incomeId: string) => {
   return response;
 };
 
+/**
+ * Api call for editing income details
+ * @param data - income data to be edited.
+ * @param incomeId - id of the income to be edited.
+ */
+const editUserIncome = async (data: addIncomeDataType, incomeId: string) => {
+  const response = instance({
+    method: "PUT",
+    url: `/api/income/editIncome/${incomeId}`,
+    headers: {
+      authorization: getUserAuthorizationToken(),
+    },
+    data,
+  });
+  return response;
+};
+
 export {
   getIncomeCategoriesApi,
   saveUserIncome,
   getUserIncome,
   deleteIncome,
   getIncomeById,
+  editUserIncome,
 };

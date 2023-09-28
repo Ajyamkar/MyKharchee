@@ -5,10 +5,15 @@ import {
   FormControl,
   InputAdornment,
 } from "@mui/material";
-import dayjs from "dayjs";
+import { AxiosResponse } from "axios";
+import dayjs, { Dayjs } from "dayjs";
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getIncomeById, saveUserIncome } from "../../api/income";
+import {
+  editUserIncome,
+  getIncomeById,
+  saveUserIncome,
+} from "../../api/income";
 import ToastContext from "../../hooks/ToastContext";
 import useIntermediateStates from "../../hooks/useIntermediateStates";
 import CategoriesButtonList from "../CategoriesButtonList/CategoriesButtonList";
@@ -19,6 +24,7 @@ interface AddIncomeProps {
   incomeCategoriesList: Array<IncomeCategoriesListType>;
   closeDrawer: () => void;
   selectedDate: dayjs.Dayjs;
+  handleDateChange: (newDate: Dayjs) => void;
 }
 
 /**
@@ -57,7 +63,9 @@ const AddIncome = (props: AddIncomeProps) => {
     if (incomeId) {
       getIncomeById(incomeId)
         .then((response) => {
-          console.log(response);
+          setAmount(response.data.amount as number);
+          setSelectedCategoryId(response.data.source.id);
+          props.handleDateChange(dayjs(response.data.date));
         })
         .catch((err) => {
           console.log(err);
@@ -74,15 +82,24 @@ const AddIncome = (props: AddIncomeProps) => {
   };
 
   /**
-   * Function to save the income details.
+   * Function to save new user income or edit income details.
    */
   const saveIncomeDetails = () => {
     setIntermediateState({ ...intermediateState, isSaving: true });
-    saveUserIncome({
+
+    let promise: Promise<AxiosResponse<any, any>>;
+    const data = {
       date: props.selectedDate.toDate(),
       amount: amount ?? 0,
       categoryId: selectedCategoryId,
-    })
+    };
+    if (incomeId) {
+      promise = editUserIncome(data, incomeId);
+    } else {
+      promise = saveUserIncome(data);
+    }
+
+    promise
       .then((response) => {
         setToastState({
           isOpened: true,
